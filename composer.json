@@ -1,0 +1,31 @@
+{
+	"name": "tomi20v/ninja",
+	"description": "CMS Ninja",
+	"minimum-stability": "dev",
+	"license": "wtfpl",
+	"authors": [
+		{
+			"name": "t",
+			"email": "tomi20v@gmail.com"
+		}
+	],
+	"repositories": {
+		"tomi20v/tomi20v": {
+			"url": "/var/www/maui",
+			"type": "git",
+			"reference": "master"
+		}
+	},
+	"require": {
+		"tomi20v/maui": "*"
+	},
+	"autoload": {
+		"classmap": ["src"],
+		"files": [
+			"vendor/tomi20v/echop/src/echop.php",
+			"vendor/tomi20v/echop/src/echox.php",
+			"vendor/tomi20v/echop/src/echon.php",
+			"bootstrap.php"
+		]
+	}
+}

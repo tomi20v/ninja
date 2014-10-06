@@ -10,6 +10,7 @@
 		}
 	],
 	"repositories": {
+        "packagist": false,
 		"tomi20v/tomi20v": {
 			"url": "/var/www/maui",
 			"type": "git",
@@ -20,7 +21,9 @@
 		"tomi20v/maui": "*"
 	},
 	"autoload": {
-		"classmap": ["src"],
+		"classmap": [
+            "src/ninja"
+        ],
 		"files": [
 			"vendor/tomi20v/echop/src/echop.php",
 			"vendor/tomi20v/echop/src/echox.php",

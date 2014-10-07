@@ -25,4 +25,19 @@ class PageModelRoot extends \PageModelRedirect {
 		),
 	);
 
+	/**
+	 * @param \Request $Request
+	 * @return static
+	 */
+	public static function fromRequest($Request) {
+
+		$PageModelRoot = static::finder()
+			->equals('parent', null)
+			->regex('domainName', '/(\.)?' . $Request->getHttpHost() . '/')
+			->findOne();
+
+		return $PageModelRoot;
+
+	}
+
 }

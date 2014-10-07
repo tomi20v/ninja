@@ -4,15 +4,13 @@ namespace ninja;
 
 class PageModule extends \Module {
 
-	public function __construct($Request = null, $Parent = null) {
+	public function respond() {
 
-		parent::__construct($Request, $Parent);
+		$Page = \PageModel::fromRequest($this->_Request);
 
-		// if I am top object (normally should be), load Page object
-		if (is_null($Parent)) {
-			$this->_Model = \PageModel::getFromRequest($Request);
-		}
+		echop($Page);
 
+		debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS); die('TBI');
 	}
 
 }

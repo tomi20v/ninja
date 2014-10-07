@@ -34,18 +34,18 @@ abstract class Module {
 	 */
 	protected $_Controller;
 
-	public function __construct($Request = null, $Parent = null) {
+	public function __construct($Request, $Parent) {
 
 		$this->_Request = $Request;
 		$this->_Parent = $Parent;
 
 	}
 
-	public function run() {
-
-		$result = $this->_getController()->run($this);
-		return $result;
-
-	}
+	/**
+	 * only this shall be called, and after creating a module (creating includes setting up by setters)
+	 * shall return a response, but anything is acceptable that has a string printout
+	 * @return \Response
+	 */
+	abstract public function respond();
 
 }

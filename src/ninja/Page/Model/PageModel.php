@@ -57,24 +57,19 @@ class PageModel extends \Model {
 		return 'PageModelCollection';
 	}
 
-	public static function getFromRequest($Request) {
+	/**
+	 * @param \Request $Request
+	 * @return \PageModelRoot
+	 */
+	public static function fromRequest($Request) {
 
-		$PageModelRoot = new \PageModelRoot(array(
-			'parent' => null,
-//			'domainName' => '.' . $Request->serverName,
-			'domainName' => '/(\.)?' . $Request->serverName . '/',
-		));
+		$PageModelRoot = \PageModelRoot::fromRequest($Request);
 
-		$PageModelRoot->load();
+		$PageModel = new \PageModel();
+		$PageModel->Root = $PageModelRoot;
+		$PageModel->load();
 
-		if (!$PageModelRoot->isLoaded()) {
-//			throw new \Exception404();
-			debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS); die('TBI');
-		}
-		echop($PageModelRoot);
-
-
-		debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS); die('TBI');
+		return $PageModel;
 	}
 
 }

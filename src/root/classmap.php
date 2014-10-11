@@ -14,4 +14,5 @@ class Request extends \ninja\Request {}
 class Response extends \ninja\Response {}
 class PageModelRoot extends \ninja\PageModelRoot {}
 class PageModelRedirect extends \ninja\PageModelRedirect {}
+class View extends \ninja\View {}
 

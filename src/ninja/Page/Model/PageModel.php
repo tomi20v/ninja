@@ -2,12 +2,14 @@
 
 namespace ninja;
 
-class PageModel extends \Model {
+class PageModel extends \ModuleModel {
 
 	const JS_HEAD = 'HEAD';
 	const JS_FOOT = 'FOOT';
 
 	protected static $_schema = array(
+		'@extends' => 'ModuleModel',
+		// override parent to set a specific type
 		'Parent' => array(
 			'class' => 'PageModel',
 			'reference' => \SchemaManager::REF_REFERENCE,
@@ -16,7 +18,6 @@ class PageModel extends \Model {
 			'class' => 'PageModel',
 			'reference' => \SchemaManager::REF_REFERENCE,
 		),
-		'published',
 		'doctype' => array(
 //			'default' => 'html'
 		),
@@ -39,18 +40,6 @@ class PageModel extends \Model {
 			'keys' => array('href', 'media', 'onlyIf'),
 			'hasMax' => 0,
 		),
-		'Body' => array(
-			'class' => 'HtmlContent',
-			'reference' => \SchemaManager::REF_REFERENCE,
-			'hasMin' => 1,
-			'hasMax' => 1,
-		),
-		'Content' => array(
-			'class' => 'HtmlContent',
-			'reference' => \SchemaManager::REF_INLINE,
-			'hasMin' => 0,
-			'hasMax' => 0,
-		),
 	);
 
 	public static function getDbCollectionName() {
@@ -71,5 +60,7 @@ class PageModel extends \Model {
 
 		return $PageModel;
 	}
+
+
 
 }

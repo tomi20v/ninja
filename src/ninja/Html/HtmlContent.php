@@ -6,10 +6,6 @@ class HtmlContent extends \Model {
 		'template',
 	);
 
-	public function render() {
-
-	}
-
 	protected function findTemplate() {
 
 	}

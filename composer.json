@@ -20,7 +20,8 @@
 	"require": {
 		"tomi20v/maui": "*",
         "symfony/http-kernel": "2.6.*@dev",
-        "symfony/http-foundation": "2.6.*@dev"
+        "symfony/http-foundation": "2.6.*@dev",
+        "mustache/mustache": "dev-master"
 	},
 	"autoload": {
 		"classmap": [

@@ -48,4 +48,27 @@ abstract class Module {
 	 */
 	abstract public function respond();
 
+	/**
+	 * I am a non-static method since I have to pass myself as parent anyway
+	 * @param \ModuleModel $ModuleModel
+	 */
+	public function getSubModuleFrom($ModuleModel, $_Request=null) {
+
+		$modelClassname = get_class($ModuleModel);
+
+		if (substr($modelClassname, -11) !== 'ModuleModel') {
+			throw new \Exception('cannot recognize ModuleModel, saw: ' . $modelClassname);
+		}
+
+		$moduleClassname = substr($modelClassname, -11);
+
+		$SubModule = new $moduleClassname(
+			func_num_args() == 1 ? $this->_Request : $_Request,
+			$this
+		);
+
+		return $SubModule;
+
+	}
+
 }

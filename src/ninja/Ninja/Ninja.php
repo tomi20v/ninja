@@ -64,14 +64,12 @@ class Ninja {
 			}
 
 			$Page = new \PageModule($this->_Request, $this);
-			$content = $Page->respond();
+			$Response = $Page->respond();
 
-			if ($content instanceof \Response) {
-				$Response = $content;
-			}
+			if ($Response instanceof \Response);
 			else {
 				$Response = new \Response(
-					$content,
+					$Response,
 					\Response::HTTP_OK,
 					array('content-type' => 'text/html')
 				);
@@ -79,9 +77,11 @@ class Ninja {
 		}
 		catch (\HttpException $e) {
 			// @todo create response from HttpException
+			echop($e); die('HU httpexception');
 		}
 		catch (\Exception $e) {
 			// @todo create default 501 response
+			echop($e); die('BU exception');
 		}
 
 		$Response->send();

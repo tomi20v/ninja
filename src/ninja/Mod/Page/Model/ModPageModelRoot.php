@@ -2,12 +2,12 @@
 
 namespace ninja;
 
-class PageModelRoot extends \PageModelRedirect {
+class ModPageModelRoot extends \ModPageModelRedirect {
 
 	protected static $_schema = array(
 		'@extends' => array(
-			'PageModel',
-			'PageModelRedirect',
+			'ModPageModel',
+			'ModPageModelRedirect',
 		),
 		'domainName' => array(
 			'toString',
@@ -31,12 +31,12 @@ class PageModelRoot extends \PageModelRedirect {
 	 */
 	public static function fromRequest($Request) {
 
-		$PageModelRoot = static::finder()
+		$ModPageModelRoot = static::finder()
 			->equals('parent', null)
 			->regex('domainName', '/(\.)?' . $Request->getHttpHost() . '/')
 			->findOne();
 
-		return $PageModelRoot;
+		return $ModPageModelRoot;
 
 	}
 

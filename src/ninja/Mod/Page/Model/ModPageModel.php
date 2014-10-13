@@ -2,20 +2,20 @@
 
 namespace ninja;
 
-class PageModel extends \ModuleModel {
+class ModPageModel extends \ModAbstractModel {
 
 	const JS_HEAD = 'HEAD';
 	const JS_FOOT = 'FOOT';
 
 	protected static $_schema = array(
-		'@extends' => 'ModuleModel',
+		'@extends' => 'ModAbstractModel',
 		// override parent to set a specific type
 		'Parent' => array(
-			'class' => 'PageModel',
+			'class' => 'ModPageModel',
 			'reference' => \SchemaManager::REF_REFERENCE,
 		),
 		'Root' => array(
-			'class' => 'PageModel',
+			'class' => 'ModPageModel',
 			'reference' => \SchemaManager::REF_REFERENCE,
 		),
 		'doctype' => array(
@@ -31,7 +31,7 @@ class PageModel extends \ModuleModel {
 		'scripts' => array(
 			'toArray',
 			'keys' => array('place', 'src', 'code'),
-			'keysValues' => array('place', array(\PageModel::JS_HEAD, \PageModel::JS_FOOT)),
+			'keysValues' => array('place', array(\ModPageModel::JS_HEAD, \ModPageModel::JS_FOOT)),
 			'keysEither' => array('src', 'code'),
 			'hasMax' => 0,
 		),
@@ -48,13 +48,13 @@ class PageModel extends \ModuleModel {
 
 	/**
 	 * @param \Request $Request
-	 * @return \PageModelRoot
+	 * @return \ModPageModelRoot
 	 */
 	public static function fromRequest($Request) {
 
-		$PageModelRoot = \PageModelRoot::fromRequest($Request);
+		$PageModelRoot = \ModPageModelRoot::fromRequest($Request);
 
-		$PageModel = new \PageModel();
+		$PageModel = new \ModPageModel();
 		$PageModel->Root = $PageModelRoot;
 		$PageModel->load();
 

@@ -1,8 +1,4 @@
-<?php
-/**
- * @var \PageModel $Model
- */
-?><!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
 
@@ -12,9 +8,7 @@
 	<meta name="{{name}}" content="{{content}}" />
 	{{/meta}}
 
-	{x{#m}x}
-	{x{#self}}<title>{x{title}}</title>{x{/self}}
-	{x{/m}x}
+	<title>{{m.title}}</title>
 
 	{{#css}}
 	{{#onlyIf}}<!-- IF {{onlyIf}} -->{{/onlyIf}}

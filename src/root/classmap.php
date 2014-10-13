@@ -5,14 +5,18 @@
  */
 die();
 
-abstract class Module extends \ninja\Module {}
+class Finder extends \ninja\Finder {}
+abstract class ModAbstractModule extends \ninja\ModAbstractModule {}
 class Ninja extends \ninja\Ninja {}
-class PageModule extends \ninja\PageModule {}
-class PageModel extends \ninja\PageModel {}
-class PageController extends \ninja\PageController {}
+class ModPageModule extends \ninja\ModPageModule {}
+class ModPageModel extends \ninja\ModPageModel {}
+class ModPageController extends \ninja\ModPageController {}
 class Request extends \ninja\Request {}
 class Response extends \ninja\Response {}
-class PageModelRoot extends \ninja\PageModelRoot {}
-class PageModelRedirect extends \ninja\PageModelRedirect {}
+abstract class ModAbstractController extends \ninja\ModAbstractController {}
+abstract class ModAbstractModel extends \ninja\ModAbstractModel {}
+abstract class ModAbstractModule extends \ninja\ModAbstractModule {}
+class ModPageModelRoot extends \ninja\ModPageModelRoot {}
+class ModPageModelRedirect extends \ninja\ModPageModelRedirect {}
 class View extends \ninja\View {}
 

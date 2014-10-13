@@ -63,7 +63,7 @@ class Ninja {
 				$this->_Request = \Request::createFromGlobals();
 			}
 
-			$Page = new \PageModule($this->_Request, $this);
+			$Page = new \ModPageModule($this->_Request, $this);
 			$Response = $Page->respond();
 
 			if ($Response instanceof \Response);

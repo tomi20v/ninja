@@ -27,8 +27,8 @@ class Router extends \Model {
 			'_type' => 'PageRoot',
 			'domain' => $Request->serverName,
 		);
-		$Page = new \PageModel(); echop ($Page); die('KO');
-		$Page = \PageModel::loadAsSaved($loadData);
+		$Page = new \ModPageModel(); echop ($Page); die('KO');
+		$Page = \ModPageModel::loadAsSaved($loadData);
 		return $Page;
 	}
 

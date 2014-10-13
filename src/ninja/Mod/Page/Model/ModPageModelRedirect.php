@@ -2,7 +2,7 @@
 
 namespace ninja;
 
-class PageModelRedirect extends \PageModel {
+class ModPageModelRedirect extends \ModPageModel {
 
 	const REDIRECT_TYPE_PERMANENT = '301';
 	const REDIRECT_TYPE_FOUND = '302';
@@ -10,12 +10,12 @@ class PageModelRedirect extends \PageModel {
 
 	protected static $_schema = array(
 		'Parent' => array(
-			'class' => 'PageModel',
+			'class' => 'ModPageModel',
 			'reference' => \SchemaManager::REF_REFERENCE,
 		),
 		'published' => true,
 		'Root' =>  array(
-			'class' => 'PageModel',
+			'class' => 'ModPageModel',
 			'reference' => \SchemaManager::REF_REFERENCE,
 		),
 		'redirectType' => array(

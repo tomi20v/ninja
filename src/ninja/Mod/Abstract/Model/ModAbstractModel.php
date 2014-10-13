@@ -2,12 +2,12 @@
 
 namespace ninja;
 
-abstract class ModuleModel extends \Model {
+abstract class ModAbstractModel extends \Model {
 
 	protected static $_schema = array(
 		// will hold a reference to direct parent module
 		'Parent' => array(
-			'class' => 'ModuleModel',
+			'class' => 'ModAbstractModel',
 			'reference' => \SchemaManager::REF_REFERENCE,
 		),
 		// override default template filename
@@ -19,16 +19,11 @@ abstract class ModuleModel extends \Model {
 		// array of submodules
 		'Modules' => array(
 			'toArray',
-			'class' => 'ModuleModel',
+			'class' => 'ModAbstractModel',
 			'reference' => \SchemaManager::REF_INLINE,
 			'hasMin' => 0,
 			'hasMax' => 0,
 		),
-//		'content' => array(
-//			'toString',
-//			// @todo implement this
-////			'noSave',
-//		),
 		'Contents' => array(
 			'toArray',
 			'toString',

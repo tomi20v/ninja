@@ -3,7 +3,7 @@
 namespace ninja;
 
 /**
- * Class Finder - currently the simplest methods, could use quite some optimizations and caching regarding templates.
+ * Class Finder - for files. currently the simplest methods, could use quite some optimizations and caching regarding templates.
  * TO BE DETERMINED if it should be a facade to Symfony's finder
  *
  * @package maui
@@ -71,6 +71,25 @@ class Finder {
 		//echop('template not found: ' . echon($templateNames) . ' in: ' . echon($templateFolders));
 
 		return null;
+
+	}
+
+	/**
+	 * convert camelcase classname (with namespace) to path, eg. ns\FooBarModel => ns/Foo/Bar/Model
+	 * @param string $classname
+	 * @return string mixed
+	 */
+	public static function classToPath($classname) {
+
+		$classname = str_replace('\\', '/', $classname);
+
+		$classname = preg_replace('/([A-Z])/', "/$0", $classname);
+
+		$classname = preg_replace('/\/+/', '/', $classname);
+
+		$classname = trim($classname, '/');
+
+		return $classname;
 
 	}
 

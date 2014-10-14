@@ -5,6 +5,11 @@ namespace ninja;
 class View {
 
 	/**
+	 * @var string in custom views set this to a full path to the template
+	 */
+	protected $_template;
+
+	/**
 	 * @var \ModAbstractModule reference to my parent
 	 */
 	protected $_Module;
@@ -19,9 +24,10 @@ class View {
 	 */
 	protected static $_Engine;
 
-	public function __construct($Module, $Model) {
+	public function __construct($Module, $Model, $template=null) {
 		$this->_Module = $Module;
 		$this->_Model = $Model;
+		$this->_template=$template;
 	}
 
 	public function __toString() {
@@ -100,41 +106,47 @@ class View {
 	 */
 	public function findTemplate() {
 
-		$templateFolders = array();
+		$templatePath = $this->_template;
 
-		if (strlen($tmp = $this->_Model->templatePath)) {
-			$templateFolders[] = \Finder::joinPath(APP_ROOT, $tmp);
+		if (empty($templatePath)) {
+
+			$templateFolders = array();
+
+			if (strlen($tmp = $this->_Model->templatePath)) {
+				$templateFolders[] = \Finder::joinPath(APP_ROOT, $tmp);
+			}
+			// bubble up for template path
+			elseif (strlen($tmp = $this->_Model->getBubbler()->templatePath)) {
+				$templateFolders[] = \Finder::joinPath(APP_ROOT, $tmp);
+			}
+			// I should add the root page model's template path if exists
+			$templateFolders[] = NINJA_ROOT . '/src/ninja/Mod/' . $this->_Module->getModName() . '/template';
+
+			$templateFolders = array_unique($templateFolders);
+
+			$templateNames = array();
+			// I respect what's set in the model, and it should not be invalid
+			if (strlen($templateName = $this->_Model->template)) {
+				$templateNames[]=  $templateName;
+			}
+			else {
+				$Module = $this->_Module;
+				$modName = $Module->getModName();
+
+				$a = $Module::moduleNameByClassname(get_class($this->_Model));
+				$templateNames[] = \Finder::joinPath($modName, \Finder::classToPath($a));
+				$b = $Module::moduleNameByClassname(get_class($this->_Module));
+				$templateNames[] = \Finder::joinPath($modName, \Finder::classToPath($b));
+			}
+
+			$extension = '.html.mustache';
+
+			// for debug
+			//echop($templateFolders); echop($templateNames); die;
+
+			$templatePath = \Finder::fileByFolders($templateFolders, $templateNames, $extension);
+
 		}
-		// bubble up for template path
-		elseif (strlen($tmp = $this->_Model->getBubbler()->templatePath)) {
-			$templateFolders[] = \Finder::joinPath(APP_ROOT, $tmp);
-		}
-		// I should add the root page model's template path if exists
-		$templateFolders[] = NINJA_ROOT . '/src/ninja/Mod/' . $this->_Module->getModName() . '/template';
-
-		$templateFolders = array_unique($templateFolders);
-
-		$templateNames = array();
-		// I respect what's set in the model, and it should not be invalid
-		if (strlen($templateName = $this->_Model->template)) {
-			$templateNames[]=  $templateName;
-		}
-		else {
-			$Module = $this->_Module;
-			$modName = $Module->getModName();
-
-			$a = $Module::moduleNameByClassname(get_class($this->_Model));
-			$templateNames[] = \Finder::joinPath($modName, \Maui::classToPath($a));
-			$b = $Module::moduleNameByClassname(get_class($this->_Module));
-			$templateNames[] = \Finder::joinPath($modName, \Maui::classToPath($b));
-		}
-
-		$extension = '.html.mustache';
-
-		// for debug
-		//echop($templateFolders); echop($templateNames); die;
-
-		$templatePath = \Finder::fileByFolders($templateFolders, $templateNames, $extension);
 
 		return $templatePath;
 

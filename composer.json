@@ -34,5 +34,8 @@
 			"vendor/tomi20v/echop/src/echon.php",
 			"bootstrap.php"
 		]
-	}
+	},
+    "bin": [
+        "src/scripts/mod.php"
+    ]
 }

@@ -6,7 +6,7 @@ namespace ninja;
  * Class Finder - for files. currently the simplest methods, could use quite some optimizations and caching regarding templates.
  * TO BE DETERMINED if it should be a facade to Symfony's finder
  *
- * @package maui
+ * @package ninja
  */
 class Finder {
 

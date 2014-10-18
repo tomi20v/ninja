@@ -32,5 +32,15 @@ abstract class ModAbstractModel extends \Model {
 		),
 	);
 
+	/**
+	 * use {{{getContents}}} in your templates to get the Contents array merged
+	 * @return string
+	 */
+	public function getContents() {
+		// @todo I could implement a depth-based indenting so output would still be nice
+		$ret = implode("\n", $this->getField('Contents', \ModelManager::DATA_ALL, true));
+		return $ret;
+	}
+
 }
 

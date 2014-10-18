@@ -7,40 +7,43 @@ class ModPageModel extends \ModAbstractModel {
 	const JS_HEAD = 'HEAD';
 	const JS_FOOT = 'FOOT';
 
-	protected static $_schema = array(
-		'@extends' => 'ModAbstractModel',
+	protected static $_schema = [
+		'@extends' => 'ModAbstractModelCss',
 		// override parent to set a specific type
-		'Parent' => array(
+		'Parent' => [
 			'class' => 'ModPageModel',
 			'reference' => \SchemaManager::REF_REFERENCE,
-		),
-		'Root' => array(
+		],
+		'Root' => [
 			'class' => 'ModPageModel',
 			'reference' => \SchemaManager::REF_REFERENCE,
-		),
-		'doctype' => array(
-//			'default' => 'html'
-		),
+		],
+		'doctype' => [
+			'default' => 'html'
+		],
 		'title',
-		'meta' => array(
-			'toArray',
-			'keys' => array('name', 'content'),
+		'meta' => [
+			'toList',
+			'keys' => ['name', 'content'],
 			'hasMin' => 0,
 			'hasMax' => 0,
-		),
-		'scripts' => array(
+		],
+		'scripts' => [
 			'toArray',
-			'keys' => array('place', 'src', 'code'),
-			'keysValues' => array('place', array(\ModPageModel::JS_HEAD, \ModPageModel::JS_FOOT)),
-			'keysEither' => array('src', 'code'),
+			'keys' => ['place', 'src', 'code'],
+			'keysValues' => ['place', [\ModPageModel::JS_HEAD, \ModPageModel::JS_FOOT]],
+			'keysEither' => ['src', 'code'],
 			'hasMax' => 0,
-		),
-		'css' => array(
+		],
+		'script' => [
+			'toString',
+		],
+		'css' => [
 			'toArray',
-			'keys' => array('href', 'media', 'onlyIf'),
+			'keys' => ['href', 'media', 'onlyIf'],
 			'hasMax' => 0,
-		),
-	);
+		],
+	];
 
 	public static function getDbCollectionName() {
 		return 'PageModelCollection';

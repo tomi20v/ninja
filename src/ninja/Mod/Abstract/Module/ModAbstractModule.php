@@ -39,11 +39,10 @@ abstract class ModAbstractModule {
 	 */
 	protected $_Controller;
 
-	public function __construct($Request, $Parent) {
-
+	public function __construct($Request, $Parent, $Model=null) {
 		$this->_Request = $Request;
 		$this->_Parent = $Parent;
-
+		$this->_Model = $Model;
 	}
 
 	////////////////////////////////////////////////////////////////////////////////
@@ -59,15 +58,17 @@ abstract class ModAbstractModule {
 
 		$modelClassname = get_class($ModModel);
 
-		if (substr($modelClassname, -11) !== 'ModAbstractModel') {
-			throw new \Exception('cannot recognize ModAbstractModel, saw: ' . $modelClassname);
+		//if (substr($modelClassname, -11) !== 'ModAbstractModel') {
+		if (!is_subclass_of($modelClassname, 'ModAbstractModel') || (substr($modelClassname, -5) !== 'Model')) {
+			throw new \Exception('cannot recognize ModAbstractModel extension, saw: ' . $modelClassname);
 		}
 
-		$moduleClassname = substr($modelClassname, -11);
+		$moduleClassname = substr($modelClassname, 0, -5) . 'Module';
 
 		$SubModule = new $moduleClassname(
 			func_num_args() == 1 ? $this->_Request : $_Request,
-			$this
+			$this,
+			$ModModel
 		);
 
 		return $SubModule;
@@ -98,23 +99,26 @@ abstract class ModAbstractModule {
 	 */
 	protected function _processSubmodules() {
 
+		if (!$this->_Model->fieldNotNull('Modules')) {
+			return;
+		}
+
 		/**
 		 * @var \ModAbstractModule[] $subModules
 		 */
 		$subModules = array();
 		$subModuleModels = $this->_Model->Modules;
 
-		foreach ($subModuleModels as $eachSubModuleModel) {
+		foreach ($subModuleModels as $eachKey => $eachSubModuleModel) {
 			$SubModule = $this->_getSubModuleFrom($eachSubModuleModel);
-			$SubModule->createSubmodules();
-
-			$key = $SubModule->getModuleKey();
-			$subModules[$key] = $SubModule;
+			$SubModule->_processSubmodules();
+			$subModules[$eachKey] = $SubModule;
 		}
 
 		$this->_Model->Modules = $subModules;
 
-		$Contents = array();
+		$Contents = $this->_Model->Contents;
+
 		foreach ($subModules as $eachSubmodule) {
 			$Response = $eachSubmodule->respond();
 			if ($Response instanceof \Response) {
@@ -210,9 +214,11 @@ abstract class ModAbstractModule {
 	 */
 	protected function _beforeRespond() {
 
-		$classname = $this->getModClassnameBase() . 'Model';
+		if (!isset($this->_Model)) {
+			$classname = $this->getModClassnameBase() . 'Model';
 
-		$this->_Model = $classname::fromRequest($this->_Request);
+			$this->_Model = $classname::fromRequest($this->_Request);
+		}
 
 	}
 
@@ -234,6 +240,8 @@ abstract class ModAbstractModule {
 	 * @return \Response
 	 */
 	final public function respond() {
+
+		echo '';
 
 		$this->_beforeRespond();
 

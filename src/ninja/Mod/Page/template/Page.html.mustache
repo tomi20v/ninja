@@ -8,7 +8,7 @@
 	<meta name="{{name}}" content="{{content}}" />
 	{{/meta}}
 
-	<title>{{m.title}}</title>
+	<title>{{title}}</title>
 
 	{{#css}}
 	{{#onlyIf}}<!-- IF {{onlyIf}} -->{{/onlyIf}}
@@ -25,11 +25,9 @@
 	{{/script}}
 
 </head>
-<body {{#cssId}}id="#{{cssId}}"{{/cssId}} class="{{#cssClasses}}.{{cssClass}} {{/cssClasses}}" >
+<body {{#cssId}}id="#{{cssId}}"{{/cssId}} class="n-mod-page{{#cssClasses}}.{{cssClass}}{{/cssClasses}}" >
 
-	{{#Contents}}
-	{{Contents}}
-	{{/Contents}}
+{{{getContents}}}
 
 </body>
 </html>

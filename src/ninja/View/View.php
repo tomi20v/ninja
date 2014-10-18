@@ -66,7 +66,8 @@ class View {
 
 		if (!is_null($template)) {
 			try {
-				$content = $this->_render($template, array('m'=>$this->_Model));
+//				echop($this->_Model); die;
+				$content = $this->_render($template, $this->_Model);
 			}
 			catch (\Exception $e) {
 
@@ -157,7 +158,9 @@ class View {
 	 */
 	protected static function _getEngine() {
 		if (!isset(static::$_Engine)) {
-			static::$_Engine = new \Mustache_Engine();
+			static::$_Engine = new \Mustache_Engine([
+				'partials_loader' => new \FinderPartials(),
+			]);
 		}
 		return static::$_Engine;
 	}

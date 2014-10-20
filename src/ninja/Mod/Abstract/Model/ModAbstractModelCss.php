@@ -5,14 +5,14 @@ namespace ninja;
 abstract class ModAbstractModelCss extends \ModAbstractModel {
 
 	protected static $_schema = [
-		'@extends' => 'ModAbstractModel',
+		'@@extends' => 'ModAbstractModel',
 		'cssId',
 		'cssClasses' => [
-			'toString',
+			'toArray',
 			'hasMin' => 0,
 			'hasMax' => 0,
 		],
-		'cssExtra',
+		'cssStyle',
 		'containerEl' => [
 			'toString',
 			'default' => 'div',

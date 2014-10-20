@@ -10,6 +10,18 @@ namespace ninja;
  */
 class Finder {
 
+	/**
+	 * @var \Composer\Autoload\ClassLoader
+	 */
+	protected static $_AutoLoader;
+
+	/**
+	 * @param $AutoLoader I set autoloader instance to find subclasses etc
+	 */
+	public static function setAutoLoader($AutoLoader) {
+		static::$_AutoLoader = $AutoLoader;
+	}
+
 	public static function instance() {
 
 		static $Instance;
@@ -91,6 +103,10 @@ class Finder {
 
 		return $classname;
 
+	}
+
+	public static function getSubclasses($classname) {
+		throw new \Exception('TBI');
 	}
 
 }

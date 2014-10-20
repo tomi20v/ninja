@@ -8,7 +8,7 @@ class ModPageModel extends \ModAbstractModel {
 	const JS_FOOT = 'FOOT';
 
 	protected static $_schema = [
-		'@extends' => 'ModAbstractModelCss',
+		'@@extends' => 'ModAbstractModelCss',
 		// override parent to set a specific type
 		'Parent' => [
 			'class' => 'ModPageModel',

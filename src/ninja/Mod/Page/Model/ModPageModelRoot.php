@@ -5,7 +5,7 @@ namespace ninja;
 class ModPageModelRoot extends \ModPageModelRedirect {
 
 	protected static $_schema = array(
-		'@extends' => array(
+		'@@extends' => array(
 			'ModPageModel',
 			'ModPageModelRedirect',
 		),

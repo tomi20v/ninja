@@ -10,5 +10,3 @@ require(APP_ROOT . '/../../../vendor/autoload.php');
 $Maui = \Maui::instance(\Maui::ENV_DEFAULT, 'ninja');
 $Ninja = new \Ninja($Maui);
 $Ninja->run();
-
-die('ALL OK');

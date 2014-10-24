@@ -268,7 +268,7 @@ FileETag None
   ##
   RewriteCond %{REQUEST_FILENAME} !\.(htm|php|js|css|htc|png|gif|jpe?g|ico|xml|csv|txt|swf|flv|mp4|webm|ogv|mp3|ogg|oga|eot|otf|tt[cf]|woff|svg|svgz|pdf|gz)$
   RewriteCond %{REQUEST_FILENAME} !-f
-  RewriteRule .*\.html$ index.php [L]
+  RewriteRule .* index.php [L]
 
   ##
   # The following rules are required if you want to pass the language as first

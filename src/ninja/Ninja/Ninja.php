@@ -66,7 +66,7 @@ class Ninja {
 			$Page = new \ModPageModule($this->_Request, $this);
 			$Response = $Page->respond();
 
-			if ($Response instanceof \Response);
+			if ($Response instanceof \ninja\Response);
 			else {
 				$Response = new \Response(
 					$Response,
@@ -77,11 +77,11 @@ class Ninja {
 		}
 		catch (\HttpException $e) {
 			// @todo create response from HttpException
-			echop($e); die('HU httpexception');
+			echop($e); die('die httpexception');
 		}
 		catch (\Exception $e) {
 			// @todo create default 501 response
-			echop($e); die('BU exception');
+			echop($e); die('die exception');
 		}
 
 		$Response->send();

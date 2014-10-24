@@ -39,7 +39,19 @@ abstract class ModAbstractModule {
 	 */
 	protected $_Controller;
 
+	/**
+	 * @param $Request
+	 * @param $Parent
+	 * @param \Model|\ninja\Ninja|null $Model send Ninja instance for root module, the parent's model for the rest
+	 */
 	public function __construct($Request, $Parent, $Model=null) {
+
+		if (!($Request instanceof \Request) ||
+			(!($Parent instanceof \ModAbstractModule) && !($Parent instanceof \Ninja)) ||
+			(!is_null($Model) && !($Model instanceof \Model))) {
+			throw new \BadMethodCallException(echon([$Request, $Parent, $Model]));
+		}
+
 		$this->_Request = $Request;
 		$this->_Parent = $Parent;
 		$this->_Model = $Model;
@@ -52,9 +64,10 @@ abstract class ModAbstractModule {
 	/**
 	 * I am a non-static method since I have to pass myself as parent anyway
 	 *
-	 * @param \ModModel $ModModel
+	 * @param \ModAbstractModel $ModModel
+	 * @param \Request|null $Request
 	 */
-	protected function _getSubModuleFrom($ModModel, $_Request=null) {
+	protected function _getSubModuleFrom($ModModel, $Request=null) {
 
 		$modelClassname = get_class($ModModel);
 
@@ -66,7 +79,7 @@ abstract class ModAbstractModule {
 		$moduleClassname = substr($modelClassname, 0, -5) . 'Module';
 
 		$SubModule = new $moduleClassname(
-			func_num_args() == 1 ? $this->_Request : $_Request,
+			func_num_args() == 1 ? $this->_Request : $Request,
 			$this,
 			$ModModel
 		);
@@ -95,39 +108,40 @@ abstract class ModAbstractModule {
 
 	/**
 	 * I recursively create submodules and call for their response
-	 * @return \Response|null
+	 * @return \maui\ResponeInterface|null
 	 */
 	protected function _processSubmodules() {
 
-		if (!$this->_Model->fieldNotNull('Modules')) {
-			return;
-		}
+		if ($this->_Model->fieldNotNull('Modules')) {
 
-		/**
-		 * @var \ModAbstractModule[] $subModules
-		 */
-		$subModules = array();
-		$subModuleModels = $this->_Model->Modules;
+			/**
+			 * @var \ModAbstractModule[] $subModules
+			 */
+			$subModules = array();
+			$subModuleModels = $this->_Model->Modules;
+			$subModuleModels->append($this->_Model->Root->Modules, false);
 
-		foreach ($subModuleModels as $eachKey => $eachSubModuleModel) {
-			$SubModule = $this->_getSubModuleFrom($eachSubModuleModel);
-			$SubModule->_processSubmodules();
-			$subModules[$eachKey] = $SubModule;
-		}
-
-		$this->_Model->Modules = $subModules;
-
-		$Contents = $this->_Model->Contents;
-
-		foreach ($subModules as $eachSubmodule) {
-			$Response = $eachSubmodule->respond();
-			if ($Response instanceof \Response) {
-				return $Response;
+			foreach ($subModuleModels as $eachKey => $eachSubModuleModel) {
+				$SubModule = $this->_getSubModuleFrom($eachSubModuleModel);
+				$SubModule->_processSubmodules();
+				$subModules[$eachKey] = $SubModule;
 			}
-			$Contents[] = $Response;
-		}
 
-		$this->_Model->Contents = $Contents;
+			$this->_Model->Modules = $subModules;
+
+			$Contents = $this->_Model->Contents;
+
+			foreach ($subModules as $eachSubmodule) {
+				$Response = $eachSubmodule->respond();
+				if ($Response instanceof \ninja\Response) {
+					return $Response;
+				}
+				$Contents[] = $Response;
+			}
+
+			$this->_Model->Contents = $Contents;
+
+		}
 
 		return null;
 
@@ -210,7 +224,7 @@ abstract class ModAbstractModule {
 
 	/**
 	 * use this to set up / check data before respond
-	 * @return void|\Response Return \Response to use it as final response and stop processing
+	 * @return void|\ninja\ResponseInterface Return some Response to use it as final response and stop processing
 	 */
 	protected function _beforeRespond() {
 
@@ -224,45 +238,53 @@ abstract class ModAbstractModule {
 
 	/**
 	 * I can be overwritten eg. to display different views based on some input
-	 * @return void|\Response Return \Response to use it as final response and stop processing
+	 * @return void|\ninja\ResponseInterface Return \Response to use it as final response and stop processing
 	 */
 	protected function _respond() {}
 
 	/**
 	 * use this to process generated response
-	 * @return void|\Response Return \Response to use it as final response and stop processing
+	 * @return void|\ninja\ResponseInterface Return \Response to use it as final response and stop processing
 	 */
 	protected function _afterRespond() {}
 
 	/**
 	 * only this shall be called, and after creating a module (creating includes setting up by setters)
 	 * shall return a response, or anything printable
-	 * @return \Response
+	 * @return \ninja\ResponseInterface
 	 */
 	final public function respond() {
-
-		echo '';
 
 		$this->_beforeRespond();
 
 		$Response = $this->_processSubmodules();
-		if ($Response instanceof \Response) {
+		if ($Response instanceof \ninja\Response) {
 			goto finish;
 		}
 
 		$Response = $this->_respond();
-		if ($Response instanceof \Response) {
+		if ($Response instanceof \ninja\Response) {
 			goto finish;
 		}
 
 		// default response
-		$this->_View = new \View($this, $this->_Model);
-		$Response = $this->_View->render();
+		$this->_View = $this->_getView();
+		$Response = $this->_View instanceof \View
+			? $this->_View->render()
+			: null;
 
 		finish:
 
 		return $Response;
 
+	}
+
+	/**
+	 * I provide a way to extend view creation, or, to skip it (return null)
+	 * @return \View|null
+	 */
+	protected function _getView() {
+		return new \View($this, $this->_Model);
 	}
 
 }

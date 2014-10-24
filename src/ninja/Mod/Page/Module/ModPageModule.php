@@ -14,10 +14,4 @@ class ModPageModule extends \ModAbstractModule {
 	 */
 	protected $_View;
 
-	public function x_beforeRespond() {
-
-		$this->_Model = \ModPageModel::fromRequest($this->_Request);
-
-	}
-
 }

@@ -109,4 +109,36 @@ class Finder {
 		throw new \Exception('TBI');
 	}
 
+	public static function classIsA($classnameOrObject, $classnameOrInterfaceOrObject) {
+		if (empty($classnameOrObject) || empty($classnameOrInterfaceOrObject)) {
+			return false;
+		}
+		if (is_object($classnameOrObject)) {
+			$classnameOrObject = get_class($classnameOrObject);
+		}
+		if (is_object($classnameOrInterfaceOrObject)) {
+			$classnameOrInterfaceOrObject = get_class($classnameOrInterfaceOrObject);
+		}
+
+		$pat = "/^[a-zA-Z0-9\\\\]+$/";
+		foreach ([$classnameOrObject, $classnameOrInterfaceOrObject] as &$eachClassnameOrObject) {
+			if (is_object($eachClassnameOrObject)) {
+				$eachClassnameOrObject = get_class($eachClassnameOrObject);
+			}
+			if (!is_string($eachClassnameOrObject)) {
+				return false;
+			}
+			if (!preg_match($pat, $eachClassnameOrObject)) {
+				return false;
+			}
+		}
+
+		if (is_subclass_of($classnameOrObject, $classnameOrInterfaceOrObject));
+		elseif (in_array($classnameOrInterfaceOrObject, class_implements($classnameOrObject)));
+		else {
+			return false;
+		}
+		return true;
+	}
+
 }

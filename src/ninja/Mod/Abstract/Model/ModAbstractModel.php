@@ -38,7 +38,10 @@ abstract class ModAbstractModel extends \Model {
 	 */
 	public function getContents() {
 		// @todo I could implement a depth-based indenting so output would still be nice
-		$ret = implode("\n", $this->getField('Contents', \ModelManager::DATA_ALL, true));
+		$ret = $this->getField('Contents', \ModelManager::DATA_ALL, true);
+		if (is_array($ret)) {
+			$ret = implode("\n", $ret);
+		}
 		return $ret;
 	}
 

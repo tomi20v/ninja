@@ -3,7 +3,8 @@
 namespace maui;
 
 /**
- * Class Router for http requests
+ * Class Router for http requests - currently not used and
+ * @obsolete
  *
  * @package maui
  */
@@ -21,6 +22,7 @@ class Router extends \Model {
 
 	/**
 	 * @param \Request $Request
+	 * @return \ModePageModel
 	 */
 	public static function PageFromRequest($Request) {
 		$loadData = array(

@@ -196,7 +196,10 @@ EOS;
 
 		$content = $template;
 		foreach ($classes as $eachClass) {
-			$content.= "\tclass " . $eachClass . " extends \\ninja\\" . $eachClass . " {}\n";
+			if (substr($eachClass, -9) === 'Interface') {
+				continue;
+			}
+			$content.= "class " . $eachClass . " extends \\ninja\\" . $eachClass . " {}\n";
 		}
 
 		if ($this->_switchDryRun) {

@@ -35,16 +35,16 @@ class View {
 	}
 
 	/**
-	 * @param $template
+	 * @param string $template
 	 * @param \Model $Model
 	 * @return string
 	 */
-	public static function _render($template, $data) {
+	public static function _render($template, $Model) {
 
 		$M = static::_getEngine();
 
 		try {
-			$content = $M->render(file_get_contents($template), $data);
+			$content = $M->render(file_get_contents($template), $Model);
 		}
 		catch (\Exception $e) {
 			$content = '';

@@ -123,12 +123,18 @@ abstract class ModAbstractModule {
 
 			foreach ($subModuleModels as $eachKey => $eachSubModuleModel) {
 				$SubModule = $this->_getSubModuleFrom($eachSubModuleModel);
-				$SubModule->_processSubmodules();
+				$Response = $SubModule->_processSubmodules();
+				if ($Response instanceof \maui\Response) {
+					return $Response;
+				}
 				$subModules[$eachKey] = $SubModule;
 			}
 
 			$this->_Model->Modules = $subModules;
 
+			/**
+			 * @var array $Contents as specified in ModAbstractModel
+			 */
 			$Contents = $this->_Model->Contents;
 
 			foreach ($subModules as $eachSubmodule) {
@@ -284,7 +290,11 @@ abstract class ModAbstractModule {
 	 * @return \View|null
 	 */
 	protected function _getView() {
-		return new \View($this, $this->_Model);
+		$viewClassname = substr(get_class($this), 0, -6) . 'View';
+		if ($pos = strrpos($viewClassname, '\\')) {
+			$viewClassname = substr($viewClassname, $pos+1);
+		}
+		return new $viewClassname($this, $this->_Model);
 	}
 
 }

@@ -11,6 +11,31 @@ namespace ninja;
 class Finder {
 
 	/**
+	 * I'll use this tiny table if possible for mime lookups
+	 * @var array
+	 */
+	protected static $_mimeTypes = [
+		'css' => 'text/css',
+		'js' => 'application/javascript',
+		'jsonp' => 'application/javascript',
+		'json' => 'application/json',
+		'flv' => 'video/x-flv',
+		'svg' => 'image/svg+xml',
+		'ttf' => 'application/x-font-ttf',
+		'ttc' => 'application/x-font-ttf',
+		'otf' => 'font/opentype',
+		'ico' => 'image/x-icon',
+		'htc' => 'text/x-component',
+		'rss' => 'application/xml',
+		'atom' => 'application/xml',
+		'xml' => 'application/xml',
+		'rdf' => 'application/xml',
+		'webapp' => 'application/x-web-app-manifest+json',
+		'vcf' => 'text/x-vcard',
+		'swf' => 'application/x-shockwave-flash',
+	];
+
+	/**
 	 * @var \Composer\Autoload\ClassLoader
 	 */
 	protected static $_AutoLoader;
@@ -109,6 +134,12 @@ class Finder {
 		throw new \Exception('TBI');
 	}
 
+	/**
+	 * I return true if $classnameOrObject is subclass of, is of, or implements $classnameOrInterfaceOrObject
+	 * @param $classnameOrObject
+	 * @param $classnameOrInterfaceOrObject
+	 * @return bool
+	 */
 	public static function classIsA($classnameOrObject, $classnameOrInterfaceOrObject) {
 		if (empty($classnameOrObject) || empty($classnameOrInterfaceOrObject)) {
 			return false;
@@ -139,6 +170,24 @@ class Finder {
 			return false;
 		}
 		return true;
+	}
+
+	/**
+	 * I return guessed mime type to avoid normally broken get_mime_type/finfo
+	 * @param $fname
+	 * @return null
+	 */
+	public static function guessMimeType($fname) {
+		$ret = null;
+		$fname = basename($fname);
+		if (preg_match('/\.([a-zA-Z0-9]+)$/', $fname, $matches)) {
+			$extension = $matches[1];
+			if (isset(static::$_mimeTypes[$extension])) {
+				$ret = static::$_mimeTypes[$extension];
+			}
+		}
+		// maybe I should still fall back to Symfony or plain PHP if not found?
+		return $ret;
 	}
 
 }

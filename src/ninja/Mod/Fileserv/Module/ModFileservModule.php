@@ -28,7 +28,8 @@ class ModFileservModule extends \ModAbstractModule {
 
 			$files = $this->_Model->files;
 			$foundFname = null;
-			if (is_array($files)) {
+			// I have to skip empty array as well
+			if (is_array($files) && !empty($files)) {
 				foreach ($files as $eachFile) {
 					if ($eachFile === $requestUri) {
 						$foundFname = realpath(\Finder::joinPath(APP_ROOT, $this->_Model->folder, $requestUri));
@@ -43,14 +44,16 @@ class ModFileservModule extends \ModAbstractModule {
 			}
 
 			if (!is_null($foundFname)) {
+
 				$fLastMod = filemtime($foundFname);
-				// prepare BinaryFileResponse
+				$mimetype = \Finder::guessMimeType($foundFname);
+
 				$Response = new \Response(
 					file_get_contents($foundFname),
 					\Response::HTTP_OK,
 					array(
 						'Last-Modified' => gmdate('D, d M Y H:i:s \G\M\T', $fLastMod),
-						'Content-Type' => mime_content_type($foundFname),
+						'Content-Type' => $mimetype,
 					)
 				);
 

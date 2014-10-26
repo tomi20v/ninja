@@ -4,8 +4,12 @@ namespace ninja;
 
 abstract class ModAbstractView extends \View {
 
+	public function __call($method, $arguments) {
+		return null;
+	}
+
 	/**
-	 * use {{{getContents}}} in your templates to get the Contents array merged
+	 * use {{{get_Contents}}} in your templates to get the Contents array merged
 	 * @return string
 	 */
 	public function get_Contents() {
@@ -14,6 +18,15 @@ abstract class ModAbstractView extends \View {
 		if (is_array($ret)) {
 			$ret = implode("\n", $ret);
 		}
+		return $ret;
+	}
+
+	/**
+	 * use {{{get_ModelDebug}}} in your template to print the current Model
+	 * @return string
+	 */
+	public function get_ModelDebug() {
+		$ret = '$this->_Model:' . \EchoPrinter::echop($this->_Model, true, 0, 3, true, false);
 		return $ret;
 	}
 

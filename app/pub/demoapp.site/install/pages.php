@@ -33,6 +33,15 @@ $DaPageRoot = new \ModPageModelRoot(
 		'Modules' => [
 			'twitterFiles' => $TwitterFileServer,
 		],
+		'scripts' => [
+			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/js/bootstrap.js',],
+			['place'=>\ModPageModel::JS_HEAD, 'code'=>'var injected_var;'],
+		],
+		'css' => [
+			['href'=>'/css/bootstrap.css'],
+			['href'=>'/css/bootstrap-theme.css'],
+		],
+		'cssStyle' => 'padding-top:70px;'
 	],
 	false
 );
@@ -46,16 +55,28 @@ $DaPageRoot = new \ModPageModelRoot(
 //echop(\SchemaManager::getSchema($DaPageRoot)); echop($DaPageRoot); die;
 //die('NOW');
 
-$DaColumnsContainer = new \ModContainerModel(
+$DaColumnsRow = new \ModContainerModel(
 	[
+		'cssClasses' => [
+			'row',
+		],
 		'Contents' => [
-			'left' => '<div>Left dummy</div>',
-			'middle' => '<div>Middle dummy</div>',
-			'right' => '<div>Right dummy</div>',
+			'left' => '<div class="col-md-3">Left dummy</div>',
+			'middle' => '<div class="col-md-6">Middle dummy</div>',
+			'right' => '<div class="col-md-3">Right dummy</div>',
 		],
 	],
 	false
 );
+//$DaRowContainer = new \ModContainerModel(
+//	[
+//		'cssClasses' => ['container-fluid'],
+//		'Contents' => [
+//			$DaColumnsRow
+//		],
+//	],
+//	false
+//);
 
 $DaPageHome = new \ModPageModel(
 	[
@@ -63,15 +84,10 @@ $DaPageHome = new \ModPageModel(
 		'Root' => $DaPageRoot,
 		'published' => true,
 		'title' => 'Demo Application home page',
-		'scripts' => [
-			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/js/bootstrap.js',],
-		],
-		'css' => [
-			['href'=>'/css/bootstrap-theme.css'],
-			['href'=>'/css/bootstrap.css'],
-		],
 		'Modules' => [
-			'columns' => $DaColumnsContainer,
+			// @todo I currently cannot save with $DaRowContainer, investigate (seems data is not flattened properly)
+//			'columns' => $DaRowContainer,
+			'columns' => $DaColumnsRow,
 		]
 	]
 );

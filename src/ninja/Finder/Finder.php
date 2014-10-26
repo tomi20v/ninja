@@ -190,4 +190,13 @@ class Finder {
 		return $ret;
 	}
 
+	public static function arrayUnique($arr) {
+		$serialized = array();
+		foreach ($arr as $eachKey=>$eachVal) {
+			$serialized[$eachKey] = serialize($eachVal);
+		}
+		$ret = array_intersect_key($arr, array_unique($serialized));
+		return $ret;
+	}
+
 }

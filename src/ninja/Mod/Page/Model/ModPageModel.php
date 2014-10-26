@@ -64,6 +64,33 @@ class ModPageModel extends \ModAbstractModel {
 		return $PageModel;
 	}
 
-
+	public function getFieldWithRoot($key) {
+		$val = $this->getField($key, \ModelManager::DATA_ALL, true);
+		$rootVal = null;
+		if ($this->fieldIsSet('Root')) {
+			$Root  = $this->getField('Root');
+			if ($Root->fieldIsSet($key)) {
+				$rootVal = $Root->getField($key, \ModelManager::DATA_ALL, true);
+			}
+		}
+		if (!is_null($val) && !is_null($rootVal)) {
+			if ($val instanceof \maui\Collection) {
+				$ret = $val->prepend($rootVal);
+			}
+			elseif ($rootVal instanceof \maui\Collection) {
+				$ret = $rootVal->append($val);
+			}
+			else {
+				$ret = array_merge((array)$rootVal, (array)$val);
+			}
+		}
+		elseif (!is_null($val)) {
+			$ret = $val;
+		}
+		else {
+			$ret = $rootVal;
+		}
+		return $ret;
+	}
 
 }

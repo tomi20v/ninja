@@ -9,7 +9,7 @@ namespace ninja;
  */
 class Filter {
 
-	const MASK_GETTER = '/^get_([a-zA-Z0-9]+)$/';
+	const MASK_GETTER = '/^get_([a-zA-Z0-9_]+)$/';
 
 	/**
 	 * @var \View
@@ -21,6 +21,11 @@ class Filter {
 	 */
 	protected $_Model;
 
+	/**
+	 * I shall be constructed by the $View
+	 * @param \View $View
+	 * @param \Model $Model
+	 */
 	public function __construct($View, $Model) {
 
 		$this->_View = $View;
@@ -29,6 +34,11 @@ class Filter {
 
 	}
 
+	/**
+	 * I return $View::$key() if $key matches MASK_GETTER format, otherwise $Model->$key
+	 * @param string $key
+	 * @return $this|\maui\Model|null
+	 */
 	public function __get($key) {
 
 		if (preg_match(static::MASK_GETTER, $key)) {
@@ -39,6 +49,11 @@ class Filter {
 
 	}
 
+	/**
+	 * mapping for mustache
+	 * @param $key
+	 * @return bool
+	 */
 	public function __isset($key) {
 
 		if (preg_match(static::MASK_GETTER, $key)) {
@@ -46,12 +61,6 @@ class Filter {
 		}
 
 		return $this->_Model->__isset($key);
-
-	}
-
-	public function __call($method, $arguments) {
-
-		return call_user_func([$this->_View, $method], $arguments);
 
 	}
 

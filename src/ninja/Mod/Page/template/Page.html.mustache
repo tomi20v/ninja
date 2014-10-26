@@ -10,29 +10,44 @@
 
 	<title>{{title}}</title>
 
-	{{#css}}
+	{{#get_withRoot_css}}
 	{{#onlyIf}}<!-- IF {{onlyIf}} -->{{/onlyIf}}
-	<link rel="stylesheet" type="text/css" {{#media}}media={{media}}{{/media}} href="{{href}}" />
+	<link rel="stylesheet" {{#media}}media={{media}}{{/media}} href="{{href}}" />
 	{{#onlyIf}}<!-- IF {{onlyIf}} -->{{/onlyIf}}
-	{{/css}}
+	{{/get_withRoot_css}}
 
 	{{#get_ScriptsHead}}
 	{{#src}}<script src="{{{src}}}" ></script>{{/src}}
 	{{/get_ScriptsHead}}
+	<script>
 	{{#get_ScriptsHead}}
-	{{#code}}<script src="{{{code}}}" ></script>{{/code}}
+	{{#code}}{{{code}}}{{/code}}
 	{{/get_ScriptsHead}}
+	</script>
 
 </head>
-<body {{#cssId}}id="#{{cssId}}"{{/cssId}} class="n-mod-page{{#cssClasses}}.{{cssClass}}{{/cssClasses}}" >
+<body {{#cssId}}id="#{{cssId}}"{{/cssId}} class="n-mod-page{{#get_withRoot_cssClasses}} {{.}}{{/get_withRoot_cssClasses}}" {{#get_withRoot_cssStyle}}style="{{{.}}}"{{/get_withRoot_cssStyle}}>
 
-{{{ get_Contents }}}
+<div class="navbar navbar-inverse navbar-fixed-top">
+	<div class="navbar-inner">
+		<div class="container">
+			<a class="navbar-brand">Maui/Ninja demo app</a>
+		</div>
+	</div>
+</div>
+
+<div class="container-fluid">
+	{{{ get_Contents }}}
+</div>
 
 {{#get_ScriptsFoot}}
 {{#src}}<script src="{{{src}}}" ></script>{{/src}}
 {{/get_ScriptsFoot}}
+<script>
 {{#get_ScriptsFoot}}
-{{#code}}<script >{{{code}}}</script>{{/code}}
+{{#code}}{{{code}}}{{/code}}
 {{/get_ScriptsFoot}}
+</script>
+
 </body>
 </html>

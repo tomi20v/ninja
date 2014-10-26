@@ -39,12 +39,13 @@ class View {
 	 * @param \Model $Model
 	 * @return string
 	 */
-	public static function _render($template, $Model) {
+	protected function _render($template, $Model) {
 
 		$M = static::_getEngine();
 
 		try {
-			$content = $M->render(file_get_contents($template), $Model);
+			$Filter = new \Filter($this, $Model);
+			$content = $M->render(file_get_contents($template), $Filter);
 		}
 		catch (\Exception $e) {
 			$content = '';
@@ -66,12 +67,9 @@ class View {
 
 		if (!is_null($template)) {
 			try {
-//				echop($this->_Model); die;
 				$content = $this->_render($template, $this->_Model);
 			}
-			catch (\Exception $e) {
-
-			}
+			catch (\Exception $e) {}
 		}
 
 		return $content;

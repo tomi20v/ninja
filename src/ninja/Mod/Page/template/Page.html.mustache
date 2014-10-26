@@ -16,18 +16,23 @@
 	{{#onlyIf}}<!-- IF {{onlyIf}} -->{{/onlyIf}}
 	{{/css}}
 
-	{{#scripts}}
-	<script src="{{src}}" ></script>
-	{{/scripts}}
-
-	{{#script}}
-	<script>{{src}}</script>
-	{{/script}}
+	{{#get_ScriptsHead}}
+	{{#src}}<script src="{{{src}}}" ></script>{{/src}}
+	{{/get_ScriptsHead}}
+	{{#getScriptsHead}}
+	{{#code}}<script src="{{{code}}}" ></script>{{/code}}
+	{{/getScriptsHead}}
 
 </head>
 <body {{#cssId}}id="#{{cssId}}"{{/cssId}} class="n-mod-page{{#cssClasses}}.{{cssClass}}{{/cssClasses}}" >
 
-{{{getContents}}}
+{{{ get_Contents }}}
 
+{{#scriptsFoot}}
+{{#src}}<script src="{{{src}}}" ></script>{{/src}}
+{{/scriptsFoot}}
+{{#scriptsFoot}}
+{{#code}}<script >{{{code}}}</script>{{/code}}
+{{/scriptsFoot}}
 </body>
 </html>

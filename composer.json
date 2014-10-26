@@ -9,11 +9,11 @@
 			"email": "tomi20v@gmail.com"
 		}
 	],
-    "config": {
-        "process-timeout": 1000
-    },
+	"config": {
+		"process-timeout": 1000
+	},
 	"repositories": {
-        "_packagist": false,
+		"_packagist": false,
 		"tomi20v/tomi20v": {
 			"url": "/var/www/maui",
 			"type": "git",
@@ -22,16 +22,14 @@
 	},
 	"require": {
 		"tomi20v/maui": "*",
-        "symfony/http-kernel": "2.6.*@dev",
-        "symfony/http-foundation": "2.6.*@dev",
-        "symfony/finder": "2.6.*@dev",
-        "mustache/mustache": "dev-master",
-        "twbs/bootstrap": "3.2.*@dev"
+		"symfony/http-kernel": "2.6.*@dev",
+		"symfony/http-foundation": "2.6.*@dev",
+		"mustache/mustache": "dev-master"
 	},
 	"autoload": {
 		"classmap": [
-            "src/ninja"
-        ],
+			"src/ninja"
+		],
 		"files": [
 			"vendor/tomi20v/echop/src/echop.php",
 			"vendor/tomi20v/echop/src/echox.php",
@@ -39,7 +37,15 @@
 			"bootstrap.php"
 		]
 	},
-    "bin": [
-        "src/scripts/mod.php"
-    ]
+	"bin": [
+		"src/scripts/mod.php"
+	],
+	"scripts": {
+		"post-install-cmd": [
+			"bower install"
+		],
+		"post-update-cmd": [
+			"bower install"
+		]
+	}
 }

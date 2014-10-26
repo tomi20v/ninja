@@ -11,12 +11,16 @@ $DB->PageModelCollection->drop();
 //$DaMiddleContent = new \ModeDummyModel('Right dummy', false);
 //$DaRightContent = new \ModeDummyModel('Right dummy', false);
 
+$JqueryFileServer = new \ModFileservModel(
+	['recursive' => true, 'folder' => '../../bower_components/jquery/dist',],
+	false
+);
 $TwitterFileServer = new \ModFileservModel(
-	[
-		'folder' => '../../../vendor/twitter/bootstrap/dist',
-		'recursive' => true,
-//		'files' => [],
-	],
+	['recursive' => true, 'folder' => '../../bower_components/bootstrap/dist',],
+	false
+);
+$WebixFileServer = new \ModFileservModel(
+	['recursive' => true, 'folder' => '../../bower_components/webix/codebase',],
 	false
 );
 //echop($TwitterFileServer); die;
@@ -31,9 +35,12 @@ $DaPageRoot = new \ModPageModelRoot(
 		'redirectTo' => '/',
 		'availableLanguages' => array('en',),
 		'Modules' => [
+			'jqueryFiles' => $JqueryFileServer,
 			'twitterFiles' => $TwitterFileServer,
+			'webixFiles' => $WebixFileServer,
 		],
 		'scripts' => [
+			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/jquery.js',],
 			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/js/bootstrap.js',],
 			['place'=>\ModPageModel::JS_HEAD, 'code'=>'var injected_var;'],
 		],

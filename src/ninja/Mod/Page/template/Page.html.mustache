@@ -19,20 +19,20 @@
 	{{#get_ScriptsHead}}
 	{{#src}}<script src="{{{src}}}" ></script>{{/src}}
 	{{/get_ScriptsHead}}
-	{{#getScriptsHead}}
+	{{#get_ScriptsHead}}
 	{{#code}}<script src="{{{code}}}" ></script>{{/code}}
-	{{/getScriptsHead}}
+	{{/get_ScriptsHead}}
 
 </head>
 <body {{#cssId}}id="#{{cssId}}"{{/cssId}} class="n-mod-page{{#cssClasses}}.{{cssClass}}{{/cssClasses}}" >
 
 {{{ get_Contents }}}
 
-{{#scriptsFoot}}
+{{#get_ScriptsFoot}}
 {{#src}}<script src="{{{src}}}" ></script>{{/src}}
-{{/scriptsFoot}}
-{{#scriptsFoot}}
+{{/get_ScriptsFoot}}
+{{#get_ScriptsFoot}}
 {{#code}}<script >{{{code}}}</script>{{/code}}
-{{/scriptsFoot}}
+{{/get_ScriptsFoot}}
 </body>
 </html>

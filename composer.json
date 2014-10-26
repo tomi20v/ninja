@@ -9,6 +9,9 @@
 			"email": "tomi20v@gmail.com"
 		}
 	],
+    "config": {
+        "process-timeout": 1000
+    },
 	"repositories": {
         "_packagist": false,
 		"tomi20v/tomi20v": {
@@ -22,7 +25,8 @@
         "symfony/http-kernel": "2.6.*@dev",
         "symfony/http-foundation": "2.6.*@dev",
         "symfony/finder": "2.6.*@dev",
-        "mustache/mustache": "dev-master"
+        "mustache/mustache": "dev-master",
+        "twbs/bootstrap": "3.2.*@dev"
 	},
 	"autoload": {
 		"classmap": [

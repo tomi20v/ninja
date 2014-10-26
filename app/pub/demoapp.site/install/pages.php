@@ -1,6 +1,6 @@
 <?php
 
-require('../../../vendor/autoload.php');
+require('../../../../vendor/autoload.php');
 
 \Maui::instance('default', 'ninja');
 
@@ -11,6 +11,15 @@ $DB->PageModelCollection->drop();
 //$DaMiddleContent = new \ModeDummyModel('Right dummy', false);
 //$DaRightContent = new \ModeDummyModel('Right dummy', false);
 
+$TwitterFileServer = new \ModFileservModel(
+	[
+		'folder' => '../../../vendor/twitter/bootstrap/dist',
+		'recursive' => true,
+//		'files' => [],
+	],
+	false
+);
+//echop($TwitterFileServer); die;
 $DaPageRoot = new \ModPageModelRoot(
 	[
 		'Parent' => null,
@@ -21,6 +30,9 @@ $DaPageRoot = new \ModPageModelRoot(
 		'redirectType' => \ModPageModelRedirect::REDIRECT_TYPE_PERMANENT,
 		'redirectTo' => '/',
 		'availableLanguages' => array('en',),
+		'Modules' => [
+			'twitterFiles' => $TwitterFileServer,
+		],
 	],
 	false
 );
@@ -51,6 +63,13 @@ $DaPageHome = new \ModPageModel(
 		'Root' => $DaPageRoot,
 		'published' => true,
 		'title' => 'Demo Application home page',
+		'scripts' => [
+			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/js/bootstrap.js',],
+		],
+		'css' => [
+			['href'=>'/css/bootstrap-theme.css'],
+			['href'=>'/css/bootstrap.css'],
+		],
 		'Modules' => [
 			'columns' => $DaColumnsContainer,
 		]

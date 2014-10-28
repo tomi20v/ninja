@@ -107,19 +107,25 @@ abstract class ModAbstractModule {
 	}
 
 	/**
+	 * @return null|ModAbstractModelCollection $subModules
+	 */
+	protected function _getSubModuleModels() {
+		$subModuleModels = null;
+		if ($this->_Model->fieldNotNull('Modules')) {
+			$subModuleModels = $this->_Model->Modules;
+		}
+		return $subModuleModels;
+	}
+
+	/**
 	 * I recursively create submodules and call for their response
 	 * @return \maui\ResponeInterface|null
 	 */
 	protected function _processSubmodules() {
 
-		if ($this->_Model->fieldNotNull('Modules')) {
+		$subModuleModels = $this->_getSubModuleModels();
 
-			/**
-			 * @var \ModAbstractModule[] $subModules
-			 */
-			$subModules = array();
-			$subModuleModels = $this->_Model->Modules;
-			$subModuleModels->append($this->_Model->Root->Modules, false);
+		if (!empty($subModuleModels)) {
 
 			foreach ($subModuleModels as $eachKey => $eachSubModuleModel) {
 				$SubModule = $this->_getSubModuleFrom($eachSubModuleModel);

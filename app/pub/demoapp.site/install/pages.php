@@ -12,17 +12,22 @@ $DB->PageModelCollection->drop();
 //$DaRightContent = new \ModeDummyModel('Right dummy', false);
 
 $JqueryFileServer = new \ModFileservModel(
-	['recursive' => true, 'folder' => '../../bower_components/jquery/dist',],
+	['recursive' => true, 'basePath' => 'assets', 'folder' => '../../bower_components/jquery/dist',],
 	false
 );
 $TwitterFileServer = new \ModFileservModel(
-	['recursive' => true, 'folder' => '../../bower_components/bootstrap/dist',],
+	['recursive' => true, 'basePath' => 'assets', 'folder' => '../../bower_components/bootstrap/dist',],
 	false
 );
 $WebixFileServer = new \ModFileservModel(
-	['recursive' => true, 'folder' => '../../bower_components/webix/codebase',],
+	['recursive' => true, 'basePath' => 'assets', 'folder' => '../../bower_components/webix/codebase',],
 	false
 );
+$assetModules = [
+	'jqueryFiles' => $JqueryFileServer,
+	'twitterFiles' => $TwitterFileServer,
+	'webixFiles' => $WebixFileServer,
+];
 //echop($TwitterFileServer); die;
 $DaPageRoot = new \ModPageModelRoot(
 	[
@@ -34,19 +39,15 @@ $DaPageRoot = new \ModPageModelRoot(
 		'redirectType' => \ModPageModelRedirect::REDIRECT_TYPE_PERMANENT,
 		'redirectTo' => '/',
 		'availableLanguages' => array('en',),
-		'Modules' => [
-			'jqueryFiles' => $JqueryFileServer,
-			'twitterFiles' => $TwitterFileServer,
-			'webixFiles' => $WebixFileServer,
-		],
+		'Modules' => $assetModules,
 		'scripts' => [
-			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/jquery.js',],
-			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/js/bootstrap.js',],
+			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/jquery.js',],
+			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/js/bootstrap.js',],
 			['place'=>\ModPageModel::JS_HEAD, 'code'=>'var injected_var;'],
 		],
 		'css' => [
-			['href'=>'/css/bootstrap.css'],
-			['href'=>'/css/bootstrap-theme.css'],
+			['href'=>'/assets/css/bootstrap.css'],
+			['href'=>'/assets/css/bootstrap-theme.css'],
 		],
 		'cssStyle' => 'padding-top:70px;'
 	],
@@ -108,7 +109,8 @@ $DaPageContact = new \ModPageModel(
 		'Root' => $DaPageRoot,
 		'published' => true,
 		'title' => 'Demo Application contact page',
-	)
+	),
+	false
 );
 //echop($DaPageContact);
 echop($DaPageContact->save(true));
@@ -121,11 +123,35 @@ $adminDaPageRoot = new \ModPageModelRoot(
 		'redirectTo' => '/dashboard',
 		'domainName' => 'admin.demoapp.site',
 		'availableLanguages' => array('en',),
+		'Modules' => $assetModules,
+		'scripts' => [
+			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/jquery.js',],
+			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/js/bootstrap.js',],
+			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/webix.js',],
+		],
+		'css' => [
+			['href'=>'/assets/css/bootstrap.css'],
+			['href'=>'/assets/css/bootstrap-theme.css'],
+			['href'=>'/assets/css/webix.css'],
+		],
 	),
 	false
 );
 $adminDaPageRootResult = $adminDaPageRoot->save(false);
 echop($adminDaPageRootResult);
 //echop($adminDaPageRoot);
+
+$adminDaPageHome = new \ModPageModel(
+	[
+		'Parent' => $adminDaPageRoot,
+		'Root' => $adminDaPageRoot,
+		'published' => true,
+		'title' => 'Demo ADMIN Application home page',
+		'Contents' => ['left' => '<div id="w"></div>',],
+	],
+	false
+);
+$adminDaPageHomeResult = $adminDaPageHome->save(false);
+echop($adminDaPageHomeResult);
 
 die('ALL OK');

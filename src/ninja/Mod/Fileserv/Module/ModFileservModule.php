@@ -23,9 +23,22 @@ class ModFileservModule extends \ModAbstractModule {
 	public function _respond() {
 
 		$requestUri = ltrim($this->_Request->getRequestUri(), '/');
+
 		if (preg_match('/^([^?]+)(\?.*)?$/', $requestUri, $matches)) {
 			$requestUri = $matches[1];
+		}
 
+		$basePath = '';
+
+		if (!empty($this->_Model->basePath)) {
+			$basePath = trim($this->_Model->basePath, '/');
+			if (substr($requestUri, 0, strlen($basePath)+1) === $basePath . '/') {
+				$requestUri = substr($requestUri, strlen($basePath)+1);
+			}
+		}
+
+		if (!$this->_Model->recursive && strpos($requestUri, '/'));
+		else {
 			$files = $this->_Model->files;
 			$foundFname = null;
 			// I have to skip empty array as well
@@ -61,6 +74,8 @@ class ModFileservModule extends \ModAbstractModule {
 
 			}
 		}
+
+		finish:
 
 		return parent::_respond();
 

@@ -7,7 +7,8 @@ error_reporting(E_ALL);
 
 define('APP_ROOT', dirname(__FILE__));
 
-require(APP_ROOT . '/../../../vendor/autoload.php');
+$Autoloader = require(APP_ROOT . '/../../../vendor/autoload.php');
+\Finder::setAutoLoader($Autoloader);
 
 $t1 = microtime(true);
 $Maui = \Maui::instance(\Maui::ENV_DEFAULT, 'ninja');

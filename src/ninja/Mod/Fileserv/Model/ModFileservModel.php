@@ -7,7 +7,10 @@ class ModFileservModel extends \ModAbstractModel {
 
 	protected static $_schema = [
 		'folder' => [
-//			'folderReadable',
+			'folderReadable',
+		],
+		'basePath' => [
+			'toString',
 		],
 		'recursive' => [
 			'toBool',

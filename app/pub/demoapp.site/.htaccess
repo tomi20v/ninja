@@ -23,6 +23,11 @@
 #  </IfModule>
 #</FilesMatch>
 
+<FilesMatch "(README\.md)$">
+    Order deny,allow
+    Deny from all
+</FilesMatch>
+
 ##
 # Allow access from all domains for webfonts
 # @see https://github.com/h5bp/html5-boilerplate
@@ -266,7 +271,7 @@ FileETag None
   #
   # Note that not all environments support mod_rewrite and mod_cache.
   ##
-  RewriteCond %{REQUEST_FILENAME} !\.(htm|php|js|css|htc|png|gif|jpe?g|ico|xml|csv|txt|swf|flv|mp4|webm|ogv|mp3|ogg|oga|eot|otf|tt[cf]|woff|svg|svgz|pdf|gz)$
+#  RewriteCond %{REQUEST_FILENAME} !\.(htm|php|js|css|htc|png|gif|jpe?g|ico|xml|csv|txt|swf|flv|mp4|webm|ogv|mp3|ogg|oga|eot|otf|tt[cf]|woff|svg|svgz|pdf|gz)$
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteRule .* index.php [L]
 

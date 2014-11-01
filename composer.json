@@ -24,7 +24,11 @@
 		"tomi20v/maui": "*",
 		"symfony/http-kernel": "2.6.*@dev",
 		"symfony/http-foundation": "2.6.*@dev",
-		"mustache/mustache": "dev-master"
+		"mustache/mustache": "dev-master",
+		"fxp/composer-asset-plugin": "~1.0",
+        "bower-asset/jquery": "dev-master",
+        "bower-asset/bootstrap": "dev-master",
+        "bower-asset/requirejs": "dev-master"
 	},
 	"autoload": {
 		"classmap": [
@@ -41,11 +45,5 @@
 		"src/scripts/mod.php"
 	],
 	"scripts": {
-		"post-install-cmd": [
-			"bower install"
-		],
-		"post-update-cmd": [
-			"bower install"
-		]
 	}
 }

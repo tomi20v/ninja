@@ -8,7 +8,7 @@ class ModPageModel extends \ModAbstractModel {
 	const JS_FOOT = 'FOOT';
 
 	protected static $_schema = [
-		'@@extends' => 'ModAbstractModelCss',
+		'@@extends' => 'ModBaseCssModel',
 		// override parent to set a specific type
 		'Parent' => [
 			'class' => 'ModPageModel',
@@ -59,7 +59,15 @@ class ModPageModel extends \ModAbstractModel {
 
 		$PageModel = new \ModPageModel();
 		$PageModel->Root = $PageModelRoot;
+		// @todo I should set slug, domain, etc here maybeeeee?
 		$PageModel->load();
+
+		if (!$PageModel->fieldIsSet('_id', \ModelManager::DATA_ORIGINAL, true)) {
+			// now what?
+			echop($PageModel);
+			echop($PageModelRoot);
+			die('FU');
+		}
 
 		return $PageModel;
 	}

@@ -12,23 +12,28 @@ $DB->PageModelCollection->drop();
 //$DaRightContent = new \ModeDummyModel('Right dummy', false);
 
 $JqueryFileServer = new \ModFileservModel(
-	['recursive' => true, 'basePath' => 'assets', 'folder' => '../../bower_components/jquery/dist',],
+	['recursive' => true, 'basePath' => 'assets/js', 'folder' => '../../../vendor/bower-asset/jquery/src',],
 	false
 );
-$TwitterFileServer = new \ModFileservModel(
-	['recursive' => true, 'basePath' => 'assets', 'folder' => '../../bower_components/bootstrap/dist',],
+$JqueryFileServerSizzle = new \ModFileservModel(
+	['recursive' => true, 'basePath' => 'assets/js', 'folder' => '../../../vendor/bower-asset/jquery/external/sizzle/dist',],
 	false
 );
-$WebixFileServer = new \ModFileservModel(
-	['recursive' => true, 'basePath' => 'assets', 'folder' => '../../bower_components/webix/codebase',],
+$BootstrapFileServerJs = new \ModFileservModel(
+	['recursive' => true, 'basePath' => 'assets/js', 'folder' => '../../../vendor/bower-asset/bootstrap/dist/js',],
+	false
+);
+$BootstrapFileServerCss = new \ModFileservModel(
+	['recursive' => true, 'basePath' => 'assets/css', 'folder' => '../../../vendor/bower-asset/bootstrap/dist/css',],
 	false
 );
 $assetModules = [
 	'jqueryFiles' => $JqueryFileServer,
-	'twitterFiles' => $TwitterFileServer,
-	'webixFiles' => $WebixFileServer,
+	'jqueryFilesSizzle' => $JqueryFileServerSizzle,
+	'bootstrapFilesJs' => $BootstrapFileServerJs,
+	'bootstrapFilesCss' => $BootstrapFileServerCss,
 ];
-//echop($TwitterFileServer); die;
+//echop($bootstrapFileserver); die;
 $DaPageRoot = new \ModPageModelRoot(
 	[
 		'Parent' => null,
@@ -97,7 +102,8 @@ $DaPageHome = new \ModPageModel(
 //			'columns' => $DaRowContainer,
 			'columns' => $DaColumnsRow,
 		]
-	]
+	],
+	false
 );
 //echop($DaPageHome->flatData()); die;
 //echop($DaPageHome); die();
@@ -116,6 +122,17 @@ $DaPageContact = new \ModPageModel(
 echop($DaPageContact->save(true));
 //echop($DaPageContact);
 
+$RequireJsFileServer = new \ModFileservModel(
+	['recursive' => true, 'basePath' => 'assets/js', 'folder' => '../../../vendor/bower-asset/requirejs',],
+	false
+);
+$JqWidgetsFileServer = new \ModFileservModel(
+	['recursive' => true, 'basePath' => 'assets/js/jqwidgets', 'folder' => '../../vendor/jqwidgets',],
+	false
+);
+$assetModules[] = $RequireJsFileServer;
+$assetModules[] = $JqWidgetsFileServer;
+
 $adminDaPageRoot = new \ModPageModelRoot(
 	array(
 		'Parent' => null,
@@ -125,19 +142,18 @@ $adminDaPageRoot = new \ModPageModelRoot(
 		'availableLanguages' => array('en',),
 		'Modules' => $assetModules,
 		'scripts' => [
-			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/jquery.js',],
-			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/js/bootstrap.js',],
-			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/webix.js',],
+//			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/requirejs/require.js',],
+//			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/js/jquery.js',],
+//			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/bootstrap/js/bootstrap.js',],
 		],
 		'css' => [
 			['href'=>'/assets/css/bootstrap.css'],
 			['href'=>'/assets/css/bootstrap-theme.css'],
-			['href'=>'/assets/css/webix.css'],
 		],
 	),
 	false
 );
-$adminDaPageRootResult = $adminDaPageRoot->save(false);
+$adminDaPageRootResult = $adminDaPageRoot->save(true);
 echop($adminDaPageRootResult);
 //echop($adminDaPageRoot);
 
@@ -147,11 +163,19 @@ $adminDaPageHome = new \ModPageModel(
 		'Root' => $adminDaPageRoot,
 		'published' => true,
 		'title' => 'Demo ADMIN Application home page',
-		'Contents' => ['left' => '<div id="w"></div>',],
+		'Modules' => [
+			'right' => new \ModBaseIncludeModel(
+				[ 'template' => 'asd.html' ],
+				false),
+		],
+		'Contents' => [
+			'left' => '<div id="jqxWidget"><div id="jqxTree"></div><div id="jqxA"></div></div>',
+		],
 	],
 	false
 );
-$adminDaPageHomeResult = $adminDaPageHome->save(false);
+//echop($adminDaPageHome); die;
+$adminDaPageHomeResult = $adminDaPageHome->save(true);
 echop($adminDaPageHomeResult);
 
 die('ALL OK');

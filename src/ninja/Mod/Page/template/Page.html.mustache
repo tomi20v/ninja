@@ -16,6 +16,12 @@
 	{{#onlyIf}}<!-- IF {{onlyIf}} -->{{/onlyIf}}
 	{{/get_withRoot_css}}
 
+	<script type="text/javascript">
+		var noGlobal = false;
+	</script>
+
+	<script data-main="assets/js/main" src="assets/js/require.js"></script>
+
 	{{#get_ScriptsHead}}
 	{{#src}}<script src="{{{src}}}" ></script>{{/src}}
 	{{/get_ScriptsHead}}

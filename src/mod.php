@@ -104,9 +104,9 @@ EOS;
 			$modPath,
 			$modPath . '/template',
 		];
-		foreach ($classes as $eachClass) {
-			$foldersToCreate[] = $modPath . '/' . $eachClass;
-		}
+//		foreach ($classes as $eachClass) {
+//			$foldersToCreate[] = $modPath . '/' . $eachClass;
+//		}
 
 		foreach ($foldersToCreate as $eachFolderToCreate) {
 			echo 'creating folder: ' . $eachFolderToCreate . ' ... ';
@@ -135,7 +135,9 @@ EOS
 			,
 			'Model' => <<<EOS
 
-	protected static \$_schema = [];
+	protected static \$_schema = [
+		"@@extends" => "",
+	];
 
 EOS
 			,
@@ -145,7 +147,7 @@ EOS
 		foreach ($classes as $eachKey=>$eachClass) {
 			$classname = 'Mod' . $modName . $eachClass;
 			$basename = '\ModAbstract' . $eachClass;
-			$fname = $eachClass . '/' . $classname . '.php';
+			$fname = $classname . '.php';
 			$relativeFname = \Finder::joinPath($modBasePath, $modName, $fname);
 			$fullFname = $modPath . '/' . $fname;
 

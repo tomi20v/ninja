@@ -2,7 +2,7 @@
 
 namespace ninja;
 
-abstract class ModAbstractModelCss extends \ModAbstractModel {
+class ModBaseCssModel extends \ModAbstractModel {
 
 	protected static $_schema = [
 		'@@extends' => 'ModAbstractModel',

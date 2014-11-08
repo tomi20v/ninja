@@ -2,12 +2,12 @@
 
 namespace ninja;
 
-class ModPageModelRoot extends \ModPageModelRedirect {
+class ModPageRootModel extends \ModPageRedirectModel {
 
 	protected static $_schema = array(
 		'@@extends' => array(
 			'ModPageModel',
-			'ModPageModelRedirect',
+			'ModPageRedirectModel',
 		),
 		'domainName' => array(
 			'toString',

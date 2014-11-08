@@ -51,11 +51,11 @@ class ModPageModel extends \ModAbstractModel {
 
 	/**
 	 * @param \Request $Request
-	 * @return \ModPageModelRoot
+	 * @return \ModPageRootModel
 	 */
 	public static function fromRequest($Request) {
 
-		$PageModelRoot = \ModPageModelRoot::fromRequest($Request);
+		$PageModelRoot = \ModPageRootModel::fromRequest($Request);
 
 		$PageModel = new \ModPageModel();
 		$PageModel->Root = $PageModelRoot;

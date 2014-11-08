@@ -15,11 +15,11 @@ class Finder extends \ninja\Finder {}
 class Request extends \ninja\Request {}
 class View extends \ninja\View {}
 class ModUserController extends \ninja\ModUserController {}
-class ModStatusModel extends \ninja\ModStatusModel {}
-class ModUserModuleStatus extends \ninja\ModUserModuleStatus {}
+class ModUserStatusModel extends \ninja\ModUserStatusModel {}
+class ModUserStatusModule extends \ninja\ModUserStatusModule {}
 class ModPageController extends \ninja\ModPageController {}
-class ModPageModelRoot extends \ninja\ModPageModelRoot {}
-class ModPageModelRedirect extends \ninja\ModPageModelRedirect {}
+class ModPageRootModel extends \ninja\ModPageRootModel {}
+class ModPageRedirectModel extends \ninja\ModPageRedirectModel {}
 class ModPageModel extends \ninja\ModPageModel {}
 class ModPageModule extends \ninja\ModPageModule {}
 class ModPageView extends \ninja\ModPageView {}

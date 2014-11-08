@@ -2,8 +2,4 @@
 
 namespace ninja;
 
-class ModBaseIncludeView extends \ModBaseView {
-
-
-
-}
+class ModBaseIncludeView extends \ModBaseView {}

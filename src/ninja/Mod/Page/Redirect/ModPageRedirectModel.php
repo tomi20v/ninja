@@ -2,7 +2,7 @@
 
 namespace ninja;
 
-class ModPageModelRedirect extends \ModPageModel {
+class ModPageRedirectModel extends \ModPageModel {
 
 	const REDIRECT_TYPE_PERMANENT = '301';
 	const REDIRECT_TYPE_FOUND = '302';

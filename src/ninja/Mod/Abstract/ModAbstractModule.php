@@ -7,7 +7,7 @@ abstract class ModAbstractModule {
 	/**
 	 * pattern of module names, used to find mod name and module name
 	 */
-	const MODULE_NAME_PATTERN = '/^Mod([A-Z][^A-Z]+)(Model|Module)(.+)?$/';
+	const MODULE_NAME_PATTERN = '/^Mod([A-Z].*)(Controller|Model|Module|View)(.+)?$/';
 
 	/**
 	 * @var \ModAbstractModule
@@ -176,6 +176,11 @@ abstract class ModAbstractModule {
 
 	}
 
+	/**
+	 * I return a mod's name, eg. 'Page' for 'ModPageModule'
+	 * @param $classname
+	 * @return string
+	 */
 	public static function modNameByClassname($classname) {
 
 		$modName = $classname;
@@ -192,6 +197,10 @@ abstract class ModAbstractModule {
 
 	}
 
+	/**
+	 * I return my modname, eg. 'Page' for 'ModPageModule'
+	 * @return string
+	 */
 	public function getModName() {
 
 		static $modName;
@@ -299,6 +308,9 @@ abstract class ModAbstractModule {
 		$viewClassname = substr(get_class($this), 0, -6) . 'View';
 		if ($pos = strrpos($viewClassname, '\\')) {
 			$viewClassname = substr($viewClassname, $pos+1);
+		}
+		if (!class_exists($viewClassname)) {
+			$viewClassname = 'ModBaseView';
 		}
 		return new $viewClassname($this, $this->_Model);
 	}

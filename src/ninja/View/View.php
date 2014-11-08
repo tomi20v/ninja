@@ -39,16 +39,16 @@ class View {
 	 * @param \Model $Model
 	 * @return string
 	 */
-	protected function _render($template, $Model) {
+	protected function _render($templateFileContents, $Model) {
 
 		$M = static::_getEngine();
 
 		try {
 			$Filter = new \Filter($this, $Model);
-			$content = $M->render(file_get_contents($template), $Filter);
+			$content = $M->render($templateFileContents, $Filter);
 		}
 		catch (\Exception $e) {
-			$content = '';
+			$content = 'FUs';
 		}
 
 		return $content;
@@ -61,13 +61,13 @@ class View {
 	 */
 	public function render() {
 
-		$template = $this->findTemplate();
+		$templateFileContents = $this->loadTemplate();
 
 		$content = '';
 
-		if (!is_null($template)) {
+		if (!is_null($templateFileContents)) {
 			try {
-				$content = $this->_render($template, $this->_Model);
+				$content = $this->_render($templateFileContents, $this->_Model);
 			}
 			catch (\Exception $e) {}
 		}
@@ -99,11 +99,13 @@ class View {
 	}
 
 	/**
-	 * I return a full path to a usable template. defaulting to system templates if not found
+	 * I return the contents of the actual templat. load order is:
+	 * 		APP_ROOT / <NameOfMod> / temp
 	 * @param string $template use this template name instead of what's saved in model and/or guessed by module class
 	 * @return null|string
+	 * @todo add theme support with defaulting
 	 */
-	public function findTemplate() {
+	public function loadTemplate() {
 
 		$templatePath = $this->_template;
 
@@ -112,15 +114,31 @@ class View {
 			$templateFolders = array();
 
 			if (strlen($tmp = $this->_Model->templatePath)) {
-				$templateFolders[] = \Finder::joinPath(APP_ROOT, $tmp);
+				$templateFolders[] = \Finder::joinPath(APP_ROOT, 'default', $tmp);
 			}
 			// bubble up for template path
 			elseif (strlen($tmp = $this->_Model->getBubbler()->templatePath)) {
-				$templateFolders[] = \Finder::joinPath(APP_ROOT, $tmp);
+				$templateFolders[] = \Finder::joinPath(APP_ROOT, 'default', $tmp);
 			}
 			// I should add the root page model's template path if exists
-			$templateFolders[] = NINJA_ROOT . '/src/ninja/Mod/' . $this->_Module->getModName() . '/template';
+			$templateFolders[] = \Finder::joinPath(
+				NINJA_ROOT,
+				'src/ninja/Mod',
+				\Finder::classToPath($this->_Module->getModName()),
+				'template'
+			);
 
+			// @todo add support for a theme folder here
+
+			// app templates
+			// @todo this shall be based on some templateFolder property in PageRoot object
+			$templateFolders[] = \Finder::joinPath(
+				APP_ROOT,
+				'template',
+				\Finder::classToPath($this->_Module->getModName())
+			);
+
+			// clean up the templatefolders
 			$templateFolders = array_unique($templateFolders);
 
 			$templateNames = array();
@@ -140,14 +158,11 @@ class View {
 
 			$extension = '.html.mustache';
 
-			// for debug
-			//echop($templateFolders); echop($templateNames); die;
-
 			$templatePath = \Finder::fileByFolders($templateFolders, $templateNames, $extension);
 
 		}
 
-		return $templatePath;
+		return @file_get_contents($templatePath);
 
 	}
 
@@ -161,6 +176,11 @@ class View {
 			]);
 		}
 		return static::$_Engine;
+	}
+
+	public function setTemplate($template) {
+		$this->_template = $template;
+		return $this;
 	}
 
 }

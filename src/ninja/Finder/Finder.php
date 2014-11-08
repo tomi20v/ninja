@@ -77,7 +77,9 @@ class Finder {
 			}
 		}
 
-		return ($isAbsolutePath ? '/' : '') . join('/', $args);
+		$ret = ($isAbsolutePath ? '/' : '') . join('/', $args);
+
+		return $ret;
 
 	}
 
@@ -92,6 +94,12 @@ class Finder {
 	public static function fileByFolders($folders, $fileNames, $extension) {
 
 		foreach ($folders as $eachFolder) {
+
+			$eachFolder = realpath($eachFolder);
+			if ($eachFolder === false) {
+				continue;
+			}
+
 			foreach ($fileNames as $eachTemplateName) {
 
 				$fullPath = $eachFolder . '/' . $eachTemplateName . $extension;
@@ -105,7 +113,7 @@ class Finder {
 			}
 		}
 
-		//echop('template not found: ' . echon($templateNames) . ' in: ' . echon($templateFolders));
+//		echop('template not found: ' . echon($fileNames) . ' in: ' . echon($folders));
 
 		return null;
 
@@ -190,6 +198,11 @@ class Finder {
 		return $ret;
 	}
 
+	/**
+	 * I keep only unique entries in an array. Comparison is recursive but not done recursively.
+	 * @param $arr
+	 * @return array
+	 */
 	public static function arrayUnique($arr) {
 		$serialized = array();
 		foreach ($arr as $eachKey=>$eachVal) {

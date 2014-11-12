@@ -75,10 +75,6 @@ class Ninja {
 				);
 			}
 		}
-		catch (\HttpException $e) {
-			// @todo create response from HttpException
-			echop($e); die('die httpexception');
-		}
 		catch (\Exception $e) {
 			// @todo create default 501 response
 			echop($e); die('die exception');

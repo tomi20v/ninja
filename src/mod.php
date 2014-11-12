@@ -11,6 +11,8 @@ die('ALL DONE' . "\n");
 
 class Mod {
 
+	const MODE_BASE_PATH = 'src/ninja/Mod';
+
 	protected $_classTemplate = <<<EOS
 <?php
 
@@ -29,10 +31,6 @@ EOS;
 	protected $_switchDryRun = false;
 
 	protected $_switchDoUpdate = false;
-
-	protected function _getModBasePath() {
-		return 'src/ninja/Mod';
-	}
 
 	public function run() {
 		global $argv;
@@ -85,9 +83,11 @@ EOS;
 			return static::help();
 		}
 
-		$modBasePath = static::_getModBasePath();
-
-		$modPath = NINJA_ROOT . '/' . $modBasePath . '/' . $modName;
+		$modPath = \Finder::joinPath(
+			NINJA_ROOT,
+			static::MODE_BASE_PATH,
+			\Finder::classToPath($modName)
+		);
 
 		if (!$this->_switchDoUpdate && is_dir($modPath)) {
 			throw new \Exception('mod folder ' . $modName . ' already exists. You might want to use -u');
@@ -104,9 +104,6 @@ EOS;
 			$modPath,
 			$modPath . '/template',
 		];
-//		foreach ($classes as $eachClass) {
-//			$foldersToCreate[] = $modPath . '/' . $eachClass;
-//		}
 
 		foreach ($foldersToCreate as $eachFolderToCreate) {
 			echo 'creating folder: ' . $eachFolderToCreate . ' ... ';
@@ -148,7 +145,7 @@ EOS
 			$classname = 'Mod' . $modName . $eachClass;
 			$basename = '\ModAbstract' . $eachClass;
 			$fname = $classname . '.php';
-			$relativeFname = \Finder::joinPath($modBasePath, $modName, $fname);
+			$relativeFname = \Finder::joinPath(static::MODE_BASE_PATH, $modName, $fname);
 			$fullFname = $modPath . '/' . $fname;
 
 			echo 'creating file: ' . $relativeFname . ' ... ';

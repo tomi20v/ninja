@@ -276,25 +276,36 @@ abstract class ModAbstractModule {
 	 */
 	final public function respond() {
 
-		$this->_beforeRespond();
+		try {
 
-		$Response = $this->_processSubmodules();
-		if ($Response instanceof \ninja\Response) {
-			goto finish;
+			$this->_beforeRespond();
+
+			$Response = $this->_processSubmodules();
+			if ($Response instanceof \ninja\Response) {
+				goto finish;
+			}
+
+			$Response = $this->_respond();
+			if ($Response instanceof \ninja\Response) {
+				goto finish;
+			}
+
+			// default response
+			$this->_View = $this->_getView();
+			$Response = $this->_View instanceof \View
+				? $this->_View->render()
+				: null;
+
+			finish:
+
 		}
-
-		$Response = $this->_respond();
-		if ($Response instanceof \ninja\Response) {
-			goto finish;
+		catch (\HttpException $e) {
+			// maybe I could fetch some error document here, if exists
+			$Response = new \Response(
+				$e->getMessage(),
+				$e->getStatusCode()
+			);
 		}
-
-		// default response
-		$this->_View = $this->_getView();
-		$Response = $this->_View instanceof \View
-			? $this->_View->render()
-			: null;
-
-		finish:
 
 		return $Response;
 

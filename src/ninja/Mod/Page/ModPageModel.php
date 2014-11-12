@@ -74,13 +74,10 @@ class ModPageModel extends \ModAbstractModel {
 		$PageModel->Root = $PageModelRoot;
 
 		for ($i=$uriPartsCnt; $i>=0; $i--) {
-			// @todo I should set slug, domain, etc here maybeeeee?
 			$slug = implode('/', $uriParts);
-//			echop('try: ' . $slug);
 			$PageModel->slug = $slug;
 			$PageModel->load();
 			if ($PageModel->isLoaded()) {
-//				echop('FOUND!');
 				$Request->shiftUriParts($i);
 				break;
 			}
@@ -88,14 +85,7 @@ class ModPageModel extends \ModAbstractModel {
 		}
 
 		if (!$PageModel->isLoaded()) {
-			// now what?
-//			echop('NOTFOUNDD');
-//			die('FU');
-			// the request went to root page: it will redirect to index page if set
-//			if ($uriPartsCnt !== 0) {
-				throw new \HttpException(404);
-//			}
-//			return $PageModelRoot;
+			throw new \HttpException(404);
 		}
 
 		return $PageModel;

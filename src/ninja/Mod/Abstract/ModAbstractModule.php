@@ -301,8 +301,12 @@ abstract class ModAbstractModule {
 		}
 		catch (\HttpException $e) {
 			// maybe I could fetch some error document here, if exists
+			$message = $e->getMessage();
+			if (empty($message)) {
+				$message = 'Ooops: ' . $e->getStatusCode() . '!';
+			}
 			$Response = new \Response(
-				$e->getMessage(),
+				$message,
 				$e->getStatusCode()
 			);
 		}

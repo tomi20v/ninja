@@ -76,7 +76,7 @@ class Ninja {
 			}
 		}
 		catch (\Exception $e) {
-			// @todo create default 501 response
+			// @todo do something more meaningful with this?
 			echop($e); die('die exception');
 		}
 

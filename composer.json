@@ -27,7 +27,7 @@
 		"mustache/mustache": "dev-master",
 		"fxp/composer-asset-plugin": "~1.0",
         "bower-asset/jquery": "dev-master",
-        "bower-asset/bootstrap": "dev-master",
+        "bower-asset/bootstrap-css": "dev-master",
         "bower-asset/requirejs": "dev-master"
 	},
 	"autoload": {

@@ -5,9 +5,9 @@ $t0 = microtime(true);
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-define('APP_ROOT', dirname(__FILE__));
+define('PUB_ROOT', dirname(__FILE__));
 
-$Autoloader = require(APP_ROOT . '/../../../vendor/autoload.php');
+$Autoloader = require(PUB_ROOT . '/../../../vendor/autoload.php');
 \Finder::setAutoLoader($Autoloader);
 
 $t1 = microtime(true);

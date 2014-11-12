@@ -19,11 +19,12 @@ class FinderPartials implements \Mustache_Loader {
 	 * @return string Mustache Template source
 	 */
 	public function load($name) {
-		preg_match('/^Mod([A-Z][a-z0-9]+)([A-Z][a-zA-Z0-9]+)?(\-(.+))?$/', $name, $matches);
+		preg_match('/^Mod([A-Z][a-zA-Z0-9]+)?(\-(.+))?$/', $name, $matches);
 		$fname = \Finder::joinPath(
 			NINJA_ROOT,
-			'src/ninja/Mod', $matches[1],
-			'template', \Finder::classToPath($matches[2]),
+			'src/ninja/Mod',
+			\Finder::classToPath($matches[1]),
+			'template',
 			$name . '.html.mustache'
 		);
 		return file_get_contents($fname);

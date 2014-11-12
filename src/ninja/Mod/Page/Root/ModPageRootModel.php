@@ -31,10 +31,31 @@ class ModPageRootModel extends \ModPageRedirectModel {
 	 */
 	public static function fromRequest($Request) {
 
-		$ModPageModelRoot = static::finder()
+		$uriParts = $Request->getRemainingUriParts();
+		$uriPartsCnt = count($uriParts);
+
+		// I'll reuse this object
+		$Finder = static::finder()
 			->equals('parent', null)
-			->regex('domainName', '/(\.)?' . $Request->getHttpHost() . '/')
-			->findOne();
+			->regex('domainName', '/(\.)?' . $Request->getHttpHost() . '/');
+
+		$ModPageModelRoot = null;
+		for ($i=$uriPartsCnt; $i>=0; $i--) {
+			$slug = implode('/', $uriParts);
+			$ModPageModelRoot = $Finder
+				->clear('slug')
+				->equals('slug', $slug)
+				->findOne();
+			if ($ModPageModelRoot->isLoaded()) {
+				$Request->shiftUriParts($i);
+				break;
+			}
+			array_pop($uriParts);
+		}
+
+		if (is_null($ModPageModelRoot) || !$ModPageModelRoot->isLoaded()) {
+			throw new \HttpException(404);
+		}
 
 		return $ModPageModelRoot;
 

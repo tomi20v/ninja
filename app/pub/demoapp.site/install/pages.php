@@ -8,39 +8,39 @@ $DB = \Maui::instance()->dbDb();
 $DB->PageModelCollection->drop();
 
 $JqueryFileServer = new \ModFileservModel(
-	['recursive' => true, 'basePath' => 'assets/js', 'folder' => '../vendor/bower-asset/jquery/src',],
-	false
-);
-$JqueryFileServerSizzle = new \ModFileservModel(
-	['recursive' => true, 'basePath' => 'assets/js', 'folder' => '../vendor/bower-asset/jquery/external/sizzle/dist',],
+//	['recursive' => true, 'basePath' => 'assets/js', 'folder' => '../vendor/bower-asset/jquery/src',],
+//	['recursive' => true, 'basePath' => 'assets/js', 'folder' => '../vendor/bower-asset/jquery/dist',],
+	['recursive' => true, 'basePath' => 'js', 'folder' => '../../vendor/bower-asset/jquery/dist',],
 	false
 );
 $BootstrapFileServerJs = new \ModFileservModel(
-	['recursive' => true, 'basePath' => 'assets/js', 'folder' => '../vendor/bower-asset/bootstrap/dist/js',],
+//	['recursive' => true, 'basePath' => 'assets/js', 'folder' => '../vendor/bower-asset/bootstrap-css/js',],
+	['recursive' => true, 'basePath' => 'js', 'folder' => '../../vendor/bower-asset/bootstrap-css/js',],
 	false
 );
 $BootstrapFileServerCss = new \ModFileservModel(
-	['recursive' => true, 'basePath' => 'assets/css', 'folder' => '../vendor/bower-asset/bootstrap/dist/css',],
+//	['recursive' => true, 'basePath' => 'assets/css', 'folder' => '../vendor/bower-asset/bootstrap-css/css',],
+	['recursive' => true, 'basePath' => 'css', 'folder' => '../../vendor/bower-asset/bootstrap-css/css',],
 	false
 );
 $assetModules = [
 	'jqueryFiles' => $JqueryFileServer,
-	'jqueryFilesSizzle' => $JqueryFileServerSizzle,
 	'bootstrapFilesJs' => $BootstrapFileServerJs,
 	'bootstrapFilesCss' => $BootstrapFileServerCss,
 ];
 
-$DaPageRoot = new \ModPageRootModel(
-	[
+$DaPageRoot = new \ModPageRootModel([
 		'Parent' => null,
 		'Root' => null,
+		// @todo validation shall find that slug is empty
+		'slug' => '',
 		'published' => true,
 		'doctype' => 'html',
 		'domainName' => '.demoapp.site',
 		'redirectType' => \ModPageRedirectModel::REDIRECT_TYPE_PERMANENT,
 		'redirectTo' => '/',
 		'availableLanguages' => array('en',),
-		'Modules' => $assetModules,
+//		'Modules' => $assetModules,
 		'scripts' => [
 			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/jquery.js',],
 			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/js/bootstrap.js',],
@@ -51,12 +51,9 @@ $DaPageRoot = new \ModPageRootModel(
 			['href'=>'/assets/css/bootstrap-theme.css'],
 		],
 		'cssStyle' => 'padding-top:60px;'
-	],
-	false
-);
+	], false);
 
-$DaColumnsRow = new \ModContainerModel(
-	[
+$DaColumnsRow = new \ModContainerModel([
 		'cssClasses' => [
 			'row',
 		],
@@ -65,9 +62,7 @@ $DaColumnsRow = new \ModContainerModel(
 			'middle' => '<div class="col-md-6">Middle dummy</div>',
 			'right' => '<div class="col-md-3">Right dummy</div>',
 		],
-	],
-	false
-);
+	], false);
 //$DaRowContainer = new \ModContainerModel(
 //	[
 //		'cssClasses' => ['container-fluid'],
@@ -78,10 +73,21 @@ $DaColumnsRow = new \ModContainerModel(
 //	false
 //);
 
-$DaPageHome = new \ModPageModel(
-	[
+// @todo this shall be a redirect or direct 404 page so if no files found it will still do something meaningful
+$DaAssetPage = new \ModPageModel([
+	'Parent' => $DaPageRoot,
+	'Root' => $DaPageRoot,
+	'slug' => 'assets',
+	'published' => true,
+	'domainName' => '.demoapp.site',
+	'Modules' => $assetModules,
+], false);
+echop($DaAssetPage->save());
+
+$DaPageHome = new \ModPageModel([
 		'Parent' => $DaPageRoot,
 		'Root' => $DaPageRoot,
+		'slug' => 'index.html',
 		'published' => true,
 		'title' => 'Demo Application home page',
 		'Modules' => [
@@ -89,37 +95,37 @@ $DaPageHome = new \ModPageModel(
 //			'columns' => $DaRowContainer,
 			'columns' => $DaColumnsRow,
 		]
-	],
-	false
-);
+	], false);
 echop($DaPageHome->save(true));
 
-$DaPageContact = new \ModPageModel(
-	array(
+$DaPageContact = new \ModPageModel([
 		'Parent' => $DaPageHome,
 		'Root' => $DaPageRoot,
+		'slug' => 'about/contact.html',
 		'published' => true,
 		'title' => 'Demo Application contact page',
-	),
-	false
-);
+	], false);
 echop($DaPageContact->save(true));
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//  A D M I N
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 $RequireJsFileServer = new \ModFileservModel(
 	['recursive' => true, 'basePath' => 'assets/js', 'folder' => '../vendor/bower-asset/requirejs',],
 	false
 );
 $JqWidgetsFileServer = new \ModFileservModel(
-//	['recursive' => true, 'basePath' => 'assets/js/jqwidgets', 'folder' => '/jqwidgets',],
 	['recursive' => true, 'basePath' => 'assets/js/jqwidgets', 'folder' => 'vendor/jqwidgets',],
 	false
 );
 $assetModules[] = $RequireJsFileServer;
 $assetModules[] = $JqWidgetsFileServer;
 
-$adminDaPageRoot = new \ModPageRootModel(
-	array(
+$adminDaPageRoot = new \ModPageRootModel([
 		'Parent' => null,
+		'slug' => 'admin',
+		'published' => true,
 		'redirectType' => \ModPageRedirectModel::REDIRECT_TYPE_PERMANENT,
 		'redirectTo' => '/dashboard',
 		'domainName' => 'admin.demoapp.site',
@@ -135,16 +141,14 @@ $adminDaPageRoot = new \ModPageRootModel(
 			['href'=>'/assets/css/bootstrap-theme.css'],
 		],
 		'cssStyle' => 'padding-top:60px;'
-	),
-	false
-);
+	], false);
 $adminDaPageRootResult = $adminDaPageRoot->save(true);
 echop($adminDaPageRootResult);
 
-$adminDaPageHome = new \ModPageModel(
-	[
+$adminDaPageHome = new \ModPageModel([
 		'Parent' => $adminDaPageRoot,
 		'Root' => $adminDaPageRoot,
+		'slug' => 'index.html',
 		'published' => true,
 		'title' => 'Demo ADMIN Application home page',
 		'Modules' => [
@@ -155,10 +159,11 @@ $adminDaPageHome = new \ModPageModel(
 		'Contents' => [
 //			'left' => '<div id="jqxWidget"><div id="jqxTree"></div><div id="jqxA"></div></div>',
 		],
-	],
-	false
-);
+	], false);
 $adminDaPageHomeResult = $adminDaPageHome->save(true);
 echop($adminDaPageHomeResult);
+
+//echop(\SchemaManager::getSchema('ModPageModel'));
+//echop($adminDaPageHome);
 
 die('ALL OK');

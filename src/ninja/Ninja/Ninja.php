@@ -53,7 +53,7 @@ class Ninja {
 	}
 
 	/**
-	 *
+	 * I, as a frontend controller, run the Ninja app
 	 */
 	public function run() {
 

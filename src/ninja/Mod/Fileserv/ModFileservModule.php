@@ -22,11 +22,7 @@ class ModFileservModule extends \ModAbstractModule {
 	 */
 	public function _respond() {
 
-		$requestUri = ltrim($this->_Request->getRequestUri(), '/');
-
-		if (preg_match('/^([^?]+)(\?.*)?$/', $requestUri, $matches)) {
-			$requestUri = $matches[1];
-		}
+		$requestUri = implode('/', $this->_Request->getRemainingUriParts());
 
 		$basePath = '';
 

@@ -18,6 +18,10 @@ class ModPageModel extends \ModAbstractModel {
 			'class' => 'ModPageModel',
 			'reference' => \SchemaManager::REF_REFERENCE,
 		],
+		'slug' => [
+			'toString',
+			'required',
+		],
 		'doctype' => [
 			'default' => 'html'
 		],
@@ -57,16 +61,41 @@ class ModPageModel extends \ModAbstractModel {
 
 		$PageModelRoot = \ModPageRootModel::fromRequest($Request);
 
+		// $uriParts shall contain uri parts not in root slug (basepath)
+		$uriParts = $Request->getRemainingUriParts();
+		$rootUriParts = explode('/', $PageModelRoot->slug);
+		for ($i=0; isset($uriParts[$i]) && isset($rootUriParts[$i]) && $uriParts[$i] === $rootUriParts[$i]; $i++) {
+			unset($uriParts[$i]);
+		}
+		$uriParts = array_merge($uriParts);
+		$uriPartsCnt = count($uriParts);
+
 		$PageModel = new \ModPageModel();
 		$PageModel->Root = $PageModelRoot;
-		// @todo I should set slug, domain, etc here maybeeeee?
-		$PageModel->load();
 
-		if (!$PageModel->fieldIsSet('_id', \ModelManager::DATA_ORIGINAL, true)) {
+		for ($i=$uriPartsCnt; $i>=0; $i--) {
+			// @todo I should set slug, domain, etc here maybeeeee?
+			$slug = implode('/', $uriParts);
+//			echop('try: ' . $slug);
+			$PageModel->slug = $slug;
+			$PageModel->load();
+			if ($PageModel->isLoaded()) {
+//				echop('FOUND!');
+				$Request->shiftUriParts($i);
+				break;
+			}
+			array_pop($uriParts);
+		}
+
+		if (!$PageModel->isLoaded()) {
 			// now what?
-			echop($PageModel);
-			echop($PageModelRoot);
-			die('FU');
+//			echop('NOTFOUNDD');
+//			die('FU');
+			// the request went to root page: it will redirect to index page if set
+//			if ($uriPartsCnt !== 0) {
+				throw new \HttpException(404);
+//			}
+//			return $PageModelRoot;
 		}
 
 		return $PageModel;

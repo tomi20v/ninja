@@ -9,6 +9,14 @@ class ModPageRootModel extends \ModPageRedirectModel {
 			'ModPageModel',
 			'ModPageRedirectModel',
 		),
+		'Layers' => [
+			'toArray',
+			'class' => 'ModLayerModel',
+			'reference' => \SchemaManager::REF_INLINE,
+			// @todo when relatives will have validators...
+//			'validLayers',
+			'hasMax' => 0,
+		],
 		'domainName' => array(
 			'toString',
 			'domainName',
@@ -29,7 +37,7 @@ class ModPageRootModel extends \ModPageRedirectModel {
 	 * @param \Request $Request
 	 * @return static
 	 */
-	public static function fromRequest($Request) {
+	public static function findByRequest($Request) {
 
 		$uriParts = $Request->getRemainingUriParts();
 		$uriPartsCnt = count($uriParts);

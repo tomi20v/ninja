@@ -3,6 +3,7 @@
 namespace ninja;
 
 /**
+ * @TODO make this just a decorator to Request with magics
  * Class Request for http requests
  * currently I just formally extend Symfony's Request object
  */
@@ -17,7 +18,7 @@ class Request extends \Symfony\Component\HttpFoundation\Request {
 	 * I return all request uri parts without query string in a nice array
 	 * @return array|string
 	 */
-	function getUriParts() {
+	public function getUriParts() {
 		$uriParts = $this->getRequestUri();
 		if ($pos = strpos($uriParts, '?')) {
 			$uriParts = substr($uriParts, 0, $pos);
@@ -30,7 +31,7 @@ class Request extends \Symfony\Component\HttpFoundation\Request {
 	 * I return actual remaining uri parts
 	 * @return array|string
 	 */
-	function getRemainingUriParts() {
+	public function getRemainingUriParts() {
 		if (is_null($this->_remainingUriParts)) {
 			$this->_remainingUriParts = $this->getUriParts();
 		}
@@ -41,9 +42,19 @@ class Request extends \Symfony\Component\HttpFoundation\Request {
 	 * @param int $count
 	 * @return $this
 	 */
-	function shiftUriParts($count) {
+	public function shiftUriParts($count) {
 		$this->_remainingUriParts = array_slice($this->_remainingUriParts, $count);
 		return $this;
+	}
+
+	/**
+	 * I return a clone of myself.
+	 * You can save resources if not using HMVC. just redefine me to return $this (so all modules will share the same)
+	 * return \Request
+	 */
+	public function getClone() {
+		$NewRequest = clone $this;
+		return $NewRequest;
 	}
 
 }

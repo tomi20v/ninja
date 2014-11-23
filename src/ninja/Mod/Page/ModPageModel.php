@@ -27,7 +27,7 @@ class ModPageModel extends \ModAbstractModel {
 		],
 		'title',
 		'meta' => [
-			'toList',
+			'toArray',
 			'keys' => ['name', 'content'],
 			'hasMin' => 0,
 			'hasMax' => 0,
@@ -57,38 +57,37 @@ class ModPageModel extends \ModAbstractModel {
 	 * @param \Request $Request
 	 * @return \ModPageRootModel
 	 */
-	public static function fromRequest($Request) {
+	public static function findByRequest($Request) {
 
-		$PageModelRoot = \ModPageRootModel::fromRequest($Request);
+		$ModPageModelRoot = \ModPageRootModel::findByRequest($Request);
 
 		// $uriParts shall contain uri parts not in root slug (basepath)
 		$uriParts = $Request->getRemainingUriParts();
-		$rootUriParts = explode('/', $PageModelRoot->slug);
+		$rootUriParts = explode('/', $ModPageModelRoot->slug);
 		for ($i=0; isset($uriParts[$i]) && isset($rootUriParts[$i]) && $uriParts[$i] === $rootUriParts[$i]; $i++) {
 			unset($uriParts[$i]);
 		}
 		$uriParts = array_merge($uriParts);
 		$uriPartsCnt = count($uriParts);
 
-		$PageModel = new \ModPageModel();
-		$PageModel->Root = $PageModelRoot;
+		$ModPageModel = new \ModPageModel();
+		$ModPageModel->Root = $ModPageModelRoot;
 
 		for ($i=$uriPartsCnt; $i>=0; $i--) {
 			$slug = implode('/', $uriParts);
-			$PageModel->slug = $slug;
-			$PageModel->load();
-			if ($PageModel->isLoaded()) {
+			$ModPageModel->slug = $slug;
+			$ModPageModel->load();
+			if ($ModPageModel->isLoaded()) {
 				$Request->shiftUriParts($i);
 				break;
 			}
 			array_pop($uriParts);
 		}
 
-		if (!$PageModel->isLoaded()) {
+		if (!$ModPageModel->isLoaded()) {
 			throw new \HttpException(404);
 		}
-
-		return $PageModel;
+		return $ModPageModel;
 	}
 
 	public function getFieldWithRoot($key) {

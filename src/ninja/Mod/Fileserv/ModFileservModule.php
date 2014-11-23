@@ -20,9 +20,9 @@ class ModFileservModule extends \ModAbstractModule {
 	 * I return a response set up to send the file
 	 * @return ResponseInterface|\Response|void
 	 */
-	public function _respond() {
+	public function _respond($Request) {
 
-		$requestUri = implode('/', $this->_Request->getRemainingUriParts());
+		$requestUri = implode('/', $Request->getRemainingUriParts());
 
 		$basePath = '';
 
@@ -73,7 +73,7 @@ class ModFileservModule extends \ModAbstractModule {
 
 		finish:
 
-		return parent::_respond();
+		return parent::_respond($Request);
 
 	}
 

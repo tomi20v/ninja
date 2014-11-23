@@ -17,7 +17,7 @@
 	{{/get_withRoot_css}}
 
 	<script type="text/javascript">
-		var noGlobal = false;
+//		var noGlobal = false;
 	</script>
 
 	<script data-main="assets/js/main" src="assets/js/require.js"></script>
@@ -34,17 +34,9 @@
 </head>
 <body {{#cssId}}id="#{{cssId}}"{{/cssId}} class="n-mod-page{{#get_withRoot_cssClasses}} {{.}}{{/get_withRoot_cssClasses}}" {{#get_withRoot_cssStyle}}style="{{{.}}}"{{/get_withRoot_cssStyle}}>
 
-<div class="navbar navbar-inverse navbar-fixed-top">
-	<div class="navbar-inner">
-		<div class="container">
-			<a class="navbar-brand">Maui/Ninja demo app</a>
-		</div>
-	</div>
-</div>
-
-<div class="container-fluid">
-	{{{ get_Contents }}}
-</div>
+{{{ Contents.header }}}
+{{{ Contents.columns }}}
+{{{ Contents.footer }}}
 
 {{#get_ScriptsFoot}}
 {{#src}}<script src="{{{src}}}" ></script>{{/src}}

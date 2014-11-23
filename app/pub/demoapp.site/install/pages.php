@@ -10,23 +10,34 @@ $DB->PageModelCollection->drop();
 $JqueryFileServer = new \ModFileservModel(
 //	['recursive' => true, 'basePath' => 'assets/js', 'folder' => '../vendor/bower-asset/jquery/src',],
 //	['recursive' => true, 'basePath' => 'assets/js', 'folder' => '../vendor/bower-asset/jquery/dist',],
-	['recursive' => true, 'basePath' => 'js', 'folder' => '../../vendor/bower-asset/jquery/dist',],
+	['recursive' => true, 'basePath' => 'js', 'folder' => '../vendor/bower-asset/jquery/dist',],
 	false
 );
 $BootstrapFileServerJs = new \ModFileservModel(
 //	['recursive' => true, 'basePath' => 'assets/js', 'folder' => '../vendor/bower-asset/bootstrap-css/js',],
-	['recursive' => true, 'basePath' => 'js', 'folder' => '../../vendor/bower-asset/bootstrap-css/js',],
+	['recursive' => true, 'basePath' => 'js', 'folder' => '../vendor/bower-asset/bootstrap-css/js',],
 	false
 );
 $BootstrapFileServerCss = new \ModFileservModel(
 //	['recursive' => true, 'basePath' => 'assets/css', 'folder' => '../vendor/bower-asset/bootstrap-css/css',],
-	['recursive' => true, 'basePath' => 'css', 'folder' => '../../vendor/bower-asset/bootstrap-css/css',],
+	['recursive' => true, 'basePath' => 'css', 'folder' => '../vendor/bower-asset/bootstrap-css/css',],
+	false
+);
+$RequireJsFileServer = new \ModFileservModel(
+	['recursive' => true, 'basePath' => 'assets/js', 'folder' => '../vendor/bower-asset/requirejs',],
+	false
+);
+$JqWidgetsFileServer = new \ModFileservModel(
+	['recursive' => true, 'basePath' => 'assets/js/jqwidgets', 'folder' => 'vendor/jqwidgets',],
 	false
 );
 $assetModules = [
 	'jqueryFiles' => $JqueryFileServer,
 	'bootstrapFilesJs' => $BootstrapFileServerJs,
 	'bootstrapFilesCss' => $BootstrapFileServerCss,
+	'requireJsFiles' => $RequireJsFileServer,
+	'jqWidgetsFiles' => $JqWidgetsFileServer,
+
 ];
 
 $DaPageRoot = new \ModPageRootModel([
@@ -35,12 +46,42 @@ $DaPageRoot = new \ModPageRootModel([
 		// @todo validation shall find that slug is empty
 		'slug' => '',
 		'published' => true,
-		'doctype' => 'html',
+//		'doctype' => 'html',
 		'domainName' => '.demoapp.site',
-		'redirectType' => \ModPageRedirectModel::REDIRECT_TYPE_PERMANENT,
-		'redirectTo' => '/',
+		'Layers' => [
+			'default' => new \ModLayerModel([
+					'label' => 'default',
+				], false)
+		],
 		'availableLanguages' => array('en',),
-//		'Modules' => $assetModules,
+		// .html response data
+		'redirectType' => \ModPageRedirectModel::REDIRECT_TYPE_PERMANENT,
+		'redirectTo' => '/index.html',
+		// modules and stuff to be inherited by child pages
+		'Modules' => [
+			'header' => new \ModBaseIncludeModel([
+					'slug' => '',
+					'template' => 'header.html',
+					'Modules' => [
+						new \ModContainerExpandableModel([
+							'Modules' => [
+								'trigger' => new \ModLoginStatusModel([
+//										'slug' => 'hu',
+									], false),
+								'content' => new \ModLoginModel([
+										'slug' => 'login',
+										'cssClasses' => ['navbar-form'],
+									], false),
+							]
+						])
+					],
+				], false),
+			'footer' => new \ModBaseIncludeModel([
+					'template' => 'footer.html',
+				], false),
+		]
+//			+ $assetModules
+		,
 		'scripts' => [
 			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/jquery.js',],
 			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/js/bootstrap.js',],
@@ -52,6 +93,10 @@ $DaPageRoot = new \ModPageRootModel([
 		],
 		'cssStyle' => 'padding-top:60px;'
 	], false);
+//echop($DaPageRoot);
+echop($DaPageRoot->save(false));
+//echop($DaPageRoot->_id);
+//die('OK');
 
 $DaColumnsRow = new \ModContainerModel([
 		'cssClasses' => [
@@ -74,7 +119,7 @@ $DaColumnsRow = new \ModContainerModel([
 //);
 
 // @todo this shall be a redirect or direct 404 page so if no files found it will still do something meaningful
-$DaAssetPage = new \ModPageModel([
+$DaAssetsPage = new \ModPageModel([
 	'Parent' => $DaPageRoot,
 	'Root' => $DaPageRoot,
 	'slug' => 'assets',
@@ -82,7 +127,7 @@ $DaAssetPage = new \ModPageModel([
 	'domainName' => '.demoapp.site',
 	'Modules' => $assetModules,
 ], false);
-echop($DaAssetPage->save());
+echop($DaAssetsPage->save(false));
 
 $DaPageHome = new \ModPageModel([
 		'Parent' => $DaPageRoot,
@@ -96,7 +141,7 @@ $DaPageHome = new \ModPageModel([
 			'columns' => $DaColumnsRow,
 		]
 	], false);
-echop($DaPageHome->save(true));
+echop($DaPageHome->save(false));
 
 $DaPageContact = new \ModPageModel([
 		'Parent' => $DaPageHome,
@@ -105,32 +150,22 @@ $DaPageContact = new \ModPageModel([
 		'published' => true,
 		'title' => 'Demo Application contact page',
 	], false);
-echop($DaPageContact->save(true));
+echop($DaPageContact->save(false));
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //  A D M I N
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$RequireJsFileServer = new \ModFileservModel(
-	['recursive' => true, 'basePath' => 'assets/js', 'folder' => '../vendor/bower-asset/requirejs',],
-	false
-);
-$JqWidgetsFileServer = new \ModFileservModel(
-	['recursive' => true, 'basePath' => 'assets/js/jqwidgets', 'folder' => 'vendor/jqwidgets',],
-	false
-);
-$assetModules[] = $RequireJsFileServer;
-$assetModules[] = $JqWidgetsFileServer;
-
 $adminDaPageRoot = new \ModPageRootModel([
 		'Parent' => null,
+		'Root' => null,
 		'slug' => 'admin',
 		'published' => true,
 		'redirectType' => \ModPageRedirectModel::REDIRECT_TYPE_PERMANENT,
 		'redirectTo' => '/dashboard',
 		'domainName' => 'admin.demoapp.site',
 		'availableLanguages' => array('en',),
-		'Modules' => $assetModules,
+//		'Modules' => $assetModules,
 		'scripts' => [
 //			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/requirejs/require.js',],
 //			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/js/jquery.js',],
@@ -162,6 +197,20 @@ $adminDaPageHome = new \ModPageModel([
 	], false);
 $adminDaPageHomeResult = $adminDaPageHome->save(true);
 echop($adminDaPageHomeResult);
+
+$adminDaPageApi = new \ModPageModel([
+	'Parent' => $adminDaPageRoot,
+	'Root' => $adminDaPageRoot,
+	'slug' => 'api',
+	'published' => true,
+	'title' => 'Demo ADMIN Application API endpoint',
+	'Modules' => [],
+	'Contents' => [
+//			'left' => '<div id="jqxWidget"><div id="jqxTree"></div><div id="jqxA"></div></div>',
+	],
+], false);
+$adminDaPageApiResult = $adminDaPageApi->save(true);
+echop($adminDaPageApiResult);
 
 //echop(\SchemaManager::getSchema('ModPageModel'));
 //echop($adminDaPageHome);

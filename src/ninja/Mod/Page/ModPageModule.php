@@ -7,12 +7,12 @@ class ModPageModule extends \ModAbstractModule {
 	/**
 	 * @var \ModPageModel
 	 */
-	protected $_Model;
+//	protected $_Model;
 
 	/**
 	 * @var \View
 	 */
-	protected $_View;
+//	protected $_View;
 
 	/**
 	 * I override parent implementation to append root's submodules
@@ -20,9 +20,12 @@ class ModPageModule extends \ModAbstractModule {
 	 */
 	protected function _getSubModuleModels() {
 		$subModuleModels = parent::_getSubModuleModels();
-		if ($this->_Model->field('Root')->fieldIsSet('Modules')) {
+		// if not root, and root has modules, add them:
+		if ($this->_Model->fieldIsSet('Parent') &&
+			$this->_Model->field('Root')->fieldIsSet('Modules')) {
 			$moreModuleModels = $this->_Model->field('Root')->Modules;
-			if (empty($subModuleModels)) {
+			if (empty($moreModuleModels));
+			elseif (empty($subModuleModels)) {
 				$subModuleModels = $moreModuleModels;
 			}
 			else {
@@ -32,4 +35,18 @@ class ModPageModule extends \ModAbstractModule {
 		return $subModuleModels;
 	}
 
+	/**
+	 * I have to update $this->_uriParts as page model loading may consume some uri parts
+	 * @return ResponseInterface|void
+	 */
+//	protected function _beforeRespond($Request) {
+//
+//		$ret = parent::_beforeRespond($Request);
+//
+//		$this->_uriParts = $this->_Request->getRemainingUriParts();
+//
+//		return $ret;
+//
+//	}
+//
 }

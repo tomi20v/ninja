@@ -120,12 +120,13 @@ EOS;
 		$bodies = [
 			'Module' => <<<EOS
 
-	public function _beforeRespond() {
-		return parent::_beforeRespond();
+
+	public function _beforeRespond(\$Request) {
+		return parent::_beforeRespond(\$Request);
 	}
 
-	public function _respond() {
-		return parent::_respond();
+	public function _respond(\$Request) {
+		return parent::_respond(\$Request);
 	}
 
 EOS
@@ -133,7 +134,7 @@ EOS
 			'Model' => <<<EOS
 
 	protected static \$_schema = [
-		"@@extends" => "",
+		'@@extends' => '',
 	];
 
 EOS

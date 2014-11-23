@@ -22,12 +22,17 @@ abstract class ModAbstractModule {
 	/**
 	 * @var \Request object
 	 */
-	protected $_Request;
+//	protected $_Request;
 
 	/**
 	 * @var \Model this model should hold the coupled data for the module, eg. metas in a page...
 	 */
 	protected $_Model;
+
+	/**
+	 * @var string[] these are the uri parts which I can actually use (as some of them might have been consumed)
+	 */
+	protected $_uriParts = [];
 
 	/**
 	 * @var \View
@@ -44,17 +49,22 @@ abstract class ModAbstractModule {
 	 * @param $Parent
 	 * @param \Model|\ninja\Ninja|null $Model send Ninja instance for root module, the parent's model for the rest
 	 */
-	public function __construct($Request, $Parent, $Model=null) {
+	public function __construct($Parent, $Model=null) {
 
-		if (!($Request instanceof \Request) ||
-			(!($Parent instanceof \ModAbstractModule) && !($Parent instanceof \Ninja)) ||
-			(!is_null($Model) && !($Model instanceof \Model))) {
-			throw new \BadMethodCallException(echon([$Request, $Parent, $Model]));
-		}
+//		if (!($Request instanceof \Request) ||
+//			(!($Parent instanceof \ModAbstractModule) && !($Parent instanceof \Ninja)) ||
+//			(!is_null($Model) && !($Model instanceof \Model))) {
+//			throw new \BadMethodCallException(echon([$Request, $Parent, $Model]));
+//		}
 
-		$this->_Request = $Request;
+//		if (is_null($uriParts)) {
+//			$uriParts = $Request->getRemainingUriParts();
+//		}
+//
+//		$this->_Request = $Request;
 		$this->_Parent = $Parent;
 		$this->_Model = $Model;
+//		$this->_uriParts = $uriParts;
 	}
 
 	////////////////////////////////////////////////////////////////////////////////
@@ -65,21 +75,19 @@ abstract class ModAbstractModule {
 	 * I am a non-static method since I have to pass myself as parent anyway
 	 *
 	 * @param \ModAbstractModel $ModModel
-	 * @param \Request|null $Request
+	 * @return \ModAbstractModule
 	 */
-	protected function _getSubModuleFrom($ModModel, $Request=null) {
+	protected function _getSubModuleFrom($ModModel) {
 
 		$modelClassname = get_class($ModModel);
 
-		//if (substr($modelClassname, -11) !== 'ModAbstractModel') {
-		if (!is_subclass_of($modelClassname, 'ModAbstractModel') || (substr($modelClassname, -5) !== 'Model')) {
+		if (!($ModModel instanceof \ninja\ModAbstractModel) || (substr($modelClassname, -5) !== 'Model')) {
 			throw new \Exception('cannot recognize ModAbstractModel extension, saw: ' . $modelClassname);
 		}
 
 		$moduleClassname = substr($modelClassname, 0, -5) . 'Module';
 
 		$SubModule = new $moduleClassname(
-			func_num_args() == 1 ? $this->_Request : $Request,
 			$this,
 			$ModModel
 		);
@@ -89,67 +97,50 @@ abstract class ModAbstractModule {
 	}
 
 	/**
-	 * @return string I return the key to be used with this submodule. Currently just the classname, but shall be something
-	 * 		more meaningful later
-	 */
-	public function getSubModuleKey() {
-
-		$subModuleKey = get_class($this);
-		if ($pos = strrpos($subModuleKey, '\\')) {
-			$subModuleKey = substr($subModuleKey, $pos+1);
-		}
-		if (substr($subModuleKey, -6) === 'Module') {
-			$subModuleKey = substr($subModuleKey, 0, -6);
-		}
-
-		return $subModuleKey;
-
-	}
-
-	/**
-	 * @return null|ModAbstractModelCollection $subModules
+	 * @return ModAbstractModelCollection|null $subModules
 	 */
 	protected function _getSubModuleModels() {
-		$subModuleModels = null;
-		if ($this->_Model->fieldNotNull('Modules')) {
-			$subModuleModels = $this->_Model->Modules;
-		}
+		$subModuleModels = !$this->_Model->fieldIsEmpty('Modules')
+			? $this->_Model->Modules
+			: null;
 		return $subModuleModels;
 	}
 
 	/**
 	 * I recursively create submodules and call for their response
+	 * @param \Request $Request
 	 * @return \maui\ResponeInterface|null
 	 */
-	protected function _processSubmodules() {
+	protected function _processSubmodules($Request) {
 
 		$subModuleModels = $this->_getSubModuleModels();
 
 		if (!empty($subModuleModels)) {
 
-			foreach ($subModuleModels as $eachKey => $eachSubModuleModel) {
-				$SubModule = $this->_getSubModuleFrom($eachSubModuleModel);
-				$Response = $SubModule->_processSubmodules();
-				if ($Response instanceof \maui\Response) {
-					return $Response;
-				}
-				$subModules[$eachKey] = $SubModule;
-			}
-
-			$this->_Model->Modules = $subModules;
+			$subModules = [];
 
 			/**
 			 * @var array $Contents as specified in ModAbstractModel
 			 */
 			$Contents = $this->_Model->Contents;
-
-			foreach ($subModules as $eachSubmodule) {
-				$Response = $eachSubmodule->respond();
+			if (empty($Contents)) {
+				$Contents = array();
+			}
+			foreach ($subModuleModels as $eachKey => $eachSubModuleModel) {
+				$SubModule = $this->_getSubModuleFrom($eachSubModuleModel);
+				$subModules[$eachKey] = $SubModule;
+				$SubRequest = $Request->getClone();
+				$Response = $SubModule->respond($SubRequest);
 				if ($Response instanceof \ninja\Response) {
 					return $Response;
 				}
-				$Contents[] = $Response;
+				while (isset($Contents[$eachKey])) {
+					$eachKey.= '_';
+				}
+				$Contents[$eachKey] = $Response;
 			}
+
+			$this->_Model->Modules = $subModules;
 
 			$this->_Model->Contents = $Contents;
 
@@ -245,14 +236,14 @@ abstract class ModAbstractModule {
 
 	/**
 	 * use this to set up / check data before respond
+	 * @param \Request
 	 * @return void|\ninja\ResponseInterface Return some Response to use it as final response and stop processing
 	 */
-	protected function _beforeRespond() {
+	protected function _beforeRespond($Request) {
 
 		if (!isset($this->_Model)) {
 			$classname = $this->getModClassnameBase() . 'Model';
-
-			$this->_Model = $classname::fromRequest($this->_Request);
+			$this->_Model = $classname::findByRequest($Request);
 		}
 
 	}
@@ -261,58 +252,43 @@ abstract class ModAbstractModule {
 	 * I can be overwritten eg. to display different views based on some input
 	 * @return void|\ninja\ResponseInterface Return \Response to use it as final response and stop processing
 	 */
-	protected function _respond() {}
+	protected function _respond($Request) {
+		$this->_View = $this->_getView();
+		$Response = $this->_View instanceof \View
+			? $this->_View->render()
+			: null;
+		return $Response;
+	}
 
 	/**
 	 * use this to process generated response
+	 * @param \Request
+	 * @param \Response
 	 * @return void|\ninja\ResponseInterface Return \Response to use it as final response and stop processing
 	 */
-	protected function _afterRespond() {}
+	protected function _afterRespond($Request, $Response) {}
 
 	/**
-	 * only this shall be called, and after creating a module (creating includes setting up by setters)
-	 * shall return a response, or anything printable
-	 * @return \ninja\ResponseInterface
+	 * @param \Request $Request
+	 * @return \Response|string
 	 */
-	final public function respond() {
+	final public function respond($Request) {
 
-		try {
+		// set up model if not yet set
+		$this->_beforeRespond($Request);
 
-			$this->_beforeRespond();
-
-			$Response = $this->_processSubmodules();
-			if ($Response instanceof \ninja\Response) {
-				goto finish;
-			}
-
-			$Response = $this->_respond();
-			if ($Response instanceof \ninja\Response) {
-				goto finish;
-			}
-
-			// default response
-			$this->_View = $this->_getView();
-			$Response = $this->_View instanceof \View
-				? $this->_View->render()
-				: null;
-
-			finish:
-
+		$Response = $this->_processSubmodules($Request);
+		if ($Response instanceof \Response) {
+			goto finish;
 		}
-		catch (\HttpException $e) {
-			// maybe I could fetch some error document here, if exists
-			$message = $e->getMessage();
-			if (empty($message)) {
-				$message = 'Ooops: ' . $e->getStatusCode() . '!';
-			}
-			$Response = new \Response(
-				$message,
-				$e->getStatusCode()
-			);
-		}
+
+		$Response = $this->_respond($Request);
+
+		$this->_afterRespond($Request, $Response);
+
+		finish:
 
 		return $Response;
-
 	}
 
 	/**

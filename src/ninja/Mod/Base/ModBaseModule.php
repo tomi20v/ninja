@@ -4,13 +4,21 @@ namespace ninja;
 
 class ModBaseModule extends \ModAbstractModule {
 
-
-	public function _beforeRespond() {
-		return parent::_beforeRespond();
+	/**
+	 * @todo implement me
+	 * @param \Request $Request
+	 * @return \Response|null
+	 */
+	public function _beforeRespond($Request) {
+		return parent::_beforeRespond($Request);
 	}
 
-	public function _respond() {
-		return parent::_respond();
+	/**
+	 * @param \Request $Request
+	 * @return \Response|null
+	 */
+	public function _respond($Request) {
+		return parent::_respond($Request);
 	}
 
 

@@ -99,7 +99,7 @@ class View {
 	}
 
 	/**
-	 * I return the contents of the actual templat. load order is:
+	 * I return the contents of the actual template. load order is:
 	 * 		APP_ROOT / <NameOfMod> / temp
 	 * @param string $template use this template name instead of what's saved in model and/or guessed by module class
 	 * @return null|string
@@ -131,7 +131,7 @@ class View {
 			// @todo add support for a theme folder here
 
 			// app templates
-			// @todo this shall be based on some templateFolder property in PageRoot object
+
 			$templateFolders[] = \Finder::joinPath(
 				APP_ROOT,
 				'template',
@@ -151,12 +151,14 @@ class View {
 				$modName = $Module->getModName();
 
 				$a = $Module::moduleNameByClassname(get_class($this->_Model));
-				$templateNames[] = \Finder::joinPath($modName, \Finder::classToPath($a));
+				$templateNames[] = \Finder::joinPath($modName, \Finder::classToPath($a)) . '.html';
 				$b = $Module::moduleNameByClassname(get_class($this->_Module));
-				$templateNames[] = \Finder::joinPath($modName, \Finder::classToPath($b));
+				if ($a !== $b) {
+					$templateNames[] = \Finder::joinPath($modName, \Finder::classToPath($b)) . '.html';
+				}
 			}
 
-			$extension = '.html.mustache';
+			$extension = '.mustache';
 
 			$templatePath = \Finder::fileByFolders($templateFolders, $templateNames, $extension);
 

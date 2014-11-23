@@ -11,6 +11,10 @@ class Filter {
 
 	const MASK_GETTER = '/^get_([a-zA-Z0-9_]+)$/';
 
+	const MASK_FETCHER = '/^fetch_([a-zA-Z0-9_]+)$/';
+
+	const MASK_MARKER = '/^mark_([a-zA-Z0-9_]+)$/';
+
 	/**
 	 * @var \View
 	 */
@@ -44,8 +48,16 @@ class Filter {
 		if (preg_match(static::MASK_GETTER, $key)) {
 			return $this->_View->$key();
 		}
+		elseif (preg_match(static::MASK_FETCHER, $key, $matches)) {
+			return $this->_View->fetchFromContents($matches[1]);
+		}
+		elseif (preg_match(static::MASK_MARKER, $key, $matches)) {
+			return $this->_View->markFetchedFromContents($matches[1]);
+		}
 
-		return $this->_Model->field($key);
+		$ret = $this->_Model->getField($key, \ModelManager::DATA_ALL, false);
+
+		return $ret;
 
 	}
 
@@ -59,8 +71,16 @@ class Filter {
 		if (preg_match(static::MASK_GETTER, $key)) {
 			return true;
 		}
+		elseif (preg_match(static::MASK_FETCHER, $key)) {
+			return true;
+		}
+		elseif (preg_match(static::MASK_MARKER, $key)) {
+			return true;
+		}
 
-		return $this->_Model->__isset($key);
+		$ret = $this->_Model->__isset($key);
+
+		return $ret;
 
 	}
 

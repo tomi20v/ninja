@@ -6,30 +6,39 @@ abstract class ModAbstractModel extends \Model {
 
 	protected static $_schema = array(
 		// will hold a reference to direct parent module
-		'Parent' => array(
+		'Parent' => [
 			'class' => 'ModAbstractModel',
 			'reference' => \SchemaManager::REF_REFERENCE,
-		),
+		],
+		// only published items get ever run
+		'published' => [
+			'toBool',
+		],
+		// for routing
+		'slug',
+		// page root defines valid layers, other modules will be processed only if no layers set or if  are on an active layer
+		'Layers' => [
+			'toArray',
+			'validLayers',
+		],
 		// override default template filename
 		'template',
 		// override default template path, relative to NINJA_ROOT
 		'templatePath',
-		// only published items get ever run
-		'published',
 		// array of submodules
-		'Modules' => array(
+		'Modules' => [
 			'toArray',
 			'class' => 'ModAbstractModel',
 			'reference' => \SchemaManager::REF_INLINE,
 			'hasMin' => 0,
 			'hasMax' => 0,
-		),
-		'Contents' => array(
+		],
+		'Contents' => [
 			'toArray',
 			'toString',
 			'hasMin' => 0,
 			'hasMax' => 0,
-		),
+		],
 	);
 
 }

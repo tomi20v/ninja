@@ -19,6 +19,17 @@ class Ninja {
 	protected $_Request;
 
 	/**
+	 * @return int global app tstamp to be used (for consistency, when needed)
+	 */
+	public static function tstamp() {
+		static $tstamp;
+		if (is_null($tstamp)) {
+			$tstamp = time();
+		}
+		return $tstamp;
+	}
+
+	/**
 	 * construct me to get the application instance
 	 * @param \Maui $Maui for clearness you shall supply this
 	 * @param \Request $Request main request to execute
@@ -63,9 +74,11 @@ class Ninja {
 				$this->_Request = \Request::createFromGlobals();
 			}
 
-			$Page = new \ModPageModule($this->_Request, $this);
-			$Response = $Page->respond();
+//			$Page = new \ModPageModule($this->_Request, $this);
+			$Page = new \ModPageModule($this);
+			$Response = $Page->respond($this->_Request);
 
+			// if response is just a compiled template in a string
 			if ($Response instanceof \ninja\Response);
 			else {
 				$Response = new \Response(
@@ -74,6 +87,13 @@ class Ninja {
 					array('content-type' => 'text/html')
 				);
 			}
+		}
+		catch (\HttpException $e) {
+			$message = $e->getMessage() ?: 'Ooops: ' . $e->getStatusCode() . '!';
+			$Response = new \Response(
+				$message,
+				$e->getStatusCode()
+			);
 		}
 		catch (\Exception $e) {
 			// @todo do something more meaningful with this?

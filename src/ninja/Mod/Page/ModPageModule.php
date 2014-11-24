@@ -35,18 +35,20 @@ class ModPageModule extends \ModAbstractModule {
 		return $subModuleModels;
 	}
 
-	/**
-	 * I have to update $this->_uriParts as page model loading may consume some uri parts
-	 * @return ResponseInterface|void
-	 */
-//	protected function _beforeRespond($Request) {
-//
-//		$ret = parent::_beforeRespond($Request);
-//
-//		$this->_uriParts = $this->_Request->getRemainingUriParts();
-//
-//		return $ret;
-//
-//	}
-//
+	protected function _respond($Request) {
+		// @todo I don't like this here (but was the fastest implementation)
+		if ($this->_Model instanceof \ModPageRedirectModel) {
+			$Response = new \Response(
+				'getting redirected...',
+				$this->_Model->redirectType,
+				[
+					'Location' => $this->_Model->redirectTo,
+				]
+			);
+			$Response->setIsFinal(true);
+			return $Response;
+		}
+		return parent::_respond($Request);
+	}
+
 }

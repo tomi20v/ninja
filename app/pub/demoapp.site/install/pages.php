@@ -63,17 +63,18 @@ $DaPageRoot = new \ModPageRootModel([
 					'slug' => '',
 					'template' => 'header.html',
 					'Modules' => [
-						new \ModContainerExpandableModel([
-							'Modules' => [
-								'trigger' => new \ModLoginStatusModel([
-//										'slug' => 'hu',
-									], false),
-								'content' => new \ModLoginModel([
+//						'login' => new \ModContainerExpandableModel([
+//							'Modules' => [
+//								'trigger' => new \ModLoginStatusModel([
+////										'slug' => 'hu',
+//									], false),
+//								'content' => new \ModLoginModel([
+								'login' => new \ModLoginModel([
 										'slug' => 'login',
-										'cssClasses' => ['navbar-form'],
+//										'cssClasses' => ['navbar-form'],
 									], false),
-							]
-						])
+//							]
+//						])
 					],
 				], false),
 			'footer' => new \ModBaseIncludeModel([

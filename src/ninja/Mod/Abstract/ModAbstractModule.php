@@ -256,7 +256,7 @@ abstract class ModAbstractModule {
 	 * @return void|\ninja\ResponseInterface Return \Response to use it as final response and stop processing
 	 */
 	protected function _respond($Request) {
-		$this->_View = $this->_getView();
+		$this->_View = $this->_getView($Request);
 		$Response = $this->_View instanceof \View
 			? new \Response($this->_View)
 			: null;
@@ -298,7 +298,7 @@ abstract class ModAbstractModule {
 	 * I provide a way to extend view creation, or, to skip it (return null)
 	 * @return \View|null
 	 */
-	protected function _getView() {
+	protected function _getView($Request) {
 		$viewClassname = substr(get_class($this), 0, -6) . 'View';
 		if ($pos = strrpos($viewClassname, '\\')) {
 			$viewClassname = substr($viewClassname, $pos+1);

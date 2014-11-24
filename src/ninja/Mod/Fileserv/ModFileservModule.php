@@ -82,7 +82,7 @@ class ModFileservModule extends \ModAbstractModule {
 	 * eliminate render output if file not found
 	 * @return null|\View
 	 */
-	protected function _getView() {
+	protected function _getView($Response) {
 		return null;
 	}
 

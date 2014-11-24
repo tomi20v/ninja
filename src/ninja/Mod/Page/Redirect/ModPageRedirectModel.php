@@ -4,27 +4,31 @@ namespace ninja;
 
 class ModPageRedirectModel extends \ModPageModel {
 
-	const REDIRECT_TYPE_PERMANENT = '301';
-	const REDIRECT_TYPE_FOUND = '302';
-	const REDIRECT_TYPE_TEMPORARY = '307';
+	const REDIRECT_TYPE_PERMANENT = \Response::HTTP_MOVED_PERMANENTLY;
+	const REDIRECT_TYPE_FOUND = \Response::HTTP_FOUND;
+	const REDIRECT_TYPE_TEMPORARY = \Response::HTTP_TEMPORARY_REDIRECT;
 
-	protected static $_schema = array(
-		'Parent' => array(
+	protected static $_schema = [
+		'Parent' => [
 			'class' => 'ModPageModel',
 			'reference' => \SchemaManager::REF_REFERENCE,
-		),
+		],
 		'published' => true,
-		'Root' =>  array(
+		'Root' =>  [
 			'class' => 'ModPageModel',
 			'reference' => \SchemaManager::REF_REFERENCE,
-		),
-		'redirectType' => array(
+		],
+		'redirectType' => [
 			'toString',
-			'in' => array(self::REDIRECT_TYPE_PERMANENT, self::REDIRECT_TYPE_FOUND, self::REDIRECT_TYPE_TEMPORARY),
-		),
-		'redirectTo' => array(
+			'in' => [
+				self::REDIRECT_TYPE_PERMANENT,
+				self::REDIRECT_TYPE_FOUND,
+				self::REDIRECT_TYPE_TEMPORARY
+			],
+		],
+		'redirectTo' => [
 			'toString',
-		)
-	);
+		]
+	];
 
 }

@@ -132,7 +132,10 @@ abstract class ModAbstractModule {
 				$SubRequest = $Request->getClone();
 				$Response = $SubModule->respond($SubRequest);
 				if ($Response instanceof \ninja\Response) {
-					return $Response;
+					if ($Response->getIsFinal()) {
+						return $Response;
+					}
+					$Response = $Response->getContent();
 				}
 				while (isset($Contents[$eachKey])) {
 					$eachKey.= '_';
@@ -255,7 +258,7 @@ abstract class ModAbstractModule {
 	protected function _respond($Request) {
 		$this->_View = $this->_getView();
 		$Response = $this->_View instanceof \View
-			? $this->_View->render()
+			? new \Response($this->_View)
 			: null;
 		return $Response;
 	}
@@ -270,7 +273,7 @@ abstract class ModAbstractModule {
 
 	/**
 	 * @param \Request $Request
-	 * @return \Response|string
+	 * @return \Response
 	 */
 	final public function respond($Request) {
 

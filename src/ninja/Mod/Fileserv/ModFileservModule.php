@@ -65,6 +65,7 @@ class ModFileservModule extends \ModAbstractModule {
 						'Content-Type' => $mimetype,
 					)
 				);
+				$Response->setIsFinal(true);
 
 				return $Response;
 

@@ -26,7 +26,7 @@ class ModPageRedirectModel extends \ModPageModel {
 				self::REDIRECT_TYPE_TEMPORARY
 			],
 		],
-		'redirectTo' => [
+		'location' => [
 			'toString',
 		]
 	];

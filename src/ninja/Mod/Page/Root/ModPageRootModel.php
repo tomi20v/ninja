@@ -55,7 +55,6 @@ class ModPageRootModel extends \ModPageRedirectModel {
 				->equals('slug', $slug)
 				->findOne();
 			if ($ModPageModelRoot->isLoaded()) {
-				$Request->shiftUriParts($i);
 				break;
 			}
 			array_pop($uriParts);

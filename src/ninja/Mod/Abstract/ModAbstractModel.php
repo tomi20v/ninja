@@ -15,7 +15,11 @@ abstract class ModAbstractModel extends \Model {
 			'toBool',
 		],
 		// for routing
-		'slug',
+		'slug' => [
+			'toString',
+			// should not contain any dots
+			'regexp' => '/^[^.]+$',
+		],
 		// page root defines valid layers, other modules will be processed only if no layers set or if  are on an active layer
 		'Layers' => [
 			'toArray',

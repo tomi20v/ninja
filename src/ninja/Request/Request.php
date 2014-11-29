@@ -60,6 +60,15 @@ class Request extends \Symfony\Component\HttpFoundation\Request {
 	}
 
 	/**
+	 * I return already shifted uri parts
+	 * @return string[]
+	 */
+	public function getShiftedUriParts() {
+		$ret = array_slice($this->_uriParts, count($this->_uriParts)-count($this->_remainingUriParts));
+		return $ret;
+	}
+
+	/**
 	 * I remove some parts from $this->_remainingUriParts
 	 * @param int|string|array $countOrParts count to shift, or parts to shift in string (slug) or array of its parts
 	 * @return $this
@@ -91,6 +100,7 @@ class Request extends \Symfony\Component\HttpFoundation\Request {
 	 */
 	public function getClone() {
 		$NewRequest = clone $this;
+		$NewRequest->_uriParts = $NewRequest->_remainingUriParts;
 		return $NewRequest;
 	}
 

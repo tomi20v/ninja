@@ -60,33 +60,55 @@ class ModPageModel extends \ModAbstractModel {
 	public static function findByRequest($Request) {
 
 		$ModPageModelRoot = \ModPageRootModel::findByRequest($Request);
+		if (!$ModPageModelRoot->isLoaded()) {
+			throw new \HttpException(404);
+		}
 
 		// $uriParts shall contain uri parts not in root slug (basepath)
 		$uriParts = $Request->getRemainingUriParts();
 		$rootUriParts = explode('/', $ModPageModelRoot->slug);
-		for ($i=0; isset($uriParts[$i]) && isset($rootUriParts[$i]) && $uriParts[$i] === $rootUriParts[$i]; $i++) {
-			unset($uriParts[$i]);
-		}
-		$uriParts = array_merge($uriParts);
+//echop($uriParts); echop($rootUriParts); die;
+//		for ($i=0; isset($uriParts[$i]) && isset($rootUriParts[$i]) && $uriParts[$i] === $rootUriParts[$i]; $i++) {
+//			unset($uriParts[$i]);
+//		}
+
+		$Request->shiftUriParts($rootUriParts);
+
+//		$uriParts = array_merge($uriParts);
+		$uriParts = array_merge($Request->getRemainingUriParts());
 		$uriPartsCnt = count($uriParts);
+//		$uriExtension = '';
+		$uriExtension = '.' . $Request->getRequestedExtension();
+//		if ($uriPartsCnt) {
+//			$last = array_pop($uriParts);
+//			// @todo make this smarter
+//			if (in_array(substr($last, -5), array('.html', '.json'))) {
+//				$uriExtension = substr($last, -5);
+//				$last = substr($last, 0, -5);
+//			}
+//			$uriParts[] = $last;
+//		}
 
 		$ModPageModel = new \ModPageModel();
 		$ModPageModel->Root = $ModPageModelRoot;
 
 		for ($i=$uriPartsCnt; $i>=0; $i--) {
+//			$slug = implode('/', $uriParts) . $uriExtension;
 			$slug = implode('/', $uriParts);
+			echop('trying: ' . $slug);
 			$ModPageModel->slug = $slug;
 			$ModPageModel->load();
 			if ($ModPageModel->isLoaded()) {
-				$Request->shiftUriParts($i);
+//				$Request->shiftUriParts($i);
 				break;
 			}
 			array_pop($uriParts);
 		}
 
 		if (!$ModPageModel->isLoaded()) {
-			throw new \HttpException(404);
+			$ModPageModel = $ModPageModelRoot;
 		}
+
 		return $ModPageModel;
 	}
 

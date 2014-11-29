@@ -2,6 +2,8 @@
 
 namespace ninja;
 
+use maui\ArrayHelper;
+
 class ModPageView extends \ModAbstractView {
 
 	const MASK_WITHROOT = '/^get_withRoot_([a-zA-Z0-9_]+)$/';
@@ -24,7 +26,7 @@ class ModPageView extends \ModAbstractView {
 	protected function _getScripts() {
 		// I might have to add some filter logic here to check if Root is set and not the same
 		$scripts = array_merge((array)$this->_Model->getField('scripts'), (array)$this->_Model->getField('Root')->getField('scripts'));
-		$scripts = \Finder::arrayUnique($scripts);
+		$scripts = ArrayHelper::arrayUnique($scripts);
 		return $scripts;
 	}
 

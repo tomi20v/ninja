@@ -6,6 +6,7 @@ require('../../../../vendor/autoload.php');
 
 $DB = \Maui::instance()->dbDb();
 $DB->PageModelCollection->drop();
+$DB->UserModelCollection->drop();
 
 $JqueryFileServer = new \ModFileservModel(
 //	['recursive' => true, 'basePath' => 'assets/js', 'folder' => '../vendor/bower-asset/jquery/src',],
@@ -56,7 +57,7 @@ $DaPageRoot = new \ModPageRootModel([
 		'availableLanguages' => array('en',),
 		// .html response data
 		'redirectType' => \ModPageRedirectModel::REDIRECT_TYPE_PERMANENT,
-		'redirectTo' => '/index.html',
+		'location' => '/index.html',
 		// modules and stuff to be inherited by child pages
 		'Modules' => [
 			'header' => new \ModBaseIncludeModel([
@@ -65,11 +66,11 @@ $DaPageRoot = new \ModPageRootModel([
 					'Modules' => [
 //						'login' => new \ModContainerExpandableModel([
 //							'Modules' => [
-//								'trigger' => new \ModLoginStatusModel([
+//								'trigger' => new \ModUserLoginStatusModel([
 ////										'slug' => 'hu',
 //									], false),
-//								'content' => new \ModLoginModel([
-								'login' => new \ModLoginModel([
+//								'content' => new \ModUserLoginModel([
+								'login' => new \ModUserLoginModel([
 										'slug' => 'login',
 //										'cssClasses' => ['navbar-form'],
 									], false),
@@ -133,7 +134,7 @@ echop($DaAssetsPage->save(false));
 $DaPageHome = new \ModPageModel([
 		'Parent' => $DaPageRoot,
 		'Root' => $DaPageRoot,
-		'slug' => 'index.html',
+		'slug' => 'index',
 		'published' => true,
 		'title' => 'Demo Application home page',
 		'Modules' => [
@@ -163,7 +164,7 @@ $adminDaPageRoot = new \ModPageRootModel([
 		'slug' => 'admin',
 		'published' => true,
 		'redirectType' => \ModPageRedirectModel::REDIRECT_TYPE_PERMANENT,
-		'redirectTo' => '/dashboard',
+		'location' => '/dashboard',
 		'domainName' => 'admin.demoapp.site',
 		'availableLanguages' => array('en',),
 //		'Modules' => $assetModules,
@@ -184,7 +185,7 @@ echop($adminDaPageRootResult);
 $adminDaPageHome = new \ModPageModel([
 		'Parent' => $adminDaPageRoot,
 		'Root' => $adminDaPageRoot,
-		'slug' => 'index.html',
+		'slug' => 'index',
 		'published' => true,
 		'title' => 'Demo ADMIN Application home page',
 		'Modules' => [
@@ -200,20 +201,42 @@ $adminDaPageHomeResult = $adminDaPageHome->save(true);
 echop($adminDaPageHomeResult);
 
 $adminDaPageApi = new \ModPageModel([
-	'Parent' => $adminDaPageRoot,
-	'Root' => $adminDaPageRoot,
-	'slug' => 'api',
-	'published' => true,
-	'title' => 'Demo ADMIN Application API endpoint',
-	'Modules' => [],
-	'Contents' => [
+		'Parent' => $adminDaPageRoot,
+		'Root' => $adminDaPageRoot,
+		'slug' => 'api',
+		'published' => true,
+		'title' => 'Demo ADMIN Application API endpoint',
+		'Modules' => [],
+		'Contents' => [
 //			'left' => '<div id="jqxWidget"><div id="jqxTree"></div><div id="jqxA"></div></div>',
-	],
-], false);
+		],
+	], false);
 $adminDaPageApiResult = $adminDaPageApi->save(true);
 echop($adminDaPageApiResult);
 
 //echop(\SchemaManager::getSchema('ModPageModel'));
 //echop($adminDaPageHome);
+
+$User = new \User();
+$User
+	->field('email', 'no@ema.il')
+	->field('password', sha1('123'))
+	->field('active', true)
+;
+$result = $User->save();
+echop($User); echop($result);
+
+
+$testPage = new \ModPageModel([
+		'Parent' => $DaPageRoot,
+		'Root' => $DaPageRoot,
+		'slug' => 'test',
+		'title' => 'Demo App Test page',
+		'Contents' => [
+			'<p>test page</p>'
+		],
+	], false);
+$result = $testPage->save();
+echop($result);
 
 die('ALL OK');

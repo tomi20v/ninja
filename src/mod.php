@@ -177,7 +177,7 @@ EOS
 
 	public function classMap(&$args) {
 
-		$classes = array();
+		$classes = [];
 
 		$template = <<<EOS
 <?php
@@ -220,7 +220,7 @@ EOS;
 
 		while ($f = $srcFolder->read()) {
 			$fx = \Finder::joinPath($srcFolderName, $f);
-			if (is_dir($fx) && !in_array($f, array('.', '..'))) {
+			if (is_dir($fx) && !in_array($f, ['.', '..'])) {
 				$this->_iterateFolder($fx, $classes);
 			}
 			elseif (preg_match('/^([A-Z][a-zA-Z0-9]+)\.php$/', $f, $matches)) {

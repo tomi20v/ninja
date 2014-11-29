@@ -1,5 +1,41 @@
 <?php
 
+/**
+ *                        slug  remainingUriPts ext.  method  pars  final
+ * GET /index.html               [index]
+ *      Page              index  [index]         +     GET     +       +
+ *       header           -      []              -     GET     -       -
+ *        login           login  []              -     GET     -       -
+ * POST /index.html              [index]
+ *      Page              index  [index]         +     POST    +       +
+ *       header           -      []              -     GET     -       -
+ *        login           login  []              -     GET     -       -
+ * GET /index.html/login         [index,login]
+ *      Page              index  [index,login]   +     GET     -       +
+ *       header           -      [login]         -     GET     -       -
+ *        login           login  [login]         -     GET     +       -
+ * POST /index.html/login        [index.login]
+ *      Page              index  [index,login]   +     GET     -       +
+ *       header           -      [login]         -     GET     -       -
+ *        login           login  [login]         -     POST    +       -
+ * GET /index/login.html         [index.login]
+ *      Page              index  [index,login]   +     GET     -       -
+ *       header           -      [login]         +     GET     -       -
+ *        login           login  [login]         +     GET     +       +
+ * POST /index/login.html        [index.login]
+ *      Page              index  [index,login]   +     GET     -       -
+ *       header           -      [login]         +     GET     -       -
+ *        login           login  [login]         +     POST    +       +
+ *
+ * after consuming uri parts...
+ * response is final, if:
+ *      - self has a slug
+ *      - extension is not yet consumed
+ *      - consumed uri parts + extension matches self forged URI, eg:
+ * response gets remaining uri parts, HTTP method, and parameters, if:
+ *      - consumed uri parts match self forged URI
+ *
+ */
 namespace ninja;
 
 abstract class ModAbstractModule {
@@ -28,11 +64,6 @@ abstract class ModAbstractModule {
 	 * @var \Model this model should hold the coupled data for the module, eg. metas in a page...
 	 */
 	protected $_Model;
-
-	/**
-	 * @var string[] these are the uri parts which I can actually use (as some of them might have been consumed)
-	 */
-	protected $_uriParts = [];
 
 	/**
 	 * @var \View
@@ -64,7 +95,6 @@ abstract class ModAbstractModule {
 //		$this->_Request = $Request;
 		$this->_Parent = $Parent;
 		$this->_Model = $Model;
-//		$this->_uriParts = $uriParts;
 	}
 
 	////////////////////////////////////////////////////////////////////////////////
@@ -86,6 +116,8 @@ abstract class ModAbstractModule {
 		}
 
 		$moduleClassname = substr($modelClassname, 0, -5) . 'Module';
+
+		$ModModel->Parent = $this->_Model;
 
 		$SubModule = new $moduleClassname(
 			$this,
@@ -115,21 +147,23 @@ abstract class ModAbstractModule {
 
 		$subModuleModels = $this->_getSubModuleModels();
 
+		/**
+		 * @var array $Contents as specified in ModAbstractModel
+		 */
+		$Contents = $this->_Model->Contents;
+		if (empty($Contents)) {
+			$Contents = array();
+		}
+
 		if (!empty($subModuleModels)) {
 
 			$subModules = [];
 
-			/**
-			 * @var array $Contents as specified in ModAbstractModel
-			 */
-			$Contents = $this->_Model->Contents;
-			if (empty($Contents)) {
-				$Contents = array();
-			}
 			foreach ($subModuleModels as $eachKey => $eachSubModuleModel) {
 				$SubModule = $this->_getSubModuleFrom($eachSubModuleModel);
 				$subModules[$eachKey] = $SubModule;
 				$SubRequest = $Request->getClone();
+//echop('getting module ' . echon($SubModule, 1, 0, 1) . ' having slug: ' . $SubModule->_Model->slug . ' with: ' . echon($Request, true,0,1));
 				$Response = $SubModule->respond($SubRequest);
 				if ($Response instanceof \ninja\Response) {
 					if ($Response->getIsFinal()) {
@@ -145,9 +179,9 @@ abstract class ModAbstractModule {
 
 			$this->_Model->Modules = $subModules;
 
-			$this->_Model->Contents = $Contents;
-
 		}
+
+		$this->_Model->Contents = $Contents;
 
 		return null;
 
@@ -158,11 +192,10 @@ abstract class ModAbstractModule {
 	////////////////////////////////////////////////////////////////////////////////
 
 	/**
-	 * @todo make this return the mod base classname only (currently will wrongly return for multi level descendants)
 	 * I return classname to derive base model (etc) classnames within the mod
 	 * @return string
 	 */
-	public function getModClassnameBase() {
+	public function getModBaseClassname() {
 
 		$classname = substr(get_class($this), 0, -6);
 
@@ -245,22 +278,60 @@ abstract class ModAbstractModule {
 	protected function _beforeRespond($Request) {
 
 		if (!isset($this->_Model)) {
-			$classname = $this->getModClassnameBase() . 'Model';
+			$classname = $this->getModBaseClassname() . 'Model';
 			$this->_Model = $classname::findByRequest($Request);
+		}
+		// currently respond() depends on having a Model
+		if (!isset($this->_Model)) {
+			throw new \HttpRuntimeException();
 		}
 
 	}
 
 	/**
+	 * I return default controller instance. should consider remaining route?
+	 * @param $Request
+	 * @return \ModAbstractController
+	 */
+	protected function _getController($Request) {
+
+		$controllerClassname = substr(get_class($this), 0, -6) . 'Controller';
+		if (!class_exists($controllerClassname)) {
+			$controllerClassname = 'ModBaseController';
+		}
+
+		$Controller = new $controllerClassname(
+			$Request,
+			$this->_Model
+		);
+
+		return $Controller;
+
+	}
+
+	/**
 	 * I can be overwritten eg. to display different views based on some input
+	 * @param \Request $Request
 	 * @return void|\ninja\ResponseInterface Return \Response to use it as final response and stop processing
 	 */
 	protected function _respond($Request) {
-		$this->_View = $this->_getView($Request);
-		$Response = $this->_View instanceof \View
-			? new \Response($this->_View)
-			: null;
-		return $Response;
+
+		$Controller = $this->_getController($Request);
+
+		// try invoking an action only if actual module is routable
+		if (!$this->_Model->fieldIsEmpty('slug')
+			// @todo check if request matches current module
+//			&& $this->currentRequestMatchesThis
+			&& (count($Request->getShiftedUriParts()))
+		) {
+			$result = $Controller->invoke($Request);
+		}
+		else {
+			$result = $Controller->actionIndex($Request);
+		}
+
+		return $result;
+
 	}
 
 	/**
@@ -279,6 +350,13 @@ abstract class ModAbstractModule {
 
 		// set up model if not yet set
 		$this->_beforeRespond($Request);
+		echop('I am a ' . get_class($this) . ' and my url path is: ' . $this->getHmvcUrlPath());
+		// by now I shall have a Model
+		if (!$this->_Model->fieldIsEmpty('slug')) {
+			$slug = $this->_Model->slug;
+			$Request->shiftUriParts($slug);
+//			echop('SHIFTED: ' . $this->_Model->slug);
+		}
 
 		$Response = $this->_processSubmodules($Request);
 		if ($Response instanceof \Response) {
@@ -298,15 +376,34 @@ abstract class ModAbstractModule {
 	 * I provide a way to extend view creation, or, to skip it (return null)
 	 * @return \View|null
 	 */
-	protected function _getView($Request) {
-		$viewClassname = substr(get_class($this), 0, -6) . 'View';
-		if ($pos = strrpos($viewClassname, '\\')) {
-			$viewClassname = substr($viewClassname, $pos+1);
+//	protected function _getView($Request) {
+//		$viewClassname = substr(get_class($this), 0, -6) . 'View';
+//		if ($pos = strrpos($viewClassname, '\\')) {
+//			$viewClassname = substr($viewClassname, $pos+1);
+//		}
+//		if (!class_exists($viewClassname)) {
+//			$viewClassname = 'ModBaseView';
+//		}
+//		return new $viewClassname($this, $this->_Model);
+//	}
+
+	/**
+	 * @return null|string
+	 */
+	public function getHmvcUrlPath() {
+
+		$url = null;
+
+		if (!$this->_Model->fieldIsEmpty('slug')) {
+
+			$url = $this->_Model->getBubbler()->bubbleGetAll('slug', false);
+
+			$url = implode('/', $url);
+
 		}
-		if (!class_exists($viewClassname)) {
-			$viewClassname = 'ModBaseView';
-		}
-		return new $viewClassname($this, $this->_Model);
+
+		return $url;
+
 	}
 
 }

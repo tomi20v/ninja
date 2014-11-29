@@ -198,18 +198,4 @@ class Finder {
 		return $ret;
 	}
 
-	/**
-	 * I keep only unique entries in an array. Comparison is recursive but not done recursively.
-	 * @param $arr
-	 * @return array
-	 */
-	public static function arrayUnique($arr) {
-		$serialized = array();
-		foreach ($arr as $eachKey=>$eachVal) {
-			$serialized[$eachKey] = serialize($eachVal);
-		}
-		$ret = array_intersect_key($arr, array_unique($serialized));
-		return $ret;
-	}
-
 }

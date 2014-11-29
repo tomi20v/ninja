@@ -272,7 +272,8 @@ FileETag None
   # Note that not all environments support mod_rewrite and mod_cache.
   ##
 #  RewriteCond %{REQUEST_FILENAME} !\.(htm|php|js|css|htc|png|gif|jpe?g|ico|xml|csv|txt|swf|flv|mp4|webm|ogv|mp3|ogg|oga|eot|otf|tt[cf]|woff|svg|svgz|pdf|gz)$
-  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !favico\.ico$
+#  RewriteCond %{REQUEST_FILENAME} !-f
   RewriteRule .* index.php [L]
 
   ##

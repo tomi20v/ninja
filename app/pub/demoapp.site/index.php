@@ -12,7 +12,7 @@ $Autoloader = require(PUB_ROOT . '/../../../vendor/autoload.php');
 
 \Tester::init(
 	[
-		'ModAbstractModule' => ['getHmvcUrlPath'],
+//		'ModAbstractModule' => ['getHmvcUrlPath'],
 	]);
 
 

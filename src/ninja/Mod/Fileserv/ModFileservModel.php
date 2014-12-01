@@ -6,6 +6,11 @@ class ModFileservModel extends \ModAbstractModel {
 
 
 	protected static $_schema = [
+		// will hold a reference to direct parent module's model
+		'Parent' => [
+			'class' => 'ModAbstractModel',
+			'reference' => \SchemaManager::REF_REFERENCE,
+		],
 		'folder' => [
 			'folderReadable',
 		],

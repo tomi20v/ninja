@@ -30,7 +30,7 @@ class ModPageModule extends \ModAbstractModule {
 	 * @param \Request $Request
 	 * @return \Response
 	 */
-	protected function _respond($Request) {
+	protected function _respond($Request, $hasShifted) {
 		// @todo I don't like this here (but was the fastest implementation)
 		if ($this->_Model instanceof \ModPageRedirectModel) {
 			$Response = new \Response(
@@ -40,11 +40,11 @@ class ModPageModule extends \ModAbstractModule {
 					'Location' => $this->_Model->location,
 				]
 			);
-die('redirect to: ' . $this->_Model->location);
+
 			$Response->setIsFinal(true);
 			return $Response;
 		}
-		return parent::_respond($Request);
+		return parent::_respond($Request, $hasShifted);
 	}
 
 }

@@ -10,58 +10,64 @@ abstract class ModAbstractController {
 	protected $_Request;
 
 	/**
+	 * @var \ModAbstractModule
+	 */
+	protected $_Module;
+
+	/**
 	 * @var \ModAbstractModel $_Model
 	 */
 	protected $_Model;
 
-	public function __construct($Request, $Model) {
+	/**
+	 * @param \Request $Request
+	 * @param \ModAbstractModule $Module
+	 * @param \ModAbstractModel $Model
+	 */
+	public function __construct($Request, $Module, $Model) {
+		if (!$Request instanceof \Request ||
+			!$Module instanceof \ModAbstractModule ||
+			!$Model instanceof \ModAbstractModel) {
+			throw new \BadMethodCallException();
+		}
 		$this->_Request = $Request;
+		$this->_Module = $Module;
 		$this->_Model = $Model;
 	}
 
 	/**
-	 * @param string[] $actionParts shall be remaining uri parts from request. maybe no need to send it too?
-	 * @param \Request $Request
-	 * @param \ModAbstractModule $Module my module
-	 * @return null
+	 * I am the most simple action implementation
+	 * @param null $actionParts
+	 * @param null $params
+	 * @return null|\Response
 	 */
-	public function invoke($Request) {
-
-		$actionParts = $Request->getRemainingUriParts();
-		$method = strtolower($Request->getMethod());
-		$actions = [];
-		while(count($actionParts)) {
-			$actions[] = $method . \ArrayHelper::camelJoin($actionParts);
-			$actions[] = 'action' . \ArrayHelper::camelJoin($actionParts);
-			array_pop($actionParts);
-		}
-		$actions[] = $method . 'Index';
-		$actions[] = 'actionIndex';
-		foreach ($actions as $eachEaction) {
-			if (method_exists($this, $eachEaction)) {
-				return call_user_func_array([$this, $eachEaction], [$Request]);
-			}
-		}
-		return null;
-	}
-
-	public function actionIndex($Request) {
-		$View = $this->_getView($Request);
+	public function actionIndex($actionParts=null, $params=null) {
+		$View = $this->getView();
+		$Response = $View instanceof \View
+			? new \Response($View)
+			: null;
+		return $Response;
 	}
 
 	/**
-	 * I provide a way to extend view creation, or, to skip it (return null)
+	 * I return the default view and provide a way to extend this view creation, or, to skip it (just return null)
+	 *
+	 * @param mixed $result if sent, I set it as the content
 	 * @return \View|null
 	 */
-	protected function _getView($Request) {
-		$viewClassname = substr(get_class($this), 0, -6) . 'View';
+	public function getView($result=null) {
+		//$viewClassname = substr(get_class($this), 0, -6) . 'View';
+		$viewClassname = 'Mod' . $this->_Module->getModName() . 'View';
 		if ($pos = strrpos($viewClassname, '\\')) {
 			$viewClassname = substr($viewClassname, $pos+1);
 		}
 		if (!class_exists($viewClassname)) {
 			$viewClassname = 'ModBaseView';
 		}
-		return new $viewClassname($this, $this->_Model);
+		if (!is_null($result)) {
+			$this->_Model->Contents->append(['result'=>$result]);
+		}
+		return new $viewClassname($this->_Module, $this->_Model);
 	}
 
 }

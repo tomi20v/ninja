@@ -2,12 +2,19 @@
 
 namespace ninja;
 
+use Symfony\Component\HttpFoundation\ParameterBag;
+
 /**
  * @TODO make this just a decorator to Request with magics
  * Class Request for http requests
  * currently I just formally extend Symfony's Request object
  */
 class Request extends \Symfony\Component\HttpFoundation\Request {
+
+	/**
+	 * @var \Request reference or original request object
+	 */
+	protected $_OriginalRequest = null;
 
 	/**
 	 * @var string[] original uri parts
@@ -29,6 +36,17 @@ class Request extends \Symfony\Component\HttpFoundation\Request {
 		'css',
 		'xml',
 	];
+
+	/**
+	 * I'll store the requested extension here
+	 * @var null
+	 */
+	private $_requestedExtension = null;
+
+	/**
+	 * @var bool set this is routing matched an action already
+	 */
+	protected $_actionMatched = false;
 
 	/**
 	 * I return all request uri parts without query string in a nice array
@@ -71,26 +89,30 @@ class Request extends \Symfony\Component\HttpFoundation\Request {
 	/**
 	 * I remove some parts from $this->_remainingUriParts
 	 * @param int|string|array $countOrParts count to shift, or parts to shift in string (slug) or array of its parts
-	 * @return $this
+	 * @return int number of parts shifted
 	 */
 	public function shiftUriParts(&$countOrParts) {
 		if (is_string($countOrParts)) {
 			$countOrParts = explode('/', $countOrParts);
 		}
 		if (is_array($countOrParts)) {
+			$ret = 0;
 			do {
 				if (reset($countOrParts) !== reset($this->_remainingUriParts)) {
 					break;
 				}
 				array_shift($countOrParts);
 				array_shift($this->_remainingUriParts);
+				$ret++;
 			} while (count($countOrParts) && count($this->_remainingUriParts));
 		}
 		else {
-			$this->_remainingUriParts = array_slice($this->_remainingUriParts, intval($countOrParts));
+			$ret = intval($countOrParts);
+			$this->_remainingUriParts = array_slice($this->_remainingUriParts, $ret);
 		}
 
-		return $this;
+		return $ret;
+
 	}
 
 	/**
@@ -108,11 +130,61 @@ class Request extends \Symfony\Component\HttpFoundation\Request {
 	 * @return string|null I recognize basic extensions to be considered (html, json, js, css, xml)
 	 */
 	public function getRequestedExtension() {
-		$pattern = '/.(' . implode('|', $this->_routedExtensions) . ')(\/.*|)$/';
-		if (preg_match($pattern, $this->getRequestUri(), $matches)) {
-			return $matches[1];
+		if (is_null($this->_requestedExtension)) {
+			$pattern = '/.(' . implode('|', $this->_routedExtensions) . ')(\/.*|)$/';
+			if (preg_match($pattern, $this->getRequestUri(), $matches)) {
+				$this->_requestedExtension = $matches[1];
+			}
+			else {
+				$this->_requestedExtension = null;
+			}
 		}
-		return null;
+		return $this->_requestedExtension;
+	}
+
+	/**
+	 * I mark requested extension consumed if it's met during the routing
+	 * @return $this
+	 */
+	public function consumeExtension() {
+		$this->_requestedExtension = '';
+		return $this;
+	}
+
+	/**
+	 * I sotre reference to original request
+	 * @return \Request
+	 */
+	public static function createFromGlobals() {
+
+		$Request = parent::createFromGlobals();
+		$Request->_OriginalRequest = $Request;
+
+		return $Request;
+
+	}
+
+	public function getOriginalMethod() {
+		return $this->_OriginalRequest->getMethod();
+	}
+
+	/**
+	 * @return $this
+	 */
+	public function setActionMatched() {
+
+		$this->_actionMatched = true;
+
+		return $this;
+
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function getActionMatched() {
+
+		return $this->_actionMatched;
 	}
 
 }

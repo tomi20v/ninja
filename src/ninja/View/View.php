@@ -24,7 +24,17 @@ class View {
 	 */
 	protected static $_Engine;
 
+	/**
+	 * @todo this shall be moved to ModAbstractView!?
+	 * @param $Module
+	 * @param $Model
+	 * @param null $template
+	 */
 	public function __construct($Module, $Model, $template=null) {
+		if (!$Module instanceof \ModAbstractModule ||
+			!$Model instanceof \ModAbstractModel) {
+			throw new \BadMethodCallException();
+		}
 		$this->_Module = $Module;
 		$this->_Model = $Model;
 		$this->_template=$template;
@@ -77,28 +87,6 @@ class View {
 	}
 
 	/**
-	 * I return template name for a mod class (model or module or controller)
-	 * @param $Object
-	 * @return string
-	 */
-	protected function _templateFileByModClass($Object) {
-
-		$templateName = $classname = get_class($Object);
-
-		if ($pos = strrpos($templateName, '\\')) {
-			$templateName = substr($templateName, $pos+1);
-		}
-
-		// get rid of 'Mod' prefix
-		$templateName = substr($templateName, 3);
-
-		$templateName = preg_replace('/^([A-Z][^A-Z]+)(Model|Module)/', '$1', $templateName);
-
-		return $templateName;
-
-	}
-
-	/**
 	 * I return the contents of the actual template. load order is:
 	 * 		APP_ROOT / <NameOfMod> / temp
 	 * @param string $template use this template name instead of what's saved in model and/or guessed by module class
@@ -128,7 +116,7 @@ class View {
 				'template'
 			);
 
-			// @todo add support for a theme folder here
+			// @todo add support for a theme folder here!?
 
 			// app templates
 
@@ -148,13 +136,11 @@ class View {
 			}
 			else {
 				$Module = $this->_Module;
-				$modName = $Module->getModName();
-
-				$a = $Module::moduleNameByClassname(get_class($this->_Model));
-				$templateNames[] = \Finder::joinPath($modName, \Finder::classToPath($a)) . '.html';
-				$b = $Module::moduleNameByClassname(get_class($this->_Module));
+				$a = $Module::modNameByClassname(get_class($this->_Model));
+				$templateNames[] = $a . '.html';
+				$b = $Module::modNameByClassname(get_class($this->_Module));
 				if ($a !== $b) {
-					$templateNames[] = \Finder::joinPath($modName, \Finder::classToPath($b)) . '.html';
+					$templateNames[] = $b . '.html';
 				}
 			}
 

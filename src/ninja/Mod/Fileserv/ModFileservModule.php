@@ -18,11 +18,12 @@ class ModFileservModule extends \ModAbstractModule {
 
 	/**
 	 * I return a response set up to send the file
-	 * @return ResponseInterface|\Response|void
+	 * @param \Request $Request
+	 * @return \Response|null
 	 */
-	public function _respond($Request) {
+	public function _respond($Request, $hasShifted) {
 
-		$requestUri = implode('/', $Request->getRemainingUriParts());
+		$requestUri = implode('/', $Request->getRemainingUriParts()) . '.' . $Request->getRequestedExtension();
 
 		$basePath = '';
 
@@ -74,16 +75,8 @@ class ModFileservModule extends \ModAbstractModule {
 
 		finish:
 
-		return parent::_respond($Request);
+		return parent::_respond($Request, $hasShifted);
 
-	}
-
-	/**
-	 * eliminate render output if file not found
-	 * @return null|\View
-	 */
-	protected function _getView($Response) {
-		return null;
 	}
 
 }

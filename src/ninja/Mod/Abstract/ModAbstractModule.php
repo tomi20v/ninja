@@ -43,7 +43,7 @@ abstract class ModAbstractModule {
 	/**
 	 * pattern of module names, used to find mod name and module name
 	 */
-	const MODULE_NAME_PATTERN = '/^Mod([A-Z].*)(Controller|Model|Module|View)(.+)?$/';
+	const MODULE_NAME_PATTERN = '/^Mod([A-Z].*)(Controller|Model|Module|View)$/';
 
 	/**
 	 * @var \ModAbstractModule
@@ -98,6 +98,49 @@ abstract class ModAbstractModule {
 	}
 
 	////////////////////////////////////////////////////////////////////////////////
+	//	helpers
+	////////////////////////////////////////////////////////////////////////////////
+
+	/**
+	 * I return a mod's name, eg. 'PagRedirecte' for 'ModPagRedirectModule'
+	 * @param $classname
+	 * @return string
+	 */
+	public static function modNameByClassname($classname) {
+
+		$modName = $classname;
+
+		if ($pos = strrpos($modName, '\\')) {
+			$modName = substr($modName, $pos+1);
+		}
+
+		$modName = preg_match(static::MODULE_NAME_PATTERN, $modName, $matches)
+			? $matches[1]
+			: '';
+
+		return $modName;
+
+	}
+
+	/**
+	 * I return my modname, eg. 'PageRedirect' for 'ModPageRedirectModule'
+	 * @return string
+	 */
+	public function getModName() {
+
+		static $modName;
+
+		if (is_null($modName)) {
+
+			$modName = static::modNameByClassname(get_class($this));
+
+		}
+
+		return $modName;
+
+	}
+
+	////////////////////////////////////////////////////////////////////////////////
 	//	submodules
 	////////////////////////////////////////////////////////////////////////////////
 
@@ -147,15 +190,15 @@ abstract class ModAbstractModule {
 
 		$subModuleModels = $this->_getSubModuleModels();
 
-		/**
-		 * @var array $Contents as specified in ModAbstractModel
-		 */
-		$Contents = $this->_Model->Contents;
-		if (empty($Contents)) {
-			$Contents = array();
-		}
-
 		if (!empty($subModuleModels)) {
+
+			/**
+			 * @var array $Contents as specified in ModAbstractModel
+			 */
+			$Contents = $this->_Model->Contents;
+			if (empty($Contents)) {
+				$Contents = array();
+			}
 
 			$subModules = [];
 
@@ -163,7 +206,7 @@ abstract class ModAbstractModule {
 				$SubModule = $this->_getSubModuleFrom($eachSubModuleModel);
 				$subModules[$eachKey] = $SubModule;
 				$SubRequest = $Request->getClone();
-//echop('getting module ' . echon($SubModule, 1, 0, 1) . ' having slug: ' . $SubModule->_Model->slug . ' with: ' . echon($Request, true,0,1));
+
 				$Response = $SubModule->respond($SubRequest);
 				if ($Response instanceof \ninja\Response) {
 					if ($Response->getIsFinal()) {
@@ -179,9 +222,9 @@ abstract class ModAbstractModule {
 
 			$this->_Model->Modules = $subModules;
 
-		}
+			$this->_Model->Contents = $Contents;
 
-		$this->_Model->Contents = $Contents;
+		}
 
 		return null;
 
@@ -192,85 +235,6 @@ abstract class ModAbstractModule {
 	////////////////////////////////////////////////////////////////////////////////
 
 	/**
-	 * I return classname to derive base model (etc) classnames within the mod
-	 * @return string
-	 */
-	public function getModBaseClassname() {
-
-		$classname = substr(get_class($this), 0, -6);
-
-		return $classname;
-
-	}
-
-	/**
-	 * I return a mod's name, eg. 'Page' for 'ModPageModule'
-	 * @param $classname
-	 * @return string
-	 */
-	public static function modNameByClassname($classname) {
-
-		$modName = $classname;
-
-		if ($pos = strrpos($modName, '\\')) {
-			$modName = substr($modName, $pos+1);
-		}
-
-		$modName = preg_match(static::MODULE_NAME_PATTERN, $modName, $matches)
-			? $matches[1]
-			: '';
-
-		return $modName;
-
-	}
-
-	/**
-	 * I return my modname, eg. 'Page' for 'ModPageModule'
-	 * @return string
-	 */
-	public function getModName() {
-
-		static $modName;
-
-		if (is_null($modName)) {
-
-			$modName = static::modNameByClassname(get_class($this));
-
-		}
-
-		return $modName;
-
-	}
-
-	public static function moduleNameByClassname($classname) {
-
-		if ($pos = strrpos($classname, '\\')) {
-			$classname = substr($classname, $pos+1);
-		}
-
-		$classname = preg_match(static::MODULE_NAME_PATTERN, $classname, $matches)
-			? (isset($matches[3]) ? $matches[3] : '')
-			: '';
-
-		return $classname;
-
-	}
-
-	public function getModuleName() {
-
-		static $moduleName;
-
-		if (is_null($moduleName)) {
-
-			$moduleName = static::moduleNameByClassname(get_class($this));
-
-		}
-
-		return $moduleName;
-
-	}
-
-	/**
 	 * use this to set up / check data before respond
 	 * @param \Request
 	 * @return void|\ninja\ResponseInterface Return some Response to use it as final response and stop processing
@@ -278,7 +242,7 @@ abstract class ModAbstractModule {
 	protected function _beforeRespond($Request) {
 
 		if (!isset($this->_Model)) {
-			$classname = $this->getModBaseClassname() . 'Model';
+			$classname = 'Mod' . $this->getModName() . 'Model';
 			$this->_Model = $classname::findByRequest($Request);
 		}
 		// currently respond() depends on having a Model
@@ -289,48 +253,22 @@ abstract class ModAbstractModule {
 	}
 
 	/**
-	 * I return default controller instance. should consider remaining route?
-	 * @param $Request
-	 * @return \ModAbstractController
-	 */
-	protected function _getController($Request) {
-
-		$controllerClassname = substr(get_class($this), 0, -6) . 'Controller';
-		if (!class_exists($controllerClassname)) {
-			$controllerClassname = 'ModBaseController';
-		}
-
-		$Controller = new $controllerClassname(
-			$Request,
-			$this->_Model
-		);
-
-		return $Controller;
-
-	}
-
-	/**
-	 * I can be overwritten eg. to display different views based on some input
 	 * @param \Request $Request
-	 * @return void|\ninja\ResponseInterface Return \Response to use it as final response and stop processing
+	 * @param bool $hasShifted - true if current module has shifted any uri parts (if it has, it is a uri match)
+	 * @return mixed|null|\Response
 	 */
-	protected function _respond($Request) {
+	protected function _respond($Request, $hasShifted) {
 
-		$Controller = $this->_getController($Request);
+		$Controller = \ModRouter::getController($Request, $this, $this->_Model);
 
-		// try invoking an action only if actual module is routable
-		if (!$this->_Model->fieldIsEmpty('slug')
-			// @todo check if request matches current module
-//			&& $this->currentRequestMatchesThis
-			&& (count($Request->getShiftedUriParts()))
-		) {
-			$result = $Controller->invoke($Request);
+		if ($hasShifted && !$Request->getActionMatched()) {
+			$Response = \ModRouter::invokeControllerAction($Controller, $Request);
 		}
 		else {
-			$result = $Controller->actionIndex($Request);
+			$Response = \ModRouter::invokeDefaultAction($Controller, $Request);
 		}
 
-		return $result;
+		return $Response;
 
 	}
 
@@ -350,12 +288,12 @@ abstract class ModAbstractModule {
 
 		// set up model if not yet set
 		$this->_beforeRespond($Request);
-		echop('I am a ' . get_class($this) . ' and my url path is: ' . $this->getHmvcUrlPath());
+
+		$hasShifted = false;
 		// by now I shall have a Model
 		if (!$this->_Model->fieldIsEmpty('slug')) {
 			$slug = $this->_Model->slug;
-			$Request->shiftUriParts($slug);
-//			echop('SHIFTED: ' . $this->_Model->slug);
+			$hasShifted = $Request->shiftUriParts($slug) ? true : false;
 		}
 
 		$Response = $this->_processSubmodules($Request);
@@ -363,47 +301,13 @@ abstract class ModAbstractModule {
 			goto finish;
 		}
 
-		$Response = $this->_respond($Request);
+		$Response = $this->_respond($Request, $hasShifted);
 
 		$this->_afterRespond($Request, $Response);
 
 		finish:
 
 		return $Response;
-	}
-
-	/**
-	 * I provide a way to extend view creation, or, to skip it (return null)
-	 * @return \View|null
-	 */
-//	protected function _getView($Request) {
-//		$viewClassname = substr(get_class($this), 0, -6) . 'View';
-//		if ($pos = strrpos($viewClassname, '\\')) {
-//			$viewClassname = substr($viewClassname, $pos+1);
-//		}
-//		if (!class_exists($viewClassname)) {
-//			$viewClassname = 'ModBaseView';
-//		}
-//		return new $viewClassname($this, $this->_Model);
-//	}
-
-	/**
-	 * @return null|string
-	 */
-	public function getHmvcUrlPath() {
-
-		$url = null;
-
-		if (!$this->_Model->fieldIsEmpty('slug')) {
-
-			$url = $this->_Model->getBubbler()->bubbleGetAll('slug', false);
-
-			$url = implode('/', $url);
-
-		}
-
-		return $url;
-
 	}
 
 }

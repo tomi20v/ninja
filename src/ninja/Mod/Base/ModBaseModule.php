@@ -13,13 +13,4 @@ class ModBaseModule extends \ModAbstractModule {
 		return parent::_beforeRespond($Request);
 	}
 
-	/**
-	 * @param \Request $Request
-	 * @return \Response|null
-	 */
-	public function _respond($Request) {
-		return parent::_respond($Request);
-	}
-
-
 }

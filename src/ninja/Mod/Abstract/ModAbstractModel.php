@@ -5,7 +5,7 @@ namespace ninja;
 abstract class ModAbstractModel extends \Model {
 
 	protected static $_schema = array(
-		// will hold a reference to direct parent module
+		// will hold a reference to direct parent module's model
 		'Parent' => [
 			'class' => 'ModAbstractModel',
 			'reference' => \SchemaManager::REF_REFERENCE,

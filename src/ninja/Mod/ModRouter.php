@@ -4,6 +4,7 @@ namespace ninja;
 
 /**
  * Class ModRouter - some abstraction related to routing to make ModAbstractModule lighter
+ * @todo I shall implement stuff like module traversing based in a given criteria ('find a module that exposes user data')
  *
  * @package ninja
  */
@@ -76,12 +77,11 @@ class ModRouter {
 
 		if (!$Response instanceof \Response) {
 			$View = $Controller->getView();
-			$Response = $View instanceof \View
-				? new \Response($View)
-				: null;
+			$Response = new \Response($View);
 		}
 
 		return $Response;
+
 	}
 
 	/**
@@ -99,7 +99,7 @@ class ModRouter {
 	 * @param \ModAbstractModel $Model
 	 * @return null|string
 	 */
-	public static function getHmvcUrl($Model) {
+	public static function getHmvcPath($Model) {
 
 		$url = null;
 
@@ -113,6 +113,17 @@ class ModRouter {
 
 		return $url;
 
+	}
+
+	/**
+	 * I return a hmvc uri (without domain) with extension targeted at TargetModel
+	 * @param $Model
+	 * @param $TargetModel
+	 * @param $extension
+	 * @throws \Exception
+	 */
+	public static function getHmvcUri($Model, $TargetModel, $extension) {
+		throw new \Exception('TBI');
 	}
 
 

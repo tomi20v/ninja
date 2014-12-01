@@ -5,6 +5,11 @@ namespace ninja;
 abstract class ModAbstractView extends \View {
 
 	/**
+	 * @var \ModAbstractModule reference to my parent
+	 */
+	protected $_Module;
+
+	/**
 	 * @var string[] I hold all keys which have been fetched already
 	 */
 	protected $_fetchedKeys = array();
@@ -21,6 +26,25 @@ abstract class ModAbstractView extends \View {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * @todo this shall be moved to ModAbstractView!?
+	 * @param $Module
+	 * @param $Model
+	 * @param null $template
+	 */
+	public function __construct($Module, $Model, $template=null, $requestedExtension=null) {
+		if (!$Module instanceof \ModAbstractModule ||
+			!$Model instanceof \ModAbstractModel) {
+			throw new \BadMethodCallException();
+		}
+		$this->_Module = $Module;
+		$this->_Model = $Model;
+		$this->_template=$template;
+		if (!is_null($requestedExtension)) {
+			$this->_requestedExtension = $requestedExtension;
+		}
 	}
 
 	/**

@@ -143,15 +143,6 @@ class Request extends \Symfony\Component\HttpFoundation\Request {
 	}
 
 	/**
-	 * I mark requested extension consumed if it's met during the routing
-	 * @return $this
-	 */
-	public function consumeExtension() {
-		$this->_requestedExtension = '';
-		return $this;
-	}
-
-	/**
 	 * I sotre reference to original request
 	 * @return \Request
 	 */
@@ -164,16 +155,12 @@ class Request extends \Symfony\Component\HttpFoundation\Request {
 
 	}
 
-	public function getOriginalMethod() {
-		return $this->_OriginalRequest->getMethod();
-	}
-
 	/**
 	 * @return $this
 	 */
 	public function setActionMatched() {
 
-		$this->_actionMatched = true;
+		$this->_OriginalRequest->_actionMatched = true;
 
 		return $this;
 
@@ -184,7 +171,30 @@ class Request extends \Symfony\Component\HttpFoundation\Request {
 	 */
 	public function getActionMatched() {
 
-		return $this->_actionMatched;
+		return $this->_OriginalRequest->_actionMatched;
+	}
+
+	/**
+	 * I return original request method
+	 * @return string
+	 */
+	public function getOriginalMethod() {
+		return $this->_OriginalRequest->getMethod();
+	}
+
+	/**
+	 * I return original request's target uri part, eg. index.html from index.html/login/xxx
+	 * @return string
+	 */
+	public function getOriginalTargetUri() {
+		$uriParts = $this->_OriginalRequest->getRequestUri();
+		if ($pos = strpos($uriParts, '?')) {
+			$uriParts = substr($uriParts, 0, $pos);
+		};
+		if ($extension = $this->_OriginalRequest->getRequestedExtension()) {
+			$uriParts = substr($uriParts, 0, strpos($uriParts, $extension) + strlen($extension));
+		}
+		return trim($uriParts, '/');
 	}
 
 }

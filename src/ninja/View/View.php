@@ -4,15 +4,14 @@ namespace ninja;
 
 class View {
 
+	const DEFAULT_REQUESTED_EXTENSION = 'html';
+
 	/**
 	 * @var string in custom views set this to a full path to the template
 	 */
 	protected $_template;
 
-	/**
-	 * @var \ModAbstractModule reference to my parent
-	 */
-	protected $_Module;
+	protected $_requestedExtension = '';
 
 	/**
 	 * @var \Model this shall hold all data I need
@@ -23,22 +22,6 @@ class View {
 	 * @var \Mustache_Engine
 	 */
 	protected static $_Engine;
-
-	/**
-	 * @todo this shall be moved to ModAbstractView!?
-	 * @param $Module
-	 * @param $Model
-	 * @param null $template
-	 */
-	public function __construct($Module, $Model, $template=null) {
-		if (!$Module instanceof \ModAbstractModule ||
-			!$Model instanceof \ModAbstractModel) {
-			throw new \BadMethodCallException();
-		}
-		$this->_Module = $Module;
-		$this->_Model = $Model;
-		$this->_template=$template;
-	}
 
 	public function __toString() {
 		return $this->render();
@@ -58,7 +41,6 @@ class View {
 			$content = $M->render($templateFileContents, $Filter);
 		}
 		catch (\Exception $e) {
-			$content = 'FUs';
 		}
 
 		return $content;
@@ -71,7 +53,7 @@ class View {
 	 */
 	public function render() {
 
-		$templateFileContents = $this->loadTemplate();
+		$templateFileContents = $this->loadTemplate($this->_requestedExtension);
 
 		$content = '';
 
@@ -93,7 +75,7 @@ class View {
 	 * @return null|string
 	 * @todo add theme support with defaulting
 	 */
-	public function loadTemplate() {
+	public function loadTemplate($extension) {
 
 		$templatePath = $this->_template;
 
@@ -112,7 +94,8 @@ class View {
 			$templateFolders[] = \Finder::joinPath(
 				NINJA_ROOT,
 				'src/ninja/Mod',
-				\Finder::classToPath($this->_Module->getModName()),
+//				\Finder::classToPath($this->_Module->getModName()),
+				\Finder::classToPath(\ModAbstractModule::modNameByClassname($this->_Model)),
 				'template'
 			);
 
@@ -123,7 +106,8 @@ class View {
 			$templateFolders[] = \Finder::joinPath(
 				APP_ROOT,
 				'template',
-				\Finder::classToPath($this->_Module->getModName())
+//				\Finder::classToPath($this->_Module->getModName())
+				\Finder::classToPath(\ModAbstractModule::modNameByClassname($this->_Model))
 			);
 
 			// clean up the templatefolders
@@ -132,21 +116,27 @@ class View {
 			$templateNames = array();
 			// I respect what's set in the model, and it should not be invalid
 			if (strlen($templateName = $this->_Model->template)) {
-				$templateNames[]=  $templateName;
+				$templateNames[] =  $templateName;
 			}
 			else {
-				$Module = $this->_Module;
-				$a = $Module::modNameByClassname(get_class($this->_Model));
-				$templateNames[] = $a . '.html';
-				$b = $Module::modNameByClassname(get_class($this->_Module));
-				if ($a !== $b) {
-					$templateNames[] = $b . '.html';
+				$a = \ModAbstractModule::modNameByClassname(get_class($this->_Model));
+				$templateNames[] = $a . '.' . $extension;
+				if ($extension !== static::DEFAULT_REQUESTED_EXTENSION) {
+					$templateNames[] = $a . '.' . static::DEFAULT_REQUESTED_EXTENSION;
 				}
+				// this code does not belong here as a View does not necessarily have a Module set
+//				if (isset($this->_Module)) {
+//					$b = \ModAbstractModule::modNameByClassname(get_class($this->_Module));
+//					if ($a !== $b) {
+//						die('FU');
+//						$templateNames[] = $b . '.html';
+//					}
+//				}
 			}
 
-			$extension = '.mustache';
+			$templateExtension = '.mustache';
 
-			$templatePath = \Finder::fileByFolders($templateFolders, $templateNames, $extension);
+			$templatePath = \Finder::fileByFolders($templateFolders, $templateNames, $templateExtension);
 
 		}
 

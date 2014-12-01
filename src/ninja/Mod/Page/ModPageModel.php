@@ -65,14 +65,12 @@ class ModPageModel extends \ModAbstractModel {
 		}
 
 		// $uriParts shall contain uri parts not in root slug (basepath)
-		$uriParts = $Request->getRemainingUriParts();
 		$rootUriParts = explode('/', $ModPageModelRoot->slug);
 
 		$Request->shiftUriParts($rootUriParts);
 
 		$uriParts = array_merge($Request->getRemainingUriParts());
 		$uriPartsCnt = count($uriParts);
-		$uriExtension = '.' . $Request->getRequestedExtension();
 
 		$ModPageModel = new \ModPageModel();
 		$ModPageModel->Root = $ModPageModelRoot;

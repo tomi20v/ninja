@@ -102,11 +102,15 @@ abstract class ModAbstractModule {
 	////////////////////////////////////////////////////////////////////////////////
 
 	/**
-	 * I return a mod's name, eg. 'PagRedirecte' for 'ModPagRedirectModule'
+	 * I return a mod's name, eg. 'PageRedirect' for 'ModPageRedirectModule'
 	 * @param $classname
 	 * @return string
 	 */
 	public static function modNameByClassname($classname) {
+
+		if (is_object($classname)) {
+			$classname = get_class($classname);
+		}
 
 		$modName = $classname;
 
@@ -138,6 +142,14 @@ abstract class ModAbstractModule {
 
 		return $modName;
 
+	}
+
+	/**
+	 * I am just a shorthand wrapper for ModRouter::getHmvcUrl()
+	 * @return string
+	 */
+	public function getHmvcPath() {
+		return \ModRouter::getHmvcPath($this->_Model);
 	}
 
 	////////////////////////////////////////////////////////////////////////////////
@@ -263,6 +275,10 @@ abstract class ModAbstractModule {
 
 		if ($hasShifted && !$Request->getActionMatched()) {
 			$Response = \ModRouter::invokeControllerAction($Controller, $Request);
+			$myHmvcUrl = $this->getHmvcPath() . '.' . $Request->getRequestedExtension();
+			if ($myHmvcUrl == $Request->getOriginalTargetUri()) {
+				$Response->setIsFinal(true);
+			}
 		}
 		else {
 			$Response = \ModRouter::invokeDefaultAction($Controller, $Request);

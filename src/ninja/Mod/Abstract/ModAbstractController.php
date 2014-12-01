@@ -43,9 +43,7 @@ abstract class ModAbstractController {
 	 */
 	public function actionIndex($actionParts=null, $params=null) {
 		$View = $this->getView();
-		$Response = $View instanceof \View
-			? new \Response($View)
-			: null;
+		$Response = new \Response($View);
 		return $Response;
 	}
 
@@ -56,7 +54,6 @@ abstract class ModAbstractController {
 	 * @return \View|null
 	 */
 	public function getView($result=null) {
-		//$viewClassname = substr(get_class($this), 0, -6) . 'View';
 		$viewClassname = 'Mod' . $this->_Module->getModName() . 'View';
 		if ($pos = strrpos($viewClassname, '\\')) {
 			$viewClassname = substr($viewClassname, $pos+1);
@@ -67,7 +64,7 @@ abstract class ModAbstractController {
 		if (!is_null($result)) {
 			$this->_Model->Contents->append(['result'=>$result]);
 		}
-		return new $viewClassname($this->_Module, $this->_Model);
+		return new $viewClassname($this->_Module, $this->_Model, null, $this->_Request->getRequestedExtension());
 	}
 
 }

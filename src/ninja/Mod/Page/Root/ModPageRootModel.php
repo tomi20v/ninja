@@ -2,6 +2,16 @@
 
 namespace ninja;
 
+/**
+ * Class ModPageRootModel
+ *
+ * @package ninja
+ *
+ * @property \ModLayerMode[] $Layers
+ * @property string $domainNmae
+ * @property string[] $availableLanguages
+ * @property string[] $templateFolders
+ */
 class ModPageRootModel extends \ModPageRedirectModel {
 
 	protected static $_schema = array(

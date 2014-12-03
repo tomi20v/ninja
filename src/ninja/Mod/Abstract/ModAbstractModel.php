@@ -2,6 +2,21 @@
 
 namespace ninja;
 
+/**
+ * Class ModAbstractModel
+ *
+ * @package ninja
+ *
+ * @property \ModAbstractModel $Parent
+ * @property bool $published
+ * $property string $slug
+ * @property string[] $layers
+ * @property string $templatePath
+ * @property string $template
+ * @property \ModAbstractModule[] $Modules
+ * @property string[] $Contents
+ *
+ */
 abstract class ModAbstractModel extends \Model {
 
 	protected static $_schema = array(
@@ -21,14 +36,14 @@ abstract class ModAbstractModel extends \Model {
 			'regexp' => '/^[^.]+$',
 		],
 		// page root defines valid layers, other modules will be processed only if no layers set or if  are on an active layer
-		'Layers' => [
+		'layers' => [
 			'toArray',
 			'validLayers',
 		],
-		// override default template filename
-		'template',
 		// override default template path, relative to NINJA_ROOT
 		'templatePath',
+		// override default template filename
+		'template',
 		// array of submodules
 		'Modules' => [
 			'toArray',

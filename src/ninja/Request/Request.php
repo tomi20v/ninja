@@ -5,16 +5,11 @@ namespace ninja;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 /**
- * @TODO make this just a decorator to Request with magics
+ * @TODO make this just a decorator to Request with magics???
  * Class Request for http requests
  * currently I just formally extend Symfony's Request object
  */
 class Request extends \Symfony\Component\HttpFoundation\Request {
-
-	/**
-	 * @var \Request reference or original request object
-	 */
-	protected $_OriginalRequest = null;
 
 	/**
 	 * @var string[] original uri parts
@@ -25,6 +20,16 @@ class Request extends \Symfony\Component\HttpFoundation\Request {
 	 * @var string[] request uri parts without query string and extension. will be copied when cloning and consumed by shiftUriParts()
 	 */
 	private $_remainingUriParts = null;
+
+	/**
+	 * @var string[] original uri parts
+	 */
+	private $_targetUriParts = null;
+
+	/**
+	 * @var string[] original uri parts
+	 */
+	private $_remainingTargetUriParts = null;
 
 	/**
 	 * @var string[] these extensions will be recognized
@@ -48,22 +53,47 @@ class Request extends \Symfony\Component\HttpFoundation\Request {
 	 */
 	protected $_actionMatched = false;
 
+	public function __construct(array $query = array(), array $request = array(), array $attributes = array(), array $cookies = array(), array $files = array(), array $server = array(), $content = null) {
+		parent::__construct($query, $request, $attributes, $cookies, $files, $server, $content);
+	}
+
+	/**
+	 * set $this->_uriParts and $this->_targetUriParts
+	 */
+	private function _setUriParts() {
+		$uriParts = $this->getRequestUri();
+		if ($pos = strpos($uriParts, '?')) {
+			$uriParts = substr($uriParts, 0, $pos);
+		};
+		$this->_targetUriParts = explode('/', trim($uriParts, '/'));
+		if ($extension = $this->getRequestedExtension()) {
+			$pos = strpos($uriParts, $extension) + strlen($extension);
+			$this->_targetUriParts = explode('/', trim(substr($uriParts, 0, $pos), '/'));
+			$uriParts = str_replace('.'.$extension, '', $uriParts);
+		}
+		$this->_uriParts = explode('/', trim($uriParts, '/'));
+
+		$this->_remainingTargetUriParts = $this->_targetUriParts;
+		$this->_remainingUriParts = $this->_uriParts;
+
+	}
+
 	/**
 	 * I return all request uri parts without query string in a nice array
 	 * @return array|string
 	 */
 	public function getUriParts() {
 		if (is_null($this->_uriParts)) {
-			$uriParts = $this->getRequestUri();
-			if ($pos = strpos($uriParts, '?')) {
-				$uriParts = substr($uriParts, 0, $pos);
-			};
-			if ($extension = $this->getRequestedExtension()) {
-				$uriParts = str_replace('.'.$extension, '', $uriParts);
-			}
-			$this->_uriParts = explode('/', trim($uriParts, '/'));
+			$this->_setUriParts();
 		}
 		return $this->_uriParts;
+	}
+
+	/**
+	 * @return string get the original (no consume) target uri (with requested extension)
+	 */
+	public function getTargetUri() {
+		return implode('/', $this->_targetUriParts);
 	}
 
 	/**
@@ -72,7 +102,7 @@ class Request extends \Symfony\Component\HttpFoundation\Request {
 	 */
 	public function getRemainingUriParts() {
 		if (is_null($this->_remainingUriParts)) {
-			$this->_remainingUriParts = $this->getUriParts();
+			$this->_setUriParts();
 		}
 		return $this->_remainingUriParts;
 	}
@@ -103,12 +133,14 @@ class Request extends \Symfony\Component\HttpFoundation\Request {
 				}
 				array_shift($countOrParts);
 				array_shift($this->_remainingUriParts);
+				array_shift($this->_remainingTargetUriParts);
 				$ret++;
 			} while (count($countOrParts) && count($this->_remainingUriParts));
 		}
 		else {
 			$ret = intval($countOrParts);
 			$this->_remainingUriParts = array_slice($this->_remainingUriParts, $ret);
+			$this->_remainingTargetUriParts = array_slice($this->_remainingTargetUriParts, $ret);
 		}
 
 		return $ret;
@@ -123,6 +155,7 @@ class Request extends \Symfony\Component\HttpFoundation\Request {
 	public function getClone() {
 		$NewRequest = clone $this;
 		$NewRequest->_uriParts = $NewRequest->_remainingUriParts;
+		$NewRequest->_targetUriParts = $NewRequest->_remainingTargetUriParts;
 		return $NewRequest;
 	}
 
@@ -149,7 +182,6 @@ class Request extends \Symfony\Component\HttpFoundation\Request {
 	public static function createFromGlobals() {
 
 		$Request = parent::createFromGlobals();
-		$Request->_OriginalRequest = $Request;
 
 		return $Request;
 
@@ -158,9 +190,9 @@ class Request extends \Symfony\Component\HttpFoundation\Request {
 	/**
 	 * @return $this
 	 */
-	public function setActionMatched() {
+	public function setActionMatched($actionMatched) {
 
-		$this->_OriginalRequest->_actionMatched = true;
+		$this->_actionMatched = $actionMatched ? true : false;
 
 		return $this;
 
@@ -171,30 +203,7 @@ class Request extends \Symfony\Component\HttpFoundation\Request {
 	 */
 	public function getActionMatched() {
 
-		return $this->_OriginalRequest->_actionMatched;
-	}
-
-	/**
-	 * I return original request method
-	 * @return string
-	 */
-	public function getOriginalMethod() {
-		return $this->_OriginalRequest->getMethod();
-	}
-
-	/**
-	 * I return original request's target uri part, eg. index.html from index.html/login/xxx
-	 * @return string
-	 */
-	public function getOriginalTargetUri() {
-		$uriParts = $this->_OriginalRequest->getRequestUri();
-		if ($pos = strpos($uriParts, '?')) {
-			$uriParts = substr($uriParts, 0, $pos);
-		};
-		if ($extension = $this->_OriginalRequest->getRequestedExtension()) {
-			$uriParts = substr($uriParts, 0, strpos($uriParts, $extension) + strlen($extension));
-		}
-		return trim($uriParts, '/');
+		return $this->_actionMatched;
 	}
 
 }

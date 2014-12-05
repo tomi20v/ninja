@@ -145,11 +145,11 @@ abstract class ModAbstractModule {
 	}
 
 	/**
-	 * I am just a shorthand wrapper for ModRouter::getHmvcUrl()
+	 * I am just a shorthand wrapper for Router::getHmvcUrl()
 	 * @return string
 	 */
 	public function getHmvcPath() {
-		return \ModRouter::getHmvcPath($this->_Model);
+		return \Router::getHmvcPath($this->_Model);
 	}
 
 	////////////////////////////////////////////////////////////////////////////////
@@ -221,6 +221,9 @@ abstract class ModAbstractModule {
 
 				$Response = $SubModule->respond($SubRequest);
 				if ($Response instanceof \ninja\Response) {
+					$Request->setActionMatched(
+						$SubRequest->getActionMatched()
+					);
 					if ($Response->getIsFinal()) {
 						return $Response;
 					}
@@ -271,17 +274,18 @@ abstract class ModAbstractModule {
 	 */
 	protected function _respond($Request, $hasShifted) {
 
-		$Controller = \ModRouter::getController($Request, $this, $this->_Model);
+		$Controller = \Router::getController($Request, $this, $this->_Model);
 
-		if ($hasShifted && !$Request->getActionMatched()) {
-			$Response = \ModRouter::invokeControllerAction($Controller, $Request);
-			$myHmvcUrl = $this->getHmvcPath() . '.' . $Request->getRequestedExtension();
-			if ($myHmvcUrl == $Request->getOriginalTargetUri()) {
+//		if ($hasShifted && !$Request->getActionMatched()) {
+		if ($hasShifted) {
+			$Response = \Router::invokeControllerAction($Controller, $Request);
+			$myHmvcUrlPart = $this->_Model->slug . '.' . $Request->getRequestedExtension();
+			if ($myHmvcUrlPart == $Request->getTargetUri()) {
 				$Response->setIsFinal(true);
 			}
 		}
 		else {
-			$Response = \ModRouter::invokeDefaultAction($Controller, $Request);
+			$Response = \Router::invokeDefaultAction($Controller, $Request);
 		}
 
 		return $Response;
@@ -292,7 +296,7 @@ abstract class ModAbstractModule {
 	 * use this to process generated response
 	 * @param \Request
 	 * @param \Response
-	 * @return void|\ninja\ResponseInterface Return \Response to use it as final response and stop processing
+	 * @return \Response to use it as final response and stop processing
 	 */
 	protected function _afterRespond($Request, $Response) {}
 

@@ -32,7 +32,7 @@ class ModPageModule extends \ModAbstractModule {
 	 */
 	protected function _respond($Request, $hasShifted) {
 		// @todo I don't like this here (but was the fastest implementation)
-		if ($this->_Model instanceof \ModPageRedirectModel) {
+		if ($this->_Model instanceof \ninja\ModPageRedirectModel) {
 			$Response = new \Response(
 				'getting redirected...',
 				$this->_Model->redirectType,

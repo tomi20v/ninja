@@ -66,6 +66,7 @@ class ModFileservModule extends \ModAbstractModule {
 						'Content-Type' => $mimetype,
 					)
 				);
+				$Request->setActionMatched(true);
 				$Response->setIsFinal(true);
 
 				return $Response;

@@ -2,15 +2,9 @@
 
 namespace ninja;
 
-class ModBaseModule extends \ModAbstractModule {
-
-	/**
-	 * @todo implement me
-	 * @param \Request $Request
-	 * @return \Response|null
-	 */
-	public function _beforeRespond($Request) {
-		return parent::_beforeRespond($Request);
-	}
-
-}
+/**
+ * Class ModBaseModule - I only exist to give fill the gap in the hierarchy
+ *
+ * @package ninja
+ */
+class ModBaseModule extends \ModAbstractModule {}

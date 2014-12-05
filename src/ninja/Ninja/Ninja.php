@@ -74,12 +74,16 @@ class Ninja {
 				$this->_Request = \Request::createFromGlobals();
 			}
 
-//			$Page = new \ModPageModule($this->_Request, $this);
 			$Page = new \ModPageModule($this);
+			// this is the entry point of $Request param into the system.
 			$Response = $Page->respond($this->_Request);
 
 			// if response is just a compiled template in a string
-			if ($Response instanceof \ninja\Response);
+			if ($Response instanceof \ninja\Response) {
+				if (!$Response->getIsFinal() && !$this->_Request->getActionMatched()) {
+					throw new \HttpException(404);
+				};
+			}
 			else {
 				$Response = new \Response(
 					$Response,

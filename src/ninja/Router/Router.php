@@ -1,37 +1,130 @@
 <?php
 
-namespace maui;
+namespace ninja;
 
 /**
- * Class Router for http requests - currently not used and
- * @obsolete
+ * Class Router - some abstraction related to routing to make ModAbstractModule lighter
+ * @todo I shall implement stuff like module traversing based in a given criteria ('find a module that exposes user data')
  *
- * @package maui
+ * @package ninja
  */
-class Router extends \Model {
-
-#	use \maui\TraitNamedInstances;
-
-//	protected static $_schema = array();
+class Router {
 
 	/**
-	 * I return default instance
-	 */
-//	protected static function _instance() {
-//	}
-
-	/**
+	 * I return default controller instance. should consider remaining route?
 	 * @param \Request $Request
-	 * @return \ModePageModel
+	 * @param \ModAbstractModule $Module
+	 * @param \ModAbstractModel $Model
+	 * @return \ModAbstractController
 	 */
-	public static function PageFromRequest($Request) {
-		$loadData = array(
-			'_type' => 'PageRoot',
-			'domain' => $Request->serverName,
+	public static function getController($Request, $Module, $Model) {
+
+		$controllerClassname = 'Mod' . $Module->getModName() . 'Controller';
+		if (!class_exists($controllerClassname)) {
+			$controllerClassname = 'ModBaseController';
+		}
+
+		$Controller = new $controllerClassname(
+			$Request,
+			$Module,
+			$Model
 		);
-		$Page = new \ModPageModel(); echop ($Page); die('KO');
-		$Page = \ModPageModel::loadAsSaved($loadData);
-		return $Page;
+
+		return $Controller;
 	}
+
+	/**
+	 * I seek and invoke the longest controller action possible, matching the request method, or falling back to actionXxx
+	 * @param \ModAbstractController Controller
+	 * @param \Request $Request
+	 */
+	public static function invokeControllerAction($Controller, $Request) {
+
+		$actionParts = $Request->getRemainingUriParts();
+		$remainingActionParts = [];
+		$requestMethod = strtolower($Request->getMethod());
+		$Response = null;
+
+		if (empty($actionParts)) {
+			$actionParts[] = 'index';
+		}
+		while (count($actionParts)) {
+
+			$actions = [];
+
+			$actions[] = $requestMethod . \ArrayHelper::camelJoin($actionParts);
+			$actions[] = 'action' . \ArrayHelper::camelJoin($actionParts);
+
+			foreach ($actions as $eachAction) {
+				// maybe this would be faster with a reflectionclass and getting all methods then just searching in the array?
+				if (method_exists($Controller, $eachAction)) {
+					$params = $Request->request->all();
+					$Response = call_user_func([$Controller, $eachAction], $remainingActionParts, $params);
+					$Request->setActionMatched(true);
+					break 2;
+				}
+			}
+
+			$actionPart = array_pop($actionParts);
+			array_unshift($remainingActionParts, $actionPart);
+
+		}
+
+		// normally this shall happen for simple modules, without specific actions
+		if (is_null($Response)) {
+			$Response = call_user_func([$Controller, 'actionIndex'], $remainingActionParts);
+		}
+
+		if (!$Response instanceof \Response) {
+			$View = $Controller->getView();
+			$Response = new \Response($View);
+		}
+
+		return $Response;
+
+	}
+
+	/**
+	 * I return the response of the controller's default action
+	 * @param $Controller
+	 * @param $Request
+	 * @return mixed
+	 */
+	public static function invokeDefaultAction($Controller, $Request) {
+		return $Controller->actionIndex($Request);
+	}
+
+	/**
+	 * I return hmvc url for a given model
+	 * @param \ModAbstractModel $Model
+	 * @return null|string
+	 */
+	public static function getHmvcPath($Model) {
+
+		$url = null;
+
+		if (!$Model->fieldIsEmpty('slug')) {
+
+			$url = $Model->getBubbler()->bubbleGetAll('slug', false);
+
+			$url = implode('/', $url);
+
+		}
+
+		return $url;
+
+	}
+
+	/**
+	 * I return a hmvc uri (without domain) with extension targeted at TargetModel
+	 * @param $Model
+	 * @param $TargetModel
+	 * @param $extension
+	 * @throws \Exception
+	 */
+	public static function getHmvcUri($Model, $TargetModel, $extension) {
+		throw new \Exception('TBI');
+	}
+
 
 }

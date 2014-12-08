@@ -172,7 +172,7 @@ abstract class ModAbstractModule {
 
 		$moduleClassname = substr($modelClassname, 0, -5) . 'Module';
 
-		$ModModel->Parent = $this->_Model;
+//		$ModModel->Parent = $this->_Model;
 
 		$SubModule = new $moduleClassname(
 			$this,
@@ -276,17 +276,21 @@ abstract class ModAbstractModule {
 
 		$Controller = \Router::getController($Request, $this, $this->_Model);
 
-//		if ($hasShifted && !$Request->getActionMatched()) {
-		if ($hasShifted) {
+		if ($hasShifted && !$Request->getActionMatched()) {
 			$Response = \Router::invokeControllerAction($Controller, $Request);
 			$myHmvcUrlPart = $this->_Model->slug . '.' . $Request->getRequestedExtension();
 			if ($myHmvcUrlPart == $Request->getTargetUri()) {
+				if (count($Request->getRemainingUriParts())) {
+					throw new \HttpException(404);
+				}
 				$Response->setIsFinal(true);
 			}
 		}
 		else {
 			$Response = \Router::invokeDefaultAction($Controller, $Request);
 		}
+
+		unset($Controller);
 
 		return $Response;
 

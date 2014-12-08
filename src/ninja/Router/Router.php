@@ -58,25 +58,25 @@ class Router {
 			foreach ($actions as $eachAction) {
 				// maybe this would be faster with a reflectionclass and getting all methods then just searching in the array?
 				if (method_exists($Controller, $eachAction)) {
+					$Request->shiftUriParts($actionParts);
 					$params = $Request->request->all();
-					$Response = call_user_func([$Controller, $eachAction], $remainingActionParts, $params);
+					$Response = call_user_func([$Controller, $eachAction], $params);
 					$Request->setActionMatched(true);
 					break 2;
 				}
 			}
 
-			$actionPart = array_pop($actionParts);
-			array_unshift($remainingActionParts, $actionPart);
+			array_pop($actionParts);
 
 		}
 
 		// normally this shall happen for simple modules, without specific actions
 		if (is_null($Response)) {
-			$Response = call_user_func([$Controller, 'actionIndex'], $remainingActionParts);
+			$Response = call_user_func([$Controller, 'actionIndex']);
 		}
 
 		if (!$Response instanceof \Response) {
-			$View = $Controller->getView();
+			$View = $Controller->buildView();
 			$Response = new \Response($View);
 		}
 

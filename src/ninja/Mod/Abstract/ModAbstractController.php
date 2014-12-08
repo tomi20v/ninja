@@ -41,19 +41,20 @@ abstract class ModAbstractController {
 	 * @param null $params
 	 * @return null|\Response
 	 */
-	public function actionIndex($actionParts=null, $params=null) {
-		$View = $this->getView();
+	public function actionIndex($params=null) {
+		$View = $this->buildView();
 		$Response = new \Response($View);
 		return $Response;
 	}
 
 	/**
+	 * @TODO - add a parameter for action name so different actions can have their own template, with fallback to default
 	 * I return the default view and provide a way to extend this view creation, or, to skip it (just return null)
 	 *
 	 * @param mixed $result if sent, I set it as the content
 	 * @return \View|null
 	 */
-	public function getView($result=null) {
+	public function buildView($result=null) {
 		$viewClassname = 'Mod' . $this->_Module->getModName() . 'View';
 		if ($pos = strrpos($viewClassname, '\\')) {
 			$viewClassname = substr($viewClassname, $pos+1);

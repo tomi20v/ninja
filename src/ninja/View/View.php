@@ -94,7 +94,6 @@ class View {
 			$templateFolders[] = \Finder::joinPath(
 				NINJA_ROOT,
 				'src/ninja/Mod',
-//				\Finder::classToPath($this->_Module->getModName()),
 				\Finder::classToPath(\ModAbstractModule::modNameByClassname($this->_Model)),
 				'template'
 			);
@@ -102,11 +101,9 @@ class View {
 			// @todo add support for a theme folder here!?
 
 			// app templates
-
 			$templateFolders[] = \Finder::joinPath(
 				APP_ROOT,
 				'template',
-//				\Finder::classToPath($this->_Module->getModName())
 				\Finder::classToPath(\ModAbstractModule::modNameByClassname($this->_Model))
 			);
 
@@ -119,19 +116,11 @@ class View {
 				$templateNames[] =  $templateName;
 			}
 			else {
-				$a = \ModAbstractModule::modNameByClassname(get_class($this->_Model));
-				$templateNames[] = $a . '.' . $extension;
+				$templateName = \ModAbstractModule::modNameByClassname(get_class($this->_Model));
+				$templateNames[] = $templateName . '.' . $extension;
 				if ($extension !== static::DEFAULT_REQUESTED_EXTENSION) {
-					$templateNames[] = $a . '.' . static::DEFAULT_REQUESTED_EXTENSION;
+					$templateNames[] = $templateName . '.' . static::DEFAULT_REQUESTED_EXTENSION;
 				}
-				// this code does not belong here as a View does not necessarily have a Module set
-//				if (isset($this->_Module)) {
-//					$b = \ModAbstractModule::modNameByClassname(get_class($this->_Module));
-//					if ($a !== $b) {
-//						die('FU');
-//						$templateNames[] = $b . '.html';
-//					}
-//				}
 			}
 
 			$templateExtension = '.mustache';

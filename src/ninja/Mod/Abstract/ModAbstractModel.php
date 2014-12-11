@@ -19,7 +19,9 @@ namespace ninja;
  */
 abstract class ModAbstractModel extends \Model {
 
-	protected static $_schema = array(
+	protected $_Module;
+
+	protected static $_schema = [
 		// will hold a reference to direct parent module's model
 		'Parent' => [
 			'class' => 'ModAbstractModel',
@@ -58,7 +60,27 @@ abstract class ModAbstractModel extends \Model {
 			'hasMin' => 0,
 			'hasMax' => 0,
 		],
-	);
+	];
+
+	/**
+	 * @param \ModAbstractModule $Module
+	 * @return $this
+	 */
+	public function setModule($Module) {
+		$this->_Module = $Module;
+		return $this;
+	}
+
+	/**
+	 * get bubbler helper
+	 * @return \ModelBubbler
+	 * @see \maui\ModelBubbler
+	 */
+	public function getBubbler() {
+
+		return new \ModelBubbler($this, $this->_Module);
+
+	}
 
 }
 

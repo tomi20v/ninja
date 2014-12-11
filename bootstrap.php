@@ -14,4 +14,4 @@ function Ninja_autoload($classname) {
 	}
 }
 
-spl_autoload_register('Ninja_autoload');
+spl_autoload_register('Ninja_autoload', true, true);

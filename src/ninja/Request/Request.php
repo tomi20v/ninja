@@ -53,6 +53,11 @@ class Request extends \Symfony\Component\HttpFoundation\Request {
 	 */
 	protected $_actionMatched = false;
 
+	/**
+	 * @var \User User isntance for this request
+	 */
+	protected $_User;
+
 	public function __construct(array $query = array(), array $request = array(), array $attributes = array(), array $cookies = array(), array $files = array(), array $server = array(), $content = null) {
 		parent::__construct($query, $request, $attributes, $cookies, $files, $server, $content);
 	}
@@ -204,6 +209,20 @@ class Request extends \Symfony\Component\HttpFoundation\Request {
 	public function getActionMatched() {
 
 		return $this->_actionMatched;
+	}
+
+	////////////////////////////////////////////////////////////////////////////////
+	//	services
+	////////////////////////////////////////////////////////////////////////////////
+
+	/**
+	 * @return \User
+	 */
+	public function User() {
+		if (is_null($this->_User)) {
+			$this->_User = \User::fromSession($this->getSession());
+		}
+		return $this->_User;
 	}
 
 }

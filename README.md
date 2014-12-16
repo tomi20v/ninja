@@ -8,3 +8,11 @@ note: the system has passed first POC - generate a page from loaded module hiera
 
 this project focuses on PHP. to keep everything in packagist and reduce dependencies, bower components are installed
 through the composer-asset-plugin
+
+some Q&A
+
+why not PSR-0?
+PSR-0 is good if you are using namespaces extensively. in my project I use the root namespace plus one namespace per
+lib. also I don't use underscores in class names. this would result all my classes in one big folder, with many similar
+filenames as my classnames usually show the inheritance chain or group otherwise which nicely breaks down to folders
+

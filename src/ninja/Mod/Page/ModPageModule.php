@@ -31,11 +31,14 @@ class ModPageModule extends \ModAbstractModule {
 	 * @return \Response
 	 */
 	protected function _respond($Request, $hasShifted) {
+
 		// @todo I don't like this here (but was the minimal implementation) - maybe put into controller?
 		if ($this->_Model instanceof \ninja\ModPageRedirectModel) {
+
 			if (count($Request->getRemainingUriParts())) {
 				throw new \HttpException(404);
 			};
+
 			$Response = new \Response(
 				'getting redirected...',
 				$this->_Model->redirectType,
@@ -44,11 +47,18 @@ class ModPageModule extends \ModAbstractModule {
 				]
 			);
 
-			$Response->setIsFinal(true);
-			return $Response;
 		}
-		$ret = parent::_respond($Request, $hasShifted);
-		return $ret;
+		else {
+
+			$Response = parent::_respond($Request, $hasShifted);
+			$Response = \Response::wrap($Response);
+
+		}
+
+		$Response->setIsFinal(true);
+
+		return $Response;
+
 	}
 
 }

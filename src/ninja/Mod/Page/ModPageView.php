@@ -2,20 +2,9 @@
 
 namespace ninja;
 
-use maui\ArrayHelper;
-
 class ModPageView extends \ModAbstractView {
 
-	const MASK_WITHROOT = '/^get_withRoot_([a-zA-Z0-9_]+)$/';
-
-	public function __call($method, $arguments) {
-		if (preg_match(self::MASK_WITHROOT, $method, $matches)) {
-			return $this->_get_withRoot($matches[1]);
-		}
-		return parent::__call($method, $arguments);
-	}
-
-	protected function _get_withRoot($key) {
+	public function getWithRoot($key) {
 		return $this->_Model->getFieldWithRoot($key);
 	}
 
@@ -26,7 +15,7 @@ class ModPageView extends \ModAbstractView {
 	protected function _getScripts() {
 		// I might have to add some filter logic here to check if Root is set and not the same
 		$scripts = array_merge((array)$this->_Model->getField('scripts'), (array)$this->_Model->getField('Root')->getField('scripts'));
-		$scripts = ArrayHelper::arrayUnique($scripts);
+		$scripts = \maui\ArrayHelper::arrayUnique($scripts);
 		return $scripts;
 	}
 
@@ -34,7 +23,7 @@ class ModPageView extends \ModAbstractView {
 	 * I return scripts belonging to the head (or nowhere)
 	 * @return array|null
 	 */
-	public function get_scriptsHead() {
+	public function getScriptsHead() {
 		$scripts = $this->_getScripts();
 		foreach ($scripts as $eachKey=>$eachScript) {
 			if (isset($eachScript['place']) && ($eachScript['place'] !== \ModPageModel::JS_HEAD)) {
@@ -48,7 +37,7 @@ class ModPageView extends \ModAbstractView {
 	 * I return scripts which belong to page foot
 	 * @return array|null
 	 */
-	public function get_scriptsFoot() {
+	public function getScriptsFoot() {
 		$scripts = $this->_getScripts();
 		foreach ($scripts as $eachKey=>$eachScript) {
 			if (!isset($eachScript['place']) || ($eachScript['place'] !== \ModPageModel::JS_FOOT)) {
@@ -58,7 +47,7 @@ class ModPageView extends \ModAbstractView {
 		return $scripts;
 	}
 
-	public function get_css() {
+	public function getCss() {
 		$css = array_merge((array)$this->_Model->getField('css'), (array)$this->_Model->getField('Root')->getField('css'));
 		return $css;
 	}

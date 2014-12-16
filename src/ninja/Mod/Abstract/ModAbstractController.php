@@ -42,9 +42,7 @@ abstract class ModAbstractController {
 	 * @return null|\Response
 	 */
 	public function actionIndex($params=null) {
-		$View = $this->buildView();
-		$Response = new \Response($View);
-		return $Response;
+		return $this->buildView();
 	}
 
 	/**

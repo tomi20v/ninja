@@ -41,6 +41,9 @@ class ModelBubbler extends \maui\ModelBubbler {
 			return $Model->$key;
 		}
 
+		// @todo make shortcut if model references parent???
+		if ($Model->fieldIsSet('Parent') && $Model->field('Parent') instanceof \ninja\ModAbstractModel) {}
+
 		$ParentModule = $Module->getParent();
 		if ($ParentModule instanceof \ninja\ModAbstractModule) {
 			return $this->_bubbleModuleGet($ParentModule, $key);

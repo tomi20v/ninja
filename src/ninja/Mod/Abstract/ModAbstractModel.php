@@ -67,8 +67,10 @@ abstract class ModAbstractModel extends \Model {
 	 * @return $this
 	 */
 	public function setModule($Module) {
+
 		$this->_Module = $Module;
 		return $this;
+
 	}
 
 	/**

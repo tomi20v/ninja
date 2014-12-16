@@ -57,15 +57,10 @@ class ModPageModel extends \ModAbstractModel {
 	 * @param \Request $Request
 	 * @return \ModPageRootModel
 	 */
-	public static function findByRequest($Request) {
-
-		$ModPageModelRoot = \ModPageRootModel::findByRequest($Request);
-		if (!$ModPageModelRoot->isLoaded()) {
-			throw new \HttpException(404);
-		}
+	public static function findByRequestAndRoot($Request, $ModPageRootModel) {
 
 		// $uriParts shall contain uri parts not in root slug (basepath)
-		$rootUriParts = explode('/', $ModPageModelRoot->slug);
+		$rootUriParts = explode('/', $ModPageRootModel->slug);
 
 		$Request->shiftUriParts($rootUriParts);
 
@@ -73,7 +68,7 @@ class ModPageModel extends \ModAbstractModel {
 		$uriPartsCnt = count($uriParts);
 
 		$ModPageModel = new \ModPageModel();
-		$ModPageModel->Root = $ModPageModelRoot;
+		$ModPageModel->Root = $ModPageRootModel;
 
 		for ($i=$uriPartsCnt; $i>=0; $i--) {
 			$slug = implode('/', $uriParts);
@@ -83,10 +78,6 @@ class ModPageModel extends \ModAbstractModel {
 				break;
 			}
 			array_pop($uriParts);
-		}
-
-		if (!$ModPageModel->isLoaded()) {
-			$ModPageModel = $ModPageModelRoot;
 		}
 
 		return $ModPageModel;

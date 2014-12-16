@@ -61,7 +61,7 @@ abstract class ModAbstractModule {
 //	protected $_Request;
 
 	/**
-	 * @var \Model this model should hold the coupled data for the module, eg. metas in a page...
+	 * @var \ModAbstractModel this model should hold the coupled data for the module, eg. metas in a page...
 	 */
 	protected $_Model;
 
@@ -150,6 +150,21 @@ abstract class ModAbstractModule {
 	 */
 	public function getHmvcPath() {
 		return \Router::getHmvcPath($this->_Model);
+	}
+
+	/**
+	 * @return \Model I open $_Model
+	 */
+	public function getModel() {
+		return $this->_Model;
+	}
+
+	/**
+	 * I expose my parent for module based bubbling
+	 * @return \ModAbstractModule
+	 */
+	public function getParent() {
+		return $this->_Parent;
 	}
 
 	////////////////////////////////////////////////////////////////////////////////
@@ -262,9 +277,9 @@ abstract class ModAbstractModule {
 		}
 		// currently respond() depends on having a Model
 		if (!isset($this->_Model)) {
-			throw new \HttpRuntimeException();
+			return false;
 		}
-
+		$this->_Model->setModule($this);
 	}
 
 	/**
@@ -280,7 +295,7 @@ abstract class ModAbstractModule {
 			$Response = \Router::invokeControllerAction($Controller, $Request);
 			$myHmvcUrlPart = $this->_Model->slug . '.' . $Request->getRequestedExtension();
 			if ($myHmvcUrlPart == $Request->getTargetUri()) {
-				if (count($Request->getRemainingUriParts())) {
+				if (count($Request->getRemainingUriParts()) && !$Request->getActionMatched()) {
 					throw new \HttpException(404);
 				}
 				$Response->setIsFinal(true);
@@ -311,7 +326,11 @@ abstract class ModAbstractModule {
 	final public function respond($Request) {
 
 		// set up model if not yet set
-		$this->_beforeRespond($Request);
+		if ($this->_beforeRespond($Request) === false) {
+			// this actually should not happen. a module shall handle in _beforeRespond if the model is necessary and
+			// throw from there
+			throw new \HttpRuntimeException();
+		}
 
 		$hasShifted = false;
 		// by now I shall have a Model

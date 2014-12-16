@@ -8,13 +8,13 @@
 	<meta name="{{name}}" content="{{content}}" />
 	{{/meta}}
 
-	<title>{{title}}</title>
+	<title>{{M.title}}</title>
 
-	{{#get_withRoot_css}}
+	{{#View.getWithRoot_css}}
 	{{#onlyIf}}<!-- IF {{onlyIf}} -->{{/onlyIf}}
 	<link rel="stylesheet" {{#media}}media={{media}}{{/media}} href="{{href}}" />
 	{{#onlyIf}}<!-- IF {{onlyIf}} -->{{/onlyIf}}
-	{{/get_withRoot_css}}
+	{{/View.getWithRoot_css}}
 
 	<script type="text/javascript">
 //		var noGlobal = false;
@@ -22,29 +22,29 @@
 
 	<script data-main="assets/js/main" src="assets/js/require.js"></script>
 
-	{{#get_ScriptsHead}}
+	{{#View.getScriptsHead}}
 	{{#src}}<script src="{{{src}}}" ></script>{{/src}}
-	{{/get_ScriptsHead}}
+	{{/View.getScriptsHead}}
 	<script>
-	{{#get_ScriptsHead}}
+	{{#View.getScriptsHead}}
 	{{#code}}{{{code}}}{{/code}}
-	{{/get_ScriptsHead}}
+	{{/View.getScriptsHead}}
 	</script>
 
 </head>
-<body {{#cssId}}id="#{{cssId}}"{{/cssId}} class="n-mod-page{{#get_withRoot_cssClasses}} {{.}}{{/get_withRoot_cssClasses}}" {{#get_withRoot_cssStyle}}style="{{{.}}}"{{/get_withRoot_cssStyle}}>
+<body {{#cssId}}id="#{{cssId}}"{{/cssId}} class="n-mod-page{{#View.getWithRoot_cssClasses}} {{.}}{{/View.getWithRoot_cssClasses}}" {{#View.getWithRoot_cssStyle}}style="{{{.}}}"{{/View.getWithRoot_cssStyle}}>
 
 {{{ Contents.header }}}
 {{{ Contents.columns }}}
 {{{ Contents.footer }}}
 
-{{#get_ScriptsFoot}}
+{{#View.getScriptsFoot}}
 {{#src}}<script src="{{{src}}}" ></script>{{/src}}
-{{/get_ScriptsFoot}}
+{{/View.getScriptsFoot}}
 <script>
-{{#get_ScriptsFoot}}
+{{#View.getScriptsFoot}}
 {{#code}}{{{code}}}{{/code}}
-{{/get_ScriptsFoot}}
+{{/View.getScriptsFoot}}
 </script>
 
 </body>

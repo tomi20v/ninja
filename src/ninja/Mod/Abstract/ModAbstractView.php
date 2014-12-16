@@ -5,6 +5,11 @@ namespace ninja;
 abstract class ModAbstractView extends \View {
 
 	/**
+	 * @var string I map methods which match this reachable in template by property name
+	 */
+	const EXPOSED_METHOD_MASK = '/^(get|fetch|mark)([a-zA-Z0-9]+)(\_[a-zA-Z0-9]+)?$/';
+
+	/**
 	 * @var \ModAbstractModule reference to my parent
 	 */
 	protected $_Module;
@@ -14,16 +19,28 @@ abstract class ModAbstractView extends \View {
 	 */
 	protected $_fetchedKeys = array();
 
-	public function __call($method, $arguments) {
-		if (preg_match(\Filter::MASK_FETCHER, $method, $matches)) {
-			$key = $matches[1];
-			if (!in_array($key, $this->_fetchedKeys)) {
-				$this->_fetchedKeys[] = $key;
-			}
-			$Contents = $this->_Model->getField('Contents', \ModelManager::DATA_ALL, true);
-			if (isset($Contents[$key])) {
-				return $Contents[$key];
-			}
+	/**
+	 * @var string[] I will not expose these methods to the template
+	 */
+	protected static $_protectedMethods = ['from', 'render', 'setTemplate'];
+
+	/**
+	 * I map my method to property for the template
+	 * @param string $name
+	 * @return bool
+	 */
+	function __isset($name) {
+		return preg_match(static::EXPOSED_METHOD_MASK, $name, $matches) && method_exists($this, $matches[1] . $matches[2]);
+	}
+
+	/**
+	 * I map my method to property for the template
+	 * @param string $name
+	 * @return mixed
+	 */
+	function __get($name) {
+		if (preg_match(static::EXPOSED_METHOD_MASK, $name, $matches)) {
+			return call_user_func([$this, $matches[1].$matches[2]], substr($matches[3], 1));
 		}
 		return null;
 	}
@@ -47,12 +64,16 @@ abstract class ModAbstractView extends \View {
 		}
 	}
 
+	////////////////////////////////////////////////////////////////////////////////
+	// methods pullable from template
+	////////////////////////////////////////////////////////////////////////////////
+
 	/**
 	 * use {{{get_Contents}}} in your templates to get the Contents array merged
 	 * @return string
 	 */
-	public function get_Contents() {
-		// @todo I could implement a depth-based indenting so output would still be nice
+	public function getContents() {
+		// @todo I could implement a depth-based indenting so output would still be nice... though it makes not much sense
 		$ret = $this->_Model->getField('Contents', \ModelManager::DATA_ALL, true);
 		if (is_array($ret)) {
 			$ret = array_diff_key($ret, array_flip($this->_fetchedKeys));
@@ -66,7 +87,7 @@ abstract class ModAbstractView extends \View {
 	 * @param string $key
 	 * @return string|mixed
 	 */
-	public function fetchFromContents($key) {
+	public function fetchContents($key) {
 		$this->_fetchedKeys[] = $key;
 		$Contents = $this->_Model->getField('Contents');
 		return isset($Contents[$key]) ? $Contents[$key] : null;
@@ -77,7 +98,7 @@ abstract class ModAbstractView extends \View {
 	 * @param string $key
 	 * @return null
 	 */
-	public function markFetchedFromContents($key) {
+	public function markContents($key) {
 		$this->_fetchedKeys[] = $key;
 		return null;
 	}
@@ -86,7 +107,7 @@ abstract class ModAbstractView extends \View {
 	 * use {{{get_ModelDebug}}} in your template to print the current Model
 	 * @return string
 	 */
-	public function get_ModelDebug() {
+	public function getModelDebug() {
 		$ret = '$this->_Model:' . \EchoPrinter::echop($this->_Model, true, 0, 3, true, false);
 		return $ret;
 	}

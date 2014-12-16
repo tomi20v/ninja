@@ -3,8 +3,13 @@
 namespace ninja;
 
 /**
- * Class Router - some abstraction related to routing to make ModAbstractModule lighter
- * @todo I shall implement stuff like module traversing based in a given criteria ('find a module that exposes user data')
+
+ * Class Router - some abstraction related to routing to make ModAbstractModule
+ * lighter. I shall create Controller and invoke its action. I return a Response
+ * object.
+ * @todo I shall implement stuff like module traversing based in a given
+ * criteria ('find a module that exposes user data'), but I might take another
+ * approach
  *
  * @package ninja
  */
@@ -37,11 +42,11 @@ class Router {
 	 * I seek and invoke the longest controller action possible, matching the request method, or falling back to actionXxx
 	 * @param \ModAbstractController Controller
 	 * @param \Request $Request
+	 * @return \Response
 	 */
 	public static function invokeControllerAction($Controller, $Request) {
 
 		$actionParts = $Request->getRemainingUriParts();
-		$remainingActionParts = [];
 		$requestMethod = strtolower($Request->getMethod());
 		$Response = null;
 
@@ -76,8 +81,7 @@ class Router {
 		}
 
 		if (!$Response instanceof \Response) {
-			$View = $Controller->buildView();
-			$Response = new \Response($View);
+			$Response = new \Response($Response);
 		}
 
 		return $Response;
@@ -86,12 +90,12 @@ class Router {
 
 	/**
 	 * I return the response of the controller's default action
-	 * @param $Controller
-	 * @param $Request
-	 * @return mixed
+	 * @param \ModAbstractController $Controller
+	 * @param \Request $Request
+	 * @return \Response
 	 */
 	public static function invokeDefaultAction($Controller, $Request) {
-		return $Controller->actionIndex($Request);
+		return \Response::wrap($Controller->actionIndex($Request));
 	}
 
 	/**

@@ -4,6 +4,7 @@ namespace ninja;
 
 /**
  * Class User - maybe I should move this object into a Mod?
+ * @todo quite some fields need implementation
  *
  * @package ninja
  */
@@ -57,31 +58,23 @@ class User extends \Model {
 			$ttl = static::LOGIN_TTL_DEFAULT;
 		}
 
-		$sessionId = $Session->getId();
-		$User = \User::finder()
-			->equals('sessionId', $sessionId)
-			->greaterThan('tstamp', \Ninja::tstamp()-$ttl)
-			->findOne();
+		if (is_null($Session)) {
+			$User = new static();
+		}
+		else {
+			$sessionId = $Session->getId();
+			$User = static::finder()
+				->equals('sessionId', $sessionId)
+				->greaterThan('tstamp', \Ninja::tstamp()-$ttl)
+				->findOne();
+		}
+
 		return $User;
 
 	}
 
-	/**
-	 * @TODO TEST ME
-	 * I create a User object for update - I get from POST or GET depending on method
-	 * @param \Request $Request
-	 */
-//	public static function fromRequest($Request) {
-//
-//		$keysToSet = ['email', 'password', 'isAdmin'];
-//		$data = array_intersect_key(
-//			$Request->getMethod() === \Request::METHOD_POST ? $Request->request->all() : $Request->query->all(),
-//			array_flip($keysToSet)
-//		);
-//
-//		$User = new static($data, false);
-//		return $User;
-//
-//	}
+	public function login($Session, $email, $password) {
+		//$sessionId = $Session->getId();
+	}
 
 }

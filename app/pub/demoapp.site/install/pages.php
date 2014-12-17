@@ -49,7 +49,7 @@ $DaPageRoot = new \ModPageRootModel([
 		'published' => true,
 //		'doctype' => 'html',
 		'domainName' => '.demoapp.site',
-		'Layers' => [
+		'availableLayers' => [
 			'default' => new \ModLayerModel([
 					'label' => 'default',
 				], false)
@@ -60,6 +60,9 @@ $DaPageRoot = new \ModPageRootModel([
 		'location' => '/index.html',
 		// modules and stuff to be inherited by child pages
 		'Modules' => [
+			'footer' => new \ModBaseIncludeModel([
+					'template' => 'footer.html',
+				], false),
 			'header' => new \ModBaseIncludeModel([
 					'slug' => '',
 					'template' => 'header.html',
@@ -78,9 +81,6 @@ $DaPageRoot = new \ModPageRootModel([
 //						])
 					],
 				], false),
-			'footer' => new \ModBaseIncludeModel([
-					'template' => 'footer.html',
-				], false),
 		]
 //			+ $assetModules
 		,
@@ -93,7 +93,15 @@ $DaPageRoot = new \ModPageRootModel([
 			['href'=>'/assets/css/bootstrap.css'],
 			['href'=>'/assets/css/bootstrap-theme.css'],
 		],
-		'cssStyle' => 'padding-top:60px;'
+		'cssStyle' => 'padding-top:60px;',
+		'extensionToType' => [
+			'html' => 'pages',
+			'json' => 'api',
+		],
+		'typeToViewEngine' => [
+			'pages' => 'Mustache',
+			'api' => 'Json',
+		],
 	], false);
 //echop($DaPageRoot);
 echop($DaPageRoot->save(false));

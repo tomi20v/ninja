@@ -6,12 +6,12 @@
 // make sure this file does not get used
 die();
 
+class ModelBubbler extends \ninja\ModelBubbler {}
 class Response extends \ninja\Response {}
 class Router extends \ninja\Router {}
 class User extends \ninja\User {}
 class HttpException extends \ninja\HttpException {}
 class Tester extends \ninja\Tester {}
-class Filter extends \ninja\Filter {}
 class Session extends \ninja\Session {}
 class Ninja extends \ninja\Ninja {}
 class FinderPartials extends \ninja\FinderPartials {}
@@ -19,6 +19,10 @@ class Finder extends \ninja\Finder {}
 class SchemaValidatorValidLayers extends \ninja\SchemaValidatorValidLayers {}
 class Request extends \ninja\Request {}
 class View extends \ninja\View {}
+class ViewEngineMustache extends \ninja\ViewEngineMustache {}
+class ViewEngineJson extends \ninja\ViewEngineJson {}
+class ViewEngine extends \ninja\ViewEngine {}
+class ViewScope extends \ninja\ViewScope {}
 class ModStub extends \ninja\ModStub {}
 class ModUserModule extends \ninja\ModUserModule {}
 class ModUserView extends \ninja\ModUserView {}
@@ -29,6 +33,7 @@ class ModUserLoginModule extends \ninja\ModUserLoginModule {}
 class ModUserLoginModel extends \ninja\ModUserLoginModel {}
 class ModUserLoginView extends \ninja\ModUserLoginView {}
 class ModPageRootModel extends \ninja\ModPageRootModel {}
+class ModPageRootModule extends \ninja\ModPageRootModule {}
 class ModPageRedirectModel extends \ninja\ModPageRedirectModel {}
 class ModPageController extends \ninja\ModPageController {}
 class ModPageView extends \ninja\ModPageView {}
@@ -44,7 +49,6 @@ class ModContainerExpandableController extends \ninja\ModContainerExpandableCont
 class ModContainerFallbackModel extends \ninja\ModContainerFallbackModel {}
 class ModContainerFallbackModule extends \ninja\ModContainerFallbackModule {}
 class ModContainerController extends \ninja\ModContainerController {}
-class ModRouter extends \ninja\ModRouter {}
 class ModLayerModel extends \ninja\ModLayerModel {}
 class ModLayerView extends \ninja\ModLayerView {}
 class ModLayerModule extends \ninja\ModLayerModule {}

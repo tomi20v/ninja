@@ -14,12 +14,12 @@ namespace ninja;
  */
 class ModPageRootModel extends \ModPageRedirectModel {
 
-	protected static $_schema = array(
-		'@@extends' => array(
+	protected static $_schema = [
+		'@@extends' => [
 			'ModPageModel',
 			'ModPageRedirectModel',
-		),
-		'Layers' => [
+		],
+		'availableLayers' => [
 			'toArray',
 			'class' => 'ModLayerModel',
 			'reference' => \SchemaManager::REF_INLINE,
@@ -27,21 +27,43 @@ class ModPageRootModel extends \ModPageRedirectModel {
 //			'validLayers',
 			'hasMax' => 0,
 		],
-		'domainName' => array(
+		'domainName' => [
 			'toString',
 			'domainName',
-		),
-		'availableLanguages' => array(
+		],
+		'availableLanguages' => [
 			'toArray',
 			'hasMin' => 1,
 			'hasMax' => 0,
-		),
-		'templateFolders' => array(
+		],
+		'templateFolders' => [
 			'toArray',
 			'hasMin' => 0,
 			'hasMax' => 0,
-		),
-	);
+		],
+		////////////////////////////////////////////////////////////
+		// internal
+		////////////////////////////////////////////////////////////
+		'Page' => [
+			// @todo implement noSave
+//			'noSave',
+			'class' => 'ModPageModel',
+		],
+		////////////////////////////////////////////////////////////
+		// setup
+		////////////////////////////////////////////////////////////
+		// this will map requested extension to output type
+		'extensionToType' => [
+			'toArray',
+			'in' => ['pages','api'],
+		],
+		// this will map output type to view engine
+		'typeToViewEngine' => [
+			'toArray',
+//			'validSubclasses' => 'maui\\ViewEngine',
+			'keys' => ['pages','api'],
+		],
+	];
 
 	/**
 	 * @param \Request $Request
@@ -62,16 +84,13 @@ class ModPageRootModel extends \ModPageRedirectModel {
 			$slug = implode('/', $uriParts);
 			$ModPageModelRoot = $Finder
 				->clear('slug')
-				->equals('slug', $slug)
+				->equals('slug', $slug);
+			$ModPageModelRoot = $ModPageModelRoot
 				->findOne();
 			if ($ModPageModelRoot->isLoaded()) {
 				break;
 			}
 			array_pop($uriParts);
-		}
-
-		if (is_null($ModPageModelRoot) || !$ModPageModelRoot->isLoaded()) {
-			throw new \HttpException(404);
 		}
 
 		return $ModPageModelRoot;

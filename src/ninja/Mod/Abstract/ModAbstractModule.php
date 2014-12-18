@@ -66,11 +66,6 @@ abstract class ModAbstractModule {
 	protected $_Model;
 
 	/**
-	 * @var \View
-	 */
-	protected $_View;
-
-	/**
 	 * @var \Controller
 	 */
 	protected $_Controller;

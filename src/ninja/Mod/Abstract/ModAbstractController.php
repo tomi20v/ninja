@@ -15,11 +15,6 @@ abstract class ModAbstractController {
 	protected $_Module;
 
 	/**
-	 * @var \ModAbstractModel $_Model
-	 */
-	protected $_Model;
-
-	/**
 	 * @param \Request $Request
 	 * @param \ModAbstractModule $Module
 	 * @param \ModAbstractModel $Model
@@ -32,8 +27,13 @@ abstract class ModAbstractController {
 		}
 		$this->_Request = $Request;
 		$this->_Module = $Module;
-		$this->_Model = $Model;
 	}
+
+	/**
+	 * I will be called right before any action call would happen.
+	 * Overwrite and put code here which stands for all methods only
+	 */
+	public function before() {}
 
 	/**
 	 * I am the most simple action implementation
@@ -46,7 +46,7 @@ abstract class ModAbstractController {
 	}
 
 	/**
-	 * @TODO - add a parameter for action name so different actions can have their own template, with fallback to default
+	 * @TODO - add a parameter for action name so different actions can build their own template easily, with fallback to default one
 	 * I return the default view and provide a way to extend this view creation, or, to skip it (just return null)
 	 *
 	 * @param mixed $result if sent, I set it as the content
@@ -61,9 +61,9 @@ abstract class ModAbstractController {
 			$viewClassname = 'ModBaseView';
 		}
 		if (!is_null($result)) {
-			$this->_Model->Contents->append(['result'=>$result]);
+			$this->_Module->getModel()->Contents->append(['result'=>$result]);
 		}
-		return new $viewClassname($this->_Module, $this->_Model, null, $this->_Request->getRequestedExtension());
+		return new $viewClassname($this->_Module, $this->_Module->getModel(), null, $this->_Request->getRequestedExtension());
 	}
 
 }

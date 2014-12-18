@@ -64,6 +64,7 @@ class Router {
 				// maybe this would be faster with a reflectionclass and getting all methods then just searching in the array?
 				if (method_exists($Controller, $eachAction)) {
 					$Request->shiftUriParts($actionParts);
+					$before = call_user_func([$Controller, 'before']);
 					$params = $Request->request->all();
 					$Response = call_user_func([$Controller, $eachAction], $params);
 					$Request->setActionMatched(true);

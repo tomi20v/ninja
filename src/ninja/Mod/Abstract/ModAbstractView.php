@@ -46,7 +46,6 @@ abstract class ModAbstractView extends \View {
 	}
 
 	/**
-	 * @todo this shall be moved to ModAbstractView!?
 	 * @param $Module
 	 * @param $Model
 	 * @param null $template
@@ -73,7 +72,6 @@ abstract class ModAbstractView extends \View {
 	 * @return string
 	 */
 	public function getContents() {
-		// @todo I could implement a depth-based indenting so output would still be nice... though it makes not much sense
 		$ret = $this->_Model->getField('Contents', \ModelManager::DATA_ALL, true);
 		if (is_array($ret)) {
 			$ret = array_diff_key($ret, array_flip($this->_fetchedKeys));

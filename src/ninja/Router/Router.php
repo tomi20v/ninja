@@ -22,7 +22,7 @@ class Router {
 	 * @param \ModAbstractModel $Model
 	 * @return \ModAbstractController
 	 */
-	public static function getController($Request, $Module, $Model) {
+	public static function getController($Request, $Module) {
 
 		$controllerClassname = 'Mod' . $Module->getModName() . 'Controller';
 		if (!class_exists($controllerClassname)) {
@@ -31,11 +31,11 @@ class Router {
 
 		$Controller = new $controllerClassname(
 			$Request,
-			$Module,
-			$Model
+			$Module
 		);
 
 		return $Controller;
+
 	}
 
 	/**
@@ -64,7 +64,7 @@ class Router {
 				// maybe this would be faster with a reflectionclass and getting all methods then just searching in the array?
 				if (method_exists($Controller, $eachAction)) {
 					$Request->shiftUriParts($actionParts);
-					$before = call_user_func([$Controller, 'before']);
+					$Controller->before();
 					$params = $Request->request->all();
 					$Response = call_user_func([$Controller, $eachAction], $params);
 					$Request->setActionMatched(true);

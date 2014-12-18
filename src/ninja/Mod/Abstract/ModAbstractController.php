@@ -17,12 +17,10 @@ abstract class ModAbstractController {
 	/**
 	 * @param \Request $Request
 	 * @param \ModAbstractModule $Module
-	 * @param \ModAbstractModel $Model
 	 */
-	public function __construct($Request, $Module, $Model) {
+	public function __construct($Request, $Module) {
 		if (!$Request instanceof \Request ||
-			!$Module instanceof \ModAbstractModule ||
-			!$Model instanceof \ModAbstractModel) {
+			!$Module instanceof \ModAbstractModule) {
 			throw new \BadMethodCallException();
 		}
 		$this->_Request = $Request;

@@ -25,9 +25,9 @@
 		"symfony/http-kernel": "2.6.*@dev",
 		"symfony/http-foundation": "2.6.*@dev",
 		"mustache/mustache": "dev-master",
-		"fxp/composer-asset-plugin": "~1.0",
-		"bower-asset/jquery": "dev-master",
-		"bower-asset/bootstrap-css": "dev-master",
+		"components/jquery": "~2.0",
+		"components/bootstrap": "~3.0",
+	  "fxp/composer-asset-plugin": "~1.0",
 		"bower-asset/requirejs": "dev-master"
 	},
 	"autoload": {

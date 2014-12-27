@@ -78,7 +78,7 @@ abstract class ModAbstractModel extends \Model {
 	 * @return \ModelBubbler
 	 * @see \maui\ModelBubbler
 	 */
-	public function getBubbler() {
+	public function Bubbler() {
 
 		return new \ModelBubbler($this, $this->_Module);
 

@@ -96,7 +96,7 @@ class ViewEngineMustache extends \ViewEngine {
 				$templateFolders[] = \Finder::joinPath(APP_ROOT, 'default', $tmp);
 			}
 			// bubble up for template path
-			elseif (strlen($tmp = $Model->getBubbler()->templatePath)) {
+			elseif (strlen($tmp = $Model->Bubbler()->templatePath)) {
 				$templateFolders[] = \Finder::joinPath(APP_ROOT, 'default', $tmp);
 			}
 

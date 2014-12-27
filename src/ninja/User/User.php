@@ -63,7 +63,7 @@ class User extends \Model {
 		}
 		else {
 			$sessionId = $Session->getId();
-			$User = static::finder()
+			$User = static::Finder()
 				->equals('sessionId', $sessionId)
 				->greaterThan('tstamp', \Ninja::tstamp()-$ttl)
 				->findOne();

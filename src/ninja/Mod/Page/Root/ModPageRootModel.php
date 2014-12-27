@@ -75,7 +75,7 @@ class ModPageRootModel extends \ModPageRedirectModel {
 		$uriPartsCnt = count($uriParts);
 
 		// I'll reuse this object
-		$Finder = static::finder()
+		$Finder = static::Finder()
 			->equals('parent', null)
 			->regex('domainName', '/(\.)?' . $Request->getHttpHost() . '/');
 

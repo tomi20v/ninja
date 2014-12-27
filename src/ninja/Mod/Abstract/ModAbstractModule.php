@@ -197,7 +197,7 @@ abstract class ModAbstractModule {
 	 * @return ModAbstractModelCollection|null $subModules
 	 */
 	protected function _getSubModuleModels() {
-		$subModuleModels = !$this->_Model->fieldIsEmpty('Modules')
+		$subModuleModels = !$this->_Model->Data()->fieldIsEmpty('Modules')
 			? $this->_Model->Modules
 			: null;
 		return $subModuleModels;
@@ -329,7 +329,7 @@ abstract class ModAbstractModule {
 
 		$hasShifted = false;
 		// by now I shall have a Model
-		if (!$this->_Model->fieldIsEmpty('slug')) {
+		if (!$this->_Model->Data()->fieldIsEmpty('slug')) {
 			$slug = $this->_Model->slug;
 			$hasShifted = $Request->shiftUriParts($slug) ? true : false;
 		}

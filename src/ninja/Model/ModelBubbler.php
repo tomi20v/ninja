@@ -37,12 +37,12 @@ class ModelBubbler extends \maui\ModelBubbler {
 	protected function _bubbleModuleGet($Module, $key) {
 
 		$Model = $Module->getModel();
-		if (($Model instanceof \ninja\ModAbstractModel) && $Model->fieldIsSet($key)) {
+		if (($Model instanceof \ninja\ModAbstractModel) && $Model->Data()->fieldIsSet($key)) {
 			return $Model->$key;
 		}
 
 		// @todo make shortcut if model references parent???
-		if ($Model->fieldIsSet('Parent') && $Model->field('Parent') instanceof \ninja\ModAbstractModel) {}
+		if ($Model->Data()->fieldIsSet('Parent') && $Model->Data()->getField('Parent') instanceof \ninja\ModAbstractModel) {}
 
 		$ParentModule = $Module->getParent();
 		if ($ParentModule instanceof \ninja\ModAbstractModule) {

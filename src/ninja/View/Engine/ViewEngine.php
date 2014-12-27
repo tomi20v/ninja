@@ -25,7 +25,7 @@ abstract class ViewEngine {
 	 */
 	public static function fromModel($Model, $templateExtension) {
 
-		$Bubbler = $Model->getBubbler();
+		$Bubbler = $Model->Bubbler();
 
 		$type = '';
 		if (!empty($templateExtension)) {

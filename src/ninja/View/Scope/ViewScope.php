@@ -30,7 +30,7 @@ class ViewScope {
 	 * @return bool
 	 */
 	public function __isset($key) {
-		return $this->Model->hasField($key);
+		return $this->Model->Data()->hasField($key);
 	}
 
 	/**
@@ -39,7 +39,7 @@ class ViewScope {
 	 * @return mixed
 	 */
 	public function __get($key) {
-		return $this->Model->field($key);
+		return $this->Model->Data()->getField($key);
 	}
 
 	/**

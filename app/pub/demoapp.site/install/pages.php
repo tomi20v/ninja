@@ -226,10 +226,10 @@ echop($adminDaPageApiResult);
 //echop($adminDaPageHome);
 
 $User = new \User();
-$User
-	->field('email', 'no@ema.il')
-	->field('password', sha1('123'))
-	->field('active', true)
+$User->Data()
+	->setField('email', 'no@ema.il')
+	->setField('password', sha1('123'))
+	->Data()->setField('active', true)
 ;
 $result = $User->save();
 echop($User); echop($result);

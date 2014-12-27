@@ -198,4 +198,34 @@ class Finder {
 		return $ret;
 	}
 
+	/**
+	 * get a friend class eg. get ModAsdView from ModAsdXxx by calling Mod
+	 * @param $classNameOrObject
+	 * @param $friendSuffix
+	 * @return null|string
+	 */
+	public static function getFriendClassOf($classNameOrObject, $friendSuffix, $fallbackClassname) {
+		if (is_object($classNameOrObject)) {
+			$classNameOrObject = get_class($classNameOrObject);
+		}
+		$pos = strrpos($classNameOrObject, '\\');
+		if ($pos !== false) {
+			$classNameOrObject = substr($classNameOrObject, $pos+1);
+		}
+		$classNameParts = \ArrayHelper::camelSplit($classNameOrObject);
+		$ret = null;
+		array_pop($classNameParts);
+		$eachClassName = implode($classNameParts) . $friendSuffix;
+		if (class_exists($eachClassName)) {
+			$ret = $eachClassName;
+		}
+		if (is_null($ret)) {
+			$eachClassName = $fallbackClassname . $friendSuffix;
+			if (class_exists($eachClassName)) {
+				$ret = $eachClassName;
+			}
+		}
+		return $ret;
+	}
+
 }

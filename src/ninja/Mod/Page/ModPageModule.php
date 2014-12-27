@@ -11,9 +11,9 @@ class ModPageModule extends \ModAbstractModule {
 	protected function _getSubModuleModels() {
 		$subModuleModels = parent::_getSubModuleModels();
 		// if not root, and root has modules, add them:
-		if ($this->_Model->fieldIsSet('Parent') &&
-			$this->_Model->field('Root')->fieldIsSet('Modules')) {
-			$moreModuleModels = $this->_Model->field('Root')->Modules;
+		if ($this->_Model->Data()->fieldIsSet('Parent') &&
+			$this->_Model->Data()->getField('Root')->Data()->fieldIsSet('Modules')) {
+			$moreModuleModels = $this->_Model->Data()->getField('Root')->Modules;
 			if (empty($moreModuleModels));
 			elseif (empty($subModuleModels)) {
 				$subModuleModels = $moreModuleModels;

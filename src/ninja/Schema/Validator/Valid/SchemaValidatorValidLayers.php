@@ -16,7 +16,7 @@ class SchemaValidatorValidLayers extends \SchemaValidator {
 		$validValues = [];
 
 		if ($Model instanceof \ModAbstractModel) {
-			if ($Model->fieldIsSet('Root')) {
+			if ($Model->Data()->fieldIsSet('Root')) {
 				$Root = $Model->Root;
 				$Layers = $Root->availableLayers;
 				$validValues = [];

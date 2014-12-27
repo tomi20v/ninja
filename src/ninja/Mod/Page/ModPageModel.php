@@ -84,12 +84,12 @@ class ModPageModel extends \ModAbstractModel {
 	}
 
 	public function getFieldWithRoot($key) {
-		$val = $this->getField($key, \ModelManager::DATA_ALL, true);
+		$val = $this->Data()->getField($key, \ModelManager::DATA_ALL, true);
 		$rootVal = null;
-		if ($this->fieldIsSet('Root')) {
-			$Root  = $this->getField('Root');
-			if ($Root->fieldIsSet($key)) {
-				$rootVal = $Root->getField($key, \ModelManager::DATA_ALL, true);
+		if ($this->Data()->fieldIsSet('Root')) {
+			$Root  = $this->Data()->getField('Root');
+			if ($Root->Data()->fieldIsSet($key)) {
+				$rootVal = $Root->Data()->getField($key, \ModelManager::DATA_ALL, true);
 			}
 		}
 		if (!is_null($val) && !is_null($rootVal)) {

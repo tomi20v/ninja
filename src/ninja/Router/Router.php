@@ -108,9 +108,9 @@ class Router {
 
 		$url = null;
 
-		if (!$Model->fieldIsEmpty('slug')) {
+		if (!$Model->Data()->fieldIsEmpty('slug')) {
 
-			$url = $Model->getBubbler()->bubbleGetAll('slug', false);
+			$url = $Model->Bubbler()->bubbleGetAll('slug', false);
 
 			$url = implode('/', $url);
 

@@ -14,8 +14,11 @@ class ModPageView extends \ModAbstractView {
 	 */
 	protected function _getScripts() {
 		// I might have to add some filter logic here to check if Root is set and not the same
-		$scripts = array_merge((array)$this->_Model->getField('scripts'), (array)$this->_Model->getField('Root')->getField('scripts'));
-		$scripts = \maui\ArrayHelper::arrayUnique($scripts);
+		$scripts = array_merge(
+			(array)$this->_Model->Data()->getField('scripts'),
+			(array)$this->_Model->Data()->getField('Root')->Data()->getField('scripts')
+		);
+		$scripts = \ArrayHelper::arrayUnique($scripts);
 		return $scripts;
 	}
 
@@ -48,7 +51,7 @@ class ModPageView extends \ModAbstractView {
 	}
 
 	public function getCss() {
-		$css = array_merge((array)$this->_Model->getField('css'), (array)$this->_Model->getField('Root')->getField('css'));
+		$css = array_merge((array)$this->_Model->Data()->getField('css'), (array)$this->_Model->getField('Root')->Field()->getField('css'));
 		return $css;
 	}
 

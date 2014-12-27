@@ -72,7 +72,7 @@ abstract class ModAbstractView extends \View {
 	 * @return string
 	 */
 	public function getContents() {
-		$ret = $this->_Model->getField('Contents', \ModelManager::DATA_ALL, true);
+		$ret = $this->_Model->Data()->getField('Contents', \ModelManager::DATA_ALL, true);
 		if (is_array($ret)) {
 			$ret = array_diff_key($ret, array_flip($this->_fetchedKeys));
 			$ret = implode("\n", $ret);

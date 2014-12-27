@@ -39,11 +39,16 @@ class ModPageModule extends \ModAbstractModule {
 				throw new \HttpException(404);
 			};
 
+			$location = $this->_Model->location;
+			if (substr($location, 0, 2) === '~/') {
+				$location = '/' . \Finder::joinPath($this->getHmvcPath(), substr($location, 2));
+			}
+
 			$Response = new \Response(
 				'getting redirected...',
 				$this->_Model->redirectType,
 				[
-					'Location' => $this->_Model->location,
+					'Location' => $location,
 				]
 			);
 

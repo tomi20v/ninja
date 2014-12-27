@@ -2,6 +2,18 @@
 
 namespace ninja;
 
+/**
+ * Class ModPageRedirectModel
+ *
+ * @package ninja
+ *
+ * @property \ModPageModel $Parent
+ * @property bool $published
+ * @property \ModPageModel $Root
+ * @property int $redirectType set permanent, found, or temporary redirect
+ * @property string $location will redirect to this. form '~/xxx' means
+ * 		relative url, so current hmvc path will be prepended
+ */
 class ModPageRedirectModel extends \ModPageModel {
 
 	const REDIRECT_TYPE_PERMANENT = \Response::HTTP_MOVED_PERMANENTLY;

@@ -172,14 +172,13 @@ $adminDaPageRoot = new \ModPageRootModel([
 		'slug' => 'admin',
 		'published' => true,
 		'redirectType' => \ModPageRedirectModel::REDIRECT_TYPE_PERMANENT,
-		'location' => '/dashboard',
-		'domainName' => 'admin.demoapp.site',
-		'availableLanguages' => array('en',),
+		'location' => '~/index.html',
+		'domainName' => 'demoapp.site',
 //		'Modules' => $assetModules,
 		'scripts' => [
 //			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/requirejs/require.js',],
-//			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/js/jquery.js',],
-//			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/bootstrap/js/bootstrap.js',],
+			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/js/jquery.js',],
+			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/bootstrap/js/bootstrap.js',],
 		],
 		'css' => [
 			['href'=>'/assets/css/bootstrap.css'],

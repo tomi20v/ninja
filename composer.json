@@ -12,23 +12,23 @@
 	"config": {
 		"process-timeout": 1000
 	},
-	"repositories": {
-		"_packagist": false,
-		"tomi20v/tomi20v": {
-			"url": "/var/www/maui",
-			"type": "git",
-			"reference": "master"
+	"repositories": [
+		{
+			"url": "https://github.com/tomi20v/maui.git",
+			"type": "vcs"
 		}
-	},
+	],
 	"require": {
-		"tomi20v/maui": "*",
+	  	"php": ">5.4",
+	  	"ext-mongo": "*",
+		"tomi20v/maui": "dev-master",
 		"symfony/http-kernel": "2.6.*@dev",
 		"symfony/http-foundation": "2.6.*@dev",
 		"mustache/mustache": "dev-master",
 		"fxp/composer-asset-plugin": "~1.0",
-        "bower-asset/jquery": "dev-master",
-        "bower-asset/bootstrap-css": "dev-master",
-        "bower-asset/requirejs": "dev-master"
+		"bower-asset/jquery": "dev-master",
+		"bower-asset/bootstrap-css": "dev-master",
+		"bower-asset/requirejs": "dev-master"
 	},
 	"autoload": {
 		"classmap": [
@@ -36,7 +36,6 @@
 		],
 		"files": [
 			"vendor/tomi20v/echop/src/echop.php",
-			"vendor/tomi20v/echop/src/echox.php",
 			"vendor/tomi20v/echop/src/echon.php",
 			"bootstrap.php"
 		]

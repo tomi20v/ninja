@@ -1,18 +1,37 @@
 Ninja is intended to be a simple CMS system implementing HMVC and based on Maui.
-The core is a module system which can be stored into MongoDB through Maui's CRUD models, while using heavily
-	related objects. Eg. a page to be generated is itself a module, which contains other modules, which contain
-	others etc. Each module has its own model, view, controller representation, and a container which is the
-	module's class itself.
+The core is a module system which can be stored into MongoDB through Maui's
+	CRUD models, while using heavily related objects. Eg. a page to be generated
+	is itself a module, which contains other modules, which contain others etc.
+	Each module has its own model, view, controller representation, and a
+	container which is the module's class itself.
 
 note: the system has passed first POC - generate a page from loaded module hierarchy
 
-this project focuses on PHP. to keep everything in packagist and reduce dependencies, bower components are installed
-through the composer-asset-plugin
+INSTALL:
 
-some Q&A
+1. install composer (if needed)
+@see https://getcomposer.org/download/
 
-why not PSR-0?
-PSR-0 is good if you are using namespaces extensively. in my project I use the root namespace plus one namespace per
-lib. also I don't use underscores in class names. this would result all my classes in one big folder, with many similar
-filenames as my classnames usually show the inheritance chain or group otherwise which nicely breaks down to folders
+2. install composer plugin, run
+COMPOSER=composer.first.json ./composer.phar install
+this installs the composer-asset-plugin which is required to resolve bower
+	dependencies. To keep focused on PHP, this keeps dependency management
+	within composer
+
+3. install all dependencies, run
+./composer install
+
+if you want the demo app site to be installed:
+
+4. set up vhost
+edit your httpd conf and set up so the webserver accepts demoapp.site domain
+	and it points to ~ninja/pub/demoapp.site
+4.1. make sure .htaccess can set options (AllowOverride FileInfo Limit)
+4.2. install mod_rewrite it is needed for routing
+
+5. set up hosts file so demoapp.site points to ninja installation
+
+6. open http://demoapp.site/install/pages.php
+
+7. open http://demoapp.site and you should see the home page
 

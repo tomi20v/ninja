@@ -27,8 +27,7 @@
 		"mustache/mustache": "dev-master",
 		"components/jquery": "~2.0",
 		"components/bootstrap": "~3.0",
-	  "fxp/composer-asset-plugin": "~1.0",
-		"bower-asset/requirejs": "dev-master"
+		"fxp/composer-asset-plugin": "~1.0"
 	},
 	"autoload": {
 		"classmap": [

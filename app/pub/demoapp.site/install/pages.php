@@ -9,23 +9,15 @@ $DB->PageModelCollection->drop();
 $DB->UserModelCollection->drop();
 
 $JqueryFileServer = new \ModFileservModel(
-//	['recursive' => true, 'basePath' => 'assets/js', 'folder' => '../vendor/bower-asset/jquery/src',],
-//	['recursive' => true, 'basePath' => 'assets/js', 'folder' => '../vendor/bower-asset/jquery/dist',],
-	['recursive' => true, 'basePath' => 'js', 'folder' => '../vendor/bower-asset/jquery/dist',],
+	['recursive' => true, 'basePath' => 'js', 'folder' => '../vendor/components/jquery',],
 	false
 );
 $BootstrapFileServerJs = new \ModFileservModel(
-//	['recursive' => true, 'basePath' => 'assets/js', 'folder' => '../vendor/bower-asset/bootstrap-css/js',],
-	['recursive' => true, 'basePath' => 'js', 'folder' => '../vendor/bower-asset/bootstrap-css/js',],
+	['recursive' => true, 'basePath' => 'js', 'folder' => '../vendor/components/bootstrap/js',],
 	false
 );
 $BootstrapFileServerCss = new \ModFileservModel(
-//	['recursive' => true, 'basePath' => 'assets/css', 'folder' => '../vendor/bower-asset/bootstrap-css/css',],
-	['recursive' => true, 'basePath' => 'css', 'folder' => '../vendor/bower-asset/bootstrap-css/css',],
-	false
-);
-$RequireJsFileServer = new \ModFileservModel(
-	['recursive' => true, 'basePath' => 'assets/js', 'folder' => '../vendor/bower-asset/requirejs',],
+	['recursive' => true, 'basePath' => 'css', 'folder' => '../vendor/components/bootstrap/css',],
 	false
 );
 $JqWidgetsFileServer = new \ModFileservModel(
@@ -36,7 +28,6 @@ $assetModules = [
 	'jqueryFiles' => $JqueryFileServer,
 	'bootstrapFilesJs' => $BootstrapFileServerJs,
 	'bootstrapFilesCss' => $BootstrapFileServerCss,
-	'requireJsFiles' => $RequireJsFileServer,
 	'jqWidgetsFiles' => $JqWidgetsFileServer,
 
 ];
@@ -176,7 +167,6 @@ $adminDaPageRoot = new \ModPageRootModel([
 		'domainName' => 'demoapp.site',
 //		'Modules' => $assetModules,
 		'scripts' => [
-//			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/requirejs/require.js',],
 			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/js/jquery.js',],
 			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/bootstrap/js/bootstrap.js',],
 		],

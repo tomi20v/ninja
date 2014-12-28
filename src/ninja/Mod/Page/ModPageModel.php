@@ -2,6 +2,23 @@
 
 namespace ninja;
 
+/**
+ * Class ModPageModel
+ *
+ * @package ninja
+ *
+ * @property \ModPageModel $Parent
+ * @property \ModPageRootModel $Root
+ * @property string $slug
+ * @property string $doctype
+ * @property string $title
+ * @property array[] $meta
+ * @property array[] $scripts
+ * @property string $script
+ * @property array[] $css
+ * @property string $baseHref
+ *
+ */
 class ModPageModel extends \ModAbstractModel {
 
 	const JS_HEAD = 'HEAD';
@@ -47,6 +64,7 @@ class ModPageModel extends \ModAbstractModel {
 			'keys' => ['href', 'media', 'onlyIf'],
 			'hasMax' => 0,
 		],
+		'baseHref',
 	];
 
 	public static function getDbCollectionName() {
@@ -55,6 +73,7 @@ class ModPageModel extends \ModAbstractModel {
 
 	/**
 	 * @param \Request $Request
+	 * @param \ModPageRootModel $ModPageRootModel
 	 * @return \ModPageRootModel
 	 */
 	public static function findByRequestAndRoot($Request, $ModPageRootModel) {
@@ -78,6 +97,12 @@ class ModPageModel extends \ModAbstractModel {
 				break;
 			}
 			array_pop($uriParts);
+		}
+
+		if ($ModPageModel->isLoaded()) {
+			$baseHref = $Request->getScheme() . '://' . $Request->getHttpHost() . '/' . $ModPageRootModel->slug;
+			$baseHref = rtrim($baseHref, '/') . '/';
+			$ModPageModel->baseHref = $baseHref;
 		}
 
 		return $ModPageModel;

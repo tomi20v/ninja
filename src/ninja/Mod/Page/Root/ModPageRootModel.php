@@ -8,7 +8,7 @@ namespace ninja;
  * @package ninja
  *
  * @property \ModLayerMode[] $Layers
- * @property string $domainNmae
+ * @property string $domainName
  * @property string[] $availableLanguages
  * @property string[] $templateFolders
  */

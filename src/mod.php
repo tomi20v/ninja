@@ -219,7 +219,7 @@ EOS;
 		}
 	}
 
-	public function classMap(&$args) {
+	public function classMap($args) {
 
 		$classes = [];
 

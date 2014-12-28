@@ -43,8 +43,9 @@ EOS;
 			if (!count($args)) {
 				throw new \Exception('you need help.');
 			}
+			$toRun = null;
 			while (count($args)) {
-				switch (trim(array_shift($args))) {
+				switch ($arg = trim(array_shift($args))) {
 				case '-u':
 					$this->_switchDoUpdate = true;
 					break;
@@ -52,15 +53,26 @@ EOS;
 					$this->_switchDryRun = true;
 					break;
 				case 'init':
-					$this->initMod($args);
+//					$this->initMod($args);
+					$toRun = 'initMod';
 					break;
 				case 'classmap':
-					$this->classMap($args);
+//					$this->classMap($args);
+					$toRun = 'classMap';
 					break;
 				case 'help':
 				default:
-					throw new \Exception('you need help.');
+					if ($toRun) {
+						array_unshift($args, $arg);
+					}
+					break 2;
 				}
+			}
+			if ($toRun) {
+				call_user_func([$this, $toRun], $args);
+			}
+			else {
+				throw new \Exception('you need help.');
 			}
 		}
 		catch (\Exception $e) {
@@ -75,7 +87,7 @@ EOS;
 	 * @return void
 	 * @throws Exception
 	 */
-	public function initMod(&$args) {
+	public function initMod($args) {
 
 		$modName = array_shift($args);
 
@@ -150,6 +162,11 @@ EOS
 EOS
 			,
 		];
+		$templateBody = <<<EOS
+{{> ModBaseCss-begin }}
+{{{View.getContents}}}
+{{> ModBaseCss-end }}
+EOS;
 
 		$filesToCreate = [];
 		foreach ($classes as $eachKey=>$eachClass) {
@@ -162,7 +179,7 @@ EOS
 			echo 'creating file: ' . $relativeFname . ' ... ';
 
 			if ($this->_switchDryRun || file_exists($fullFname)) {
-				unset($classes[$$eachKey]);
+				unset($classes[$eachKey]);
 				echo "SKIPPED\n";
 				continue;
 			}
@@ -179,10 +196,26 @@ EOS
 
 		};
 
-		$fileList = array_map('escapeshellarg', $filesToCreate);
-		echo 'git and composer commands you may want to execute:' . "\n\n" .
-			'cd ' . escapeshellarg(NINJA_ROOT) . ' ; git add ' . implode(' ', $fileList) . " ; ./composer.phar dump-autoload\n\n";
+		$templateFname = $modName . '.html.mustache';
+		$relativeTemplateFname = \Finder::joinPath(static::MODE_BASE_PATH, $modName, 'template', $templateFname);
+		$fullTemplateFname = \Finder::joinPath($modPath, 'template', $templateFname);
+		echo 'creating file: ' . $relativeTemplateFname . ' ... ';
+		if ($this->_switchDryRun || file_exists($fullTemplateFname)) {
+			echo "SKIPPED\n";
+		}
+		else {
+			file_put_contents($fullTemplateFname, $templateBody);
+			$filesToCreate[] = $relativeTemplateFname;
+		}
 
+		if (count($filesToCreate)) {
+			$fileList = array_map('escapeshellarg', $filesToCreate);
+			echo 'git and composer commands you may want to execute:' . "\n\n" .
+				'cd ' . escapeshellarg(NINJA_ROOT) . ' ; git add ' . implode(' ', $fileList) . " ; ./composer.phar dump-autoload\n\n";
+		}
+		else {
+			echo 'no further commands needed as no files were created' . "\n\n";
+		}
 	}
 
 	public function classMap(&$args) {
@@ -243,17 +276,17 @@ EOS;
 	public static function help() {
 ?>
 usage: php script/mod.php [-g] [-u] {command}
-	mod.php init Name - inits empty module with name Name
-	mod.php add Name NewName - adds all files for a new submodule
-	mod.php {module|model|view|controller|template} Name NewName
-			adds only the selected module/model/etc skeleton file
+	mod.php init Name - inits empty module with name Name. Note name
+			can be a submodule
+	mod.php action Name ActionName - adds a new action to the
+			controller of module Name (not yet)
 	mod.php classmap - write a classmap cache to avoid on-the-fly
 			file lookup and class aliasing
 
 switches:
 	-d 	dry-run, skip everything just show what it would do
 	-u	update, create files without overwriting existing ones
-	-g 	fname 	create git diff file only, no changes to files
+	-g 	fname 	create git diff file only, no changes to files  (not yet)
 <?php
 	}
 

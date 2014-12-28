@@ -173,7 +173,7 @@ EOS;
 			$classname = 'Mod' . $modName . $eachClass;
 			$basename = '\ModAbstract' . $eachClass;
 			$fname = $classname . '.php';
-			$relativeFname = \Finder::joinPath(static::MODE_BASE_PATH, $modName, $fname);
+			$relativeFname = \Finder::joinPath(static::MODE_BASE_PATH, implode('/', \ArrayHelper::camelSplit($modName)), $fname);
 			$fullFname = $modPath . '/' . $fname;
 
 			echo 'creating file: ' . $relativeFname . ' ... ';
@@ -197,7 +197,7 @@ EOS;
 		};
 
 		$templateFname = $modName . '.html.mustache';
-		$relativeTemplateFname = \Finder::joinPath(static::MODE_BASE_PATH, $modName, 'template', $templateFname);
+		$relativeTemplateFname = \Finder::joinPath(static::MODE_BASE_PATH, implode('/', \ArrayHelper::camelSplit($modName)), 'template', $templateFname);
 		$fullTemplateFname = \Finder::joinPath($modPath, 'template', $templateFname);
 		echo 'creating file: ' . $relativeTemplateFname . ' ... ';
 		if ($this->_switchDryRun || file_exists($fullTemplateFname)) {
@@ -206,6 +206,7 @@ EOS;
 		else {
 			file_put_contents($fullTemplateFname, $templateBody);
 			$filesToCreate[] = $relativeTemplateFname;
+			echo "OK\n";
 		}
 
 		if (count($filesToCreate)) {

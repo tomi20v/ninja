@@ -1,0 +1,10 @@
+<ul {{#cssId}}id="#{{cssId}}" {{/cssId}}class="n-mod-container nav navbar-nav{{#cssClasses}} {{{.}}}{{/cssClasses}}" {{#cssStyle}}style="{{cssStyle}}"{{/cssStyle}}>
+{{#Model.Contents.items}}
+	<li class="{{#active}}selected {{/active}}">
+		<a href="{{{href}}}">
+			{{#faIcon}}<i class="fa fa-{{.}}"></i>{{/faIcon}}
+			{{label}}
+		</a>
+	</li>
+{{/Model.Contents.items}}
+</ul>

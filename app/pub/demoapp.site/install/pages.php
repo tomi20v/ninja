@@ -9,19 +9,23 @@ $DB->PageModelCollection->drop();
 $DB->UserModelCollection->drop();
 
 $JqueryFileServer = new \ModFileservModel(
-	['recursive' => true, 'basePath' => 'js', 'folder' => '../vendor/components/jquery',],
+	['recursive' => true, 'basePath' => 'jquery', 'folder' => '../vendor/components/jquery',],
 	false
 );
 $BootstrapFileServerJs = new \ModFileservModel(
-	['recursive' => true, 'basePath' => 'js', 'folder' => '../vendor/components/bootstrap/js',],
+	['recursive' => true, 'basePath' => 'bootstrap/js', 'folder' => '../vendor/components/bootstrap/js',],
 	false
 );
 $BootstrapFileServerCss = new \ModFileservModel(
-	['recursive' => true, 'basePath' => 'css', 'folder' => '../vendor/components/bootstrap/css',],
+	['recursive' => true, 'basePath' => 'bootstrap/css', 'folder' => '../vendor/components/bootstrap/css',],
 	false
 );
 $JqWidgetsFileServer = new \ModFileservModel(
-	['recursive' => true, 'basePath' => 'assets/js/jqwidgets', 'folder' => 'vendor/jqwidgets',],
+	['recursive' => true, 'basePath' => 'jqwidgets', 'folder' => 'vendor/jqwidgets/jqwidgets',],
+	false
+);
+$adminAssetsServer = new \ModFileservModel(
+	['recursive' => true, 'basePath' => 'admin', 'folder' => '../src/ninja/Mod/Admin/assets',],
 	false
 );
 $assetModules = [
@@ -29,7 +33,7 @@ $assetModules = [
 	'bootstrapFilesJs' => $BootstrapFileServerJs,
 	'bootstrapFilesCss' => $BootstrapFileServerCss,
 	'jqWidgetsFiles' => $JqWidgetsFileServer,
-
+	'adminFiles' => $adminAssetsServer,
 ];
 
 $DaPageRoot = new \ModPageRootModel([
@@ -72,9 +76,7 @@ $DaPageRoot = new \ModPageRootModel([
 //						])
 					],
 				], false),
-		]
-//			+ $assetModules
-		,
+		],
 		'scripts' => [
 			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/jquery.js',],
 			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/js/bootstrap.js',],
@@ -109,15 +111,6 @@ $DaColumnsRow = new \ModContainerModel([
 			'right' => '<div class="col-md-3">Right dummy</div>',
 		],
 	], false);
-//$DaRowContainer = new \ModContainerModel(
-//	[
-//		'cssClasses' => ['container-fluid'],
-//		'Contents' => [
-//			$DaColumnsRow
-//		],
-//	],
-//	false
-//);
 
 // @todo this shall be a redirect or direct 404 page so if no files found it will still do something meaningful
 $DaAssetsPage = new \ModPageModel([
@@ -165,17 +158,21 @@ $adminDaPageRoot = new \ModPageRootModel([
 		'redirectType' => \ModPageRedirectModel::REDIRECT_TYPE_PERMANENT,
 		'location' => '~/index.html',
 		'domainName' => 'demoapp.site',
-//		'Modules' => $assetModules,
+		'Modules' => $assetModules,
 		'scripts' => [
-			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/js/jquery.js',],
+			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/jquery/jquery.js',],
 			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/bootstrap/js/bootstrap.js',],
+			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/jqwidgets/jqx-all.js',],
+			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/admin/js/admin.js'],
 		],
 		'css' => [
-			['href'=>'/assets/css/bootstrap.css'],
-			['href'=>'/assets/css/bootstrap-theme.css'],
+			['href'=>'/assets/bootstrap/css/bootstrap.css'],
+			['href'=>'/assets/bootstrap/css/bootstrap-theme.css'],
+			['href'=>'/assets/jqwidgets/styles/jqx.base.css'],
+			['href'=>'/assets/admin/css/admin.css'],
 		],
-		'cssStyle' => 'padding-top:60px;'
-	], false);
+		'cssStyle' => 'padding-top:60px; padding-left:225px;'
+	]);
 $adminDaPageRootResult = $adminDaPageRoot->save(true);
 echop($adminDaPageRootResult);
 
@@ -186,31 +183,37 @@ $adminDaPageHome = new \ModPageModel([
 		'published' => true,
 		'title' => 'Demo ADMIN Application home page',
 		'Modules' => [
-			'right' => new \ModBaseIncludeModel(
-				[ 'template' => 'asd' ],
-				false),
+			'columns' => new \ModNavBarModel([
+					'inverse' => true,
+					'fixed' => 'top',
+					'Modules' => [
+						new \ModAdminMenuModel([
+							'cssClasses' => ['side-nav'],
+						]),
+					],
+				]),
 		],
 		'Contents' => [
 //			'left' => '<div id="jqxWidget"><div id="jqxTree"></div><div id="jqxA"></div></div>',
 		],
-	], false);
+	]);
 $adminDaPageHomeResult = $adminDaPageHome->save(true);
 echop($adminDaPageHomeResult);
 
-$adminDaPageApi = new \ModPageModel([
-		'Parent' => $adminDaPageRoot,
-		'Root' => $adminDaPageRoot,
-		'slug' => 'api',
-		'published' => true,
-		'title' => 'Demo ADMIN Application API endpoint',
-		'Modules' => [],
-		'Contents' => [
-//			'left' => '<div id="jqxWidget"><div id="jqxTree"></div><div id="jqxA"></div></div>',
-		],
-	], false);
-$adminDaPageApiResult = $adminDaPageApi->save(true);
-echop($adminDaPageApiResult);
-
+//$adminDaPageApi = new \ModPageModel([
+//		'Parent' => $adminDaPageRoot,
+//		'Root' => $adminDaPageRoot,
+//		'slug' => 'api',
+//		'published' => true,
+//		'title' => 'Demo ADMIN Application API endpoint',
+//		'Modules' => [],
+//		'Contents' => [
+////			'left' => '<div id="jqxWidget"><div id="jqxTree"></div><div id="jqxA"></div></div>',
+//		],
+//	], false);
+//$adminDaPageApiResult = $adminDaPageApi->save(true);
+//echop($adminDaPageApiResult);
+//
 //echop(\SchemaManager::getSchema('ModPageModel'));
 //echop($adminDaPageHome);
 

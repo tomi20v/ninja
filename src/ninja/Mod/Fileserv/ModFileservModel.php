@@ -2,6 +2,17 @@
 
 namespace ninja;
 
+/**
+ * Class ModFileservModel
+ *
+ * @package ninja
+ *
+ * @property \ModAbstractModel $Parent
+ * @property string $folder
+ * @property string $basePath
+ * @property bool $recursive
+ * @property string[] $files
+ */
 class ModFileservModel extends \ModAbstractModel {
 
 

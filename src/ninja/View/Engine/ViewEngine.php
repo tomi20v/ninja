@@ -20,6 +20,22 @@ abstract class ViewEngine {
 	protected $_templateExtension;
 
 	/**
+	 * @var string[] default mapping. should be moved to some kind of config?
+	 */
+	protected static $_defaultExtensionToType = [
+		'html' => 'pages',
+		'json' => 'api',
+	];
+
+	/**
+	 * @var string[] defult mapping. should be moved to some kind of config?
+	 */
+	protected static $_defaultTypeToViewEngine = [
+		'pages' => 'Mustache',
+		'api' => 'Json',
+	];
+
+	/**
 	 * @param \ModAbstractModel $Model
 	 * @param string $templateExtension
 	 */
@@ -29,7 +45,8 @@ abstract class ViewEngine {
 
 		$type = '';
 		if (!empty($templateExtension)) {
-			$extensionToType = $Bubbler->bubbleModuleGet('extensionToType');
+			$extensionToType = $Bubbler->bubbleModuleGet('extensionToType')
+				?: static::$_defaultExtensionToType;
 			if (isset($extensionToType[$templateExtension])) {
 				$type = $extensionToType[$templateExtension];
 			}
@@ -37,7 +54,8 @@ abstract class ViewEngine {
 
 		$engine = '';
 		if (!empty($type)) {
-			$typeToExtension = $Bubbler->bubbleModuleGet('typeToViewEngine');
+			$typeToExtension = $Bubbler->bubbleModuleGet('typeToViewEngine')
+				?: static::$_defaultTypeToViewEngine;
 			if (isset($typeToExtension[$type])) {
 				$engine = $typeToExtension[$type];
 			}

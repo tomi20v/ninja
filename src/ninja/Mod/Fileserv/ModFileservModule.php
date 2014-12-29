@@ -47,7 +47,8 @@ class ModFileservModule extends \ModAbstractModule {
 				}
 			}
 			else {
-				$foundFname = realpath(\Finder::joinPath(APP_ROOT, $this->_Model->folder, $requestUri));
+				$foundFname = \Finder::joinPath(APP_ROOT, $this->_Model->folder, $requestUri);
+				$foundFname = realpath($foundFname);
 				if (!@is_readable($foundFname)) {
 					$foundFname = null;
 				}

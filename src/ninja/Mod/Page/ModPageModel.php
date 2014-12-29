@@ -99,15 +99,29 @@ class ModPageModel extends \ModAbstractModel {
 			array_pop($uriParts);
 		}
 
-		if ($ModPageModel->isLoaded()) {
-			$baseHref = $Request->getScheme() . '://' . $Request->getHttpHost() . '/' . $ModPageRootModel->slug;
-			$baseHref = rtrim($baseHref, '/') . '/';
-			$ModPageModel->baseHref = $baseHref;
-		}
-
 		return $ModPageModel;
 	}
 
+	/**
+	 * I set base href from $Request
+	 * @param \Request $Request
+	 * @return $this
+	 */
+	public function setBaseHref($Request) {
+		if ($this->isLoaded()) {
+			$baseHref = $Request->getScheme() . '://' . $Request->getHttpHost() . '/' . $this->slug;
+			$baseHref = rtrim($baseHref, '/') . '/';
+			$this->baseHref = $baseHref;
+		}
+		return $this;
+	}
+
+	/**
+	 * I return a field's value, also merging page root's value into
+	 * @param string $key
+	 * @return $this|array|null
+	 * @throws \Exception
+	 */
 	public function getFieldWithRoot($key) {
 		$val = $this->Data()->getField($key, \ModelManager::DATA_ALL, true);
 		$rootVal = null;

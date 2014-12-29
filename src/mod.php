@@ -32,6 +32,8 @@ EOS;
 
 	protected $_switchDoUpdate = false;
 
+	protected $_switchWithPlugin = false;
+
 	public function run() {
 		global $argv;
 
@@ -47,10 +49,16 @@ EOS;
 			while (count($args)) {
 				switch ($arg = trim(array_shift($args))) {
 				case '-u':
+				case '--update':
 					$this->_switchDoUpdate = true;
 					break;
 				case '-d':
+				case '--dry-run':
 					$this->_switchDryRun = true;
+					break;
+				case '-p':
+				case '--with-plugin':
+					$this->_switchWithPlugin = true;
 					break;
 				case 'init':
 //					$this->initMod($args);
@@ -111,6 +119,9 @@ EOS;
 			'Module',
 			'View',
 		];
+		if ($this->_switchWithPlugin) {
+			$classes[] = 'Plugin';
+		}
 
 		$foldersToCreate = [
 			$modPath,
@@ -159,6 +170,9 @@ EOS
 		return parent::actionIndex(\$params);
 	}
 
+EOS
+			,
+			'Plugin' => <<<EOS
 EOS
 			,
 		];
@@ -212,7 +226,7 @@ EOS;
 		if (count($filesToCreate)) {
 			$fileList = array_map('escapeshellarg', $filesToCreate);
 			echo 'git and composer commands you may want to execute:' . "\n\n" .
-				'cd ' . escapeshellarg(NINJA_ROOT) . ' ; git add ' . implode(' ', $fileList) . " ; ./composer.phar dump-autoload\n\n";
+				'cd ' . escapeshellarg(NINJA_ROOT) . ' ; git add ' . implode(' ', $fileList) . " ; ./composer.phar dump-autoload ; src/mod.php classmap\n\n";
 		}
 		else {
 			echo 'no further commands needed as no files were created' . "\n\n";
@@ -276,7 +290,7 @@ EOS;
 
 	public static function help() {
 ?>
-usage: php script/mod.php [-g] [-u] {command}
+usage: php script/mod.php [-g] [-u] [-a] {command} [ModName]
 	mod.php init Name - inits empty module with name Name. Note name
 			can be a submodule
 	mod.php action Name ActionName - adds a new action to the
@@ -285,9 +299,10 @@ usage: php script/mod.php [-g] [-u] {command}
 			file lookup and class aliasing
 
 switches:
-	-d 	dry-run, skip everything just show what it would do
-	-u	update, create files without overwriting existing ones
-	-g 	fname 	create git diff file only, no changes to files  (not yet)
+	-d --dry-run    	dry-run, skip everything just show what it would do
+	-u --update     	update, create files without overwriting existing ones
+	-p --with-plugin	create Admin plugin class
+	-g fname 	create git diff file only, no changes to files  (not yet)
 <?php
 	}
 

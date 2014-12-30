@@ -67,6 +67,11 @@ class ModPageModel extends \ModAbstractModel {
 		'baseHref',
 	];
 
+	/**
+	 * @var \ModPageModelAsset
+	 */
+	protected $_Asset;
+
 	public static function getDbCollectionName() {
 		return 'PageModelCollection';
 	}
@@ -149,6 +154,17 @@ class ModPageModel extends \ModAbstractModel {
 			$ret = $rootVal;
 		}
 		return $ret;
+	}
+
+	/**
+	 * I return asset helper. It is always bound to
+	 * @return \ModPageModelAsset
+	 */
+	public function Asset() {
+		if (is_null($this->_Asset)) {
+			$this->_Asset = new \ModPageModelAsset($this);
+		}
+		return $this->_Asset;
 	}
 
 }

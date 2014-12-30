@@ -24,6 +24,9 @@ $JqWidgetsFileServer = new \ModFileservModel(
 	['recursive' => true, 'basePath' => 'jqwidgets', 'folder' => 'vendor/jqwidgets/jqwidgets',],
 	false
 );
+$requireJsFileServer = new \ModFileservModel([
+	'recursive' => true, 'basePath' => 'requirejs', 'folder' => '../vendor/bower-asset/requirejs',
+]);
 $adminAssetsServer = new \ModFileservModel(
 	['recursive' => true, 'basePath' => 'admin', 'folder' => '../src/ninja/Mod/Admin/assets',],
 	false
@@ -33,6 +36,7 @@ $assetModules = [
 	'bootstrapFilesJs' => $BootstrapFileServerJs,
 	'bootstrapFilesCss' => $BootstrapFileServerCss,
 	'jqWidgetsFiles' => $JqWidgetsFileServer,
+	'requireJsFiles' => $requireJsFileServer,
 	'adminFiles' => $adminAssetsServer,
 ];
 
@@ -158,13 +162,18 @@ $adminDaPageRoot = new \ModPageRootModel([
 		'redirectType' => \ModPageRedirectModel::REDIRECT_TYPE_PERMANENT,
 		'location' => '~/index.html',
 		'domainName' => 'demoapp.site',
-		'Modules' => $assetModules,
+//		'Modules' => $assetModules,
 		'scripts' => [
-			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/jquery/jquery.js',],
-			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/bootstrap/js/bootstrap.js',],
-			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/jqwidgets/jqx-all.js',],
-			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/admin/js/admin.js'],
+			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/requirejs/require.js',],
+			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/admin/js/main.js',],
+//			['place'=>\ModPageModel::JS_HEAD, 'code'=>'require(["/assets/admin/js/nav"], function(nav) { nav.init(); });',],
+//			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/admin/js/nav.js',],
+//			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/jquery/jquery.js',],
+//			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/bootstrap/js/bootstrap.js',],
+//			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/jqwidgets/jqx-all.js',],
+//			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/admin/js/app.js'],
 		],
+//		'script' => 'require(["nav"], function(nav) { nav.init(); });',
 		'css' => [
 			['href'=>'/assets/bootstrap/css/bootstrap.css'],
 			['href'=>'/assets/bootstrap/css/bootstrap-theme.css'],

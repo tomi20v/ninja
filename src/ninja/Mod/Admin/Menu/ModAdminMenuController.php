@@ -13,13 +13,20 @@ class ModAdminMenuController extends \ModAbstractController {
 
 		$pluginMethod = 'modAdminMenuGetItems';
 		$adminPlugins = \ModManager::findModsWithPlugin($pluginMethod);
+		$Model = $this->_Module->getModel();
+
 		$adminItems = [];
 		foreach ($adminPlugins as $eachAdminPlugin) {
 			$eachPluginClassName = 'Mod' . $eachAdminPlugin . 'Plugin';
 			$adminItems = array_merge($adminItems, (array)call_user_func([$eachPluginClassName, $pluginMethod]));
 		}
 
-		$this->_Module->getModel()->Contents = (array)$this->_Module->getModel()->Contents + ['items'=>$adminItems];
+		$Model->Contents = (array)$Model->Contents + ['items'=>$adminItems];
+
+		$this->Asset()->addJsCode(
+			\ModPageModel::JS_HEAD,
+			'require(["/assets/admin/js/nav"], function(nav) { nav.init(); });'
+		);
 
 		return parent::actionIndex($params);
 	}

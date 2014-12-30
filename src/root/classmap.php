@@ -64,6 +64,7 @@ class ModPageView extends \ninja\ModPageView {}
 class ModPageModel extends \ninja\ModPageModel {}
 class ModPageRedirectModel extends \ninja\ModPageRedirectModel {}
 class ModPagePlugin extends \ninja\ModPagePlugin {}
+class ModPageModelAsset extends \ninja\ModPageModelAsset {}
 class ModPageModule extends \ninja\ModPageModule {}
 class ModBaseModel extends \ninja\ModBaseModel {}
 class ModBaseIncludeView extends \ninja\ModBaseIncludeView {}

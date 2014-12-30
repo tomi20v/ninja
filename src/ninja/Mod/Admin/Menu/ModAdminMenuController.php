@@ -2,7 +2,7 @@
 
 namespace ninja;
 
-class ModAdminMenuController extends \ModAbstractController {
+class ModAdminMenuController extends \ModAdminController {
 
 	/**
 	 * I fetch items for modules which have plugin for admin menu
@@ -21,12 +21,11 @@ class ModAdminMenuController extends \ModAbstractController {
 			$adminItems = array_merge($adminItems, (array)call_user_func([$eachPluginClassName, $pluginMethod]));
 		}
 
+		// add items to $Contents
 		$Model->Contents = (array)$Model->Contents + ['items'=>$adminItems];
 
-		$this->Asset()->addJsCode(
-			\ModPageModel::JS_HEAD,
-			'require(["/assets/admin/js/nav"], function(nav) { nav.init(); });'
-		);
+		// add nav js with init
+		$this->_addAdminJs('nav');
 
 		return parent::actionIndex($params);
 	}

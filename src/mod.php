@@ -34,6 +34,8 @@ EOS;
 
 	protected $_switchWithPlugin = false;
 
+	protected $_switchWithAssets = false;
+
 	public function run() {
 		global $argv;
 
@@ -59,6 +61,10 @@ EOS;
 				case '-p':
 				case '--with-plugin':
 					$this->_switchWithPlugin = true;
+					break;
+				case '-a':
+				case '--with-assets':
+					$this->_switchWithAssets = true;
 					break;
 				case 'init':
 //					$this->initMod($args);
@@ -185,7 +191,12 @@ EOS;
 		$filesToCreate = [];
 		foreach ($classes as $eachKey=>$eachClass) {
 			$classname = 'Mod' . $modName . $eachClass;
-			$basename = '\ModAbstract' . $eachClass;
+			// base class name shall be parent for submodels, abstract for base modules
+			$basenameParts = \ArrayHelper::camelSplit($modName);
+			array_pop($basenameParts);
+			$basenameParts = $basenameParts ?: ['Abstract'];
+			$basename = '\Mod' . implode($basenameParts) . $eachClass;
+
 			$fname = $classname . '.php';
 			$relativeFname = \Finder::joinPath(static::MODE_BASE_PATH, implode('/', \ArrayHelper::camelSplit($modName)), $fname);
 			$fullFname = $modPath . '/' . $fname;
@@ -221,6 +232,30 @@ EOS;
 			file_put_contents($fullTemplateFname, $templateBody);
 			$filesToCreate[] = $relativeTemplateFname;
 			echo "OK\n";
+		}
+
+		$assetFolders = [
+			'assets',
+			'assets/js',
+			'assets/css',
+		];
+		foreach ($assetFolders as $eachAssetFolder) {
+			$baseModNameParts = \ArrayHelper::camelSplit($modName);
+			$baseModName = reset($baseModNameParts);
+			$relativeAssetFolder = \Finder::joinPath(static::MODE_BASE_PATH, $baseModName, $eachAssetFolder);
+			$baseModPath = \Finder::joinPath(NINJA_ROOT, static::MODE_BASE_PATH, $baseModName);
+			$fullAssetFolder = \Finder::joinPath($baseModPath, $eachAssetFolder);
+			echo 'creating folder: ' . $relativeAssetFolder . ' ... ';
+			if ($this->_switchDryRun || !$this->_switchWithAssets) {
+				echo "SKIPPED\n";
+			}
+			elseif (is_dir($fullAssetFolder)) {
+				echo "EXISTS\n";
+			}
+			else {
+				mkdir($fullAssetFolder);
+				echo "OK\n";
+			}
 		}
 
 		if (count($filesToCreate)) {
@@ -302,6 +337,7 @@ switches:
 	-d --dry-run    	dry-run, skip everything just show what it would do
 	-u --update     	update, create files without overwriting existing ones
 	-p --with-plugin	create Admin plugin class
+	-a --with-assets	create placeholder folders for assets
 	-g fname 	create git diff file only, no changes to files  (not yet)
 <?php
 	}

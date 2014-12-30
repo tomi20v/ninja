@@ -162,6 +162,20 @@ abstract class ModAbstractModule {
 		return $this->_Parent;
 	}
 
+	/**
+	 * @param callable $filter
+	 * @return $this|null
+	 */
+	public function findParentByFilter(callable $filter) {
+		if ($filter($this)) {
+			return $this;
+		}
+		$Parent = $this->_Parent;
+		return $Parent instanceof \ninja\ModAbstractModule
+			? $Parent->findParentByFilter($filter)
+			: null;
+	}
+
 	////////////////////////////////////////////////////////////////////////////////
 	//	submodules
 	////////////////////////////////////////////////////////////////////////////////
@@ -181,8 +195,6 @@ abstract class ModAbstractModule {
 		}
 
 		$moduleClassname = substr($modelClassname, 0, -5) . 'Module';
-
-//		$ModModel->Parent = $this->_Model;
 
 		$SubModule = new $moduleClassname(
 			$this,

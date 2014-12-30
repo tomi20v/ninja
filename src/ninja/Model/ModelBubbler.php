@@ -9,8 +9,15 @@ namespace ninja;
  */
 class ModelBubbler extends \maui\ModelBubbler {
 
+	/**
+	 * @var \ModAbstractModule
+	 */
 	protected $_Module;
 
+	/**
+	 * @param \ModAbstractModel $Model
+	 * @param \ModAbstractModule $Module
+	 */
 	public function __construct($Model, $Module) {
 
 		$this->_Model = $Model;

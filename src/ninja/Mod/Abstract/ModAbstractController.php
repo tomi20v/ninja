@@ -64,5 +64,20 @@ abstract class ModAbstractController {
 		return new $viewClassname($this->_Module, $this->_Module->getModel(), null, $this->_Request->getRequestedExtension());
 	}
 
+	/**
+	 * I return the Asset object to add JS and/or CSS
+	 * note I don't really like this implementation but makes sense
+	 * @return \ModPageModelAsset
+	 */
+	public function Asset() {
+		$RootModule = $this->_Module->findParentByFilter(
+			function($Obj) {
+				return $Obj instanceof \ninja\ModPageRootModule;
+			}
+		);
+		$Asset = $RootModule->getModel()->Asset();
+		return $Asset;
+	}
+
 }
 

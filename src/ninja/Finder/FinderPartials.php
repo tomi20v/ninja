@@ -10,24 +10,34 @@ namespace ninja;
 class FinderPartials implements \Mustache_Loader {
 
 	/**
+	 * @var string[] I'll cache found templates for reuse
+	 */
+	protected $_templates = [];
+
+	/**
 	 * Load a Template by name.
-	 *
 	 * @throws Mustache_Exception_UnknownTemplateException If a template file is not found.
-	 *
 	 * @param string $name
-	 *
 	 * @return string Mustache Template source
 	 */
 	public function load($name) {
-		preg_match('/^Mod([A-Z][a-zA-Z0-9]+)?(\-(.+))?$/', $name, $matches);
-		$fname = \Finder::joinPath(
-			NINJA_ROOT,
-			'src/ninja/Mod',
-			\Finder::classToPath($matches[1]),
-			'template',
-			$name . '.html.mustache'
-		);
-		return file_get_contents($fname);
+
+		$key = md5($name);
+
+		if (!isset($this->_templates[$key])) {
+			preg_match('/^Mod([A-Z][a-zA-Z0-9]+)?(\-(.+))?$/', $name, $matches);
+			$fname = \Finder::joinPath(
+				NINJA_ROOT,
+				'src/ninja/Mod',
+				\Finder::classToPath($matches[1]),
+				'template',
+				$name . '.html.mustache'
+			);
+			$this->_templates[$key] = file_get_contents($fname);
+		}
+
+		return $this->_templates[$key];
+
 	}
 
 }

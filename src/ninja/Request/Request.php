@@ -32,17 +32,6 @@ class Request extends \Symfony\Component\HttpFoundation\Request {
 	private $_remainingTargetUriParts = null;
 
 	/**
-	 * @var string[] these extensions will be recognized
-	 */
-	protected $_routedExtensions = [
-		'html',
-		'json',
-		'js',
-		'css',
-		'xml',
-	];
-
-	/**
 	 * I'll store the requested extension here
 	 * @var null
 	 */
@@ -169,8 +158,9 @@ class Request extends \Symfony\Component\HttpFoundation\Request {
 	 */
 	public function getRequestedExtension() {
 		if (is_null($this->_requestedExtension)) {
-			$pattern = '/.(' . implode('|', $this->_routedExtensions) . ')(\/.*|)$/';
-			if (preg_match($pattern, $this->getRequestUri(), $matches)) {
+			$pattern = '/.([A-Za-z0-9]+)((\/[^.]*)|(\?.*))?$/';
+			$requestUri = $this->getRequestUri();
+			if (preg_match($pattern, $requestUri, $matches)) {
 				$this->_requestedExtension = $matches[1];
 			}
 			else {

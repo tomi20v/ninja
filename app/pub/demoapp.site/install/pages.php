@@ -27,6 +27,11 @@ $JqWidgetsFileServer = new \ModFileservModel(
 $requireJsFileServer = new \ModFileservModel([
 	'recursive' => true, 'basePath' => 'requirejs', 'folder' => '../vendor/bower-asset/requirejs',
 ]);
+$faFileServerCss = new \ModFileservModel([
+	'recursive' => true,
+	'basePath' => 'font-awesome',
+	'folder' => '../vendor/components/font-awesome',
+]);
 $adminAssetsServer = new \ModFileservModel(
 	['recursive' => true, 'basePath' => 'admin', 'folder' => '../src/ninja/Mod/Admin/assets',],
 	false
@@ -37,6 +42,7 @@ $assetModules = [
 	'bootstrapFilesCss' => $BootstrapFileServerCss,
 	'jqWidgetsFiles' => $JqWidgetsFileServer,
 	'requireJsFiles' => $requireJsFileServer,
+	'faFilesCss' => $faFileServerCss,
 	'adminFiles' => $adminAssetsServer,
 ];
 
@@ -46,7 +52,6 @@ $DaPageRoot = new \ModPageRootModel([
 		// @todo validation shall find that slug is empty
 		'slug' => '',
 		'published' => true,
-//		'doctype' => 'html',
 		'domainName' => '.demoapp.site',
 		'availableLayers' => [
 			'default' => new \ModLayerModel([
@@ -82,13 +87,12 @@ $DaPageRoot = new \ModPageRootModel([
 				], false),
 		],
 		'scripts' => [
-			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/jquery.js',],
-			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/js/bootstrap.js',],
-			['place'=>\ModPageModel::JS_HEAD, 'code'=>'var injected_var;'],
+			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/jquery/jquery.js',],
+			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/bootstrap/js/bootstrap.js',],
 		],
 		'css' => [
-			['href'=>'/assets/css/bootstrap.css'],
-			['href'=>'/assets/css/bootstrap-theme.css'],
+			['href'=>'/assets/bootstrap/css/bootstrap.css'],
+			['href'=>'/assets/bootstrap/css/bootstrap-theme.css'],
 		],
 		'cssStyle' => 'padding-top:60px;',
 		'extensionToType' => [
@@ -162,22 +166,15 @@ $adminDaPageRoot = new \ModPageRootModel([
 		'redirectType' => \ModPageRedirectModel::REDIRECT_TYPE_PERMANENT,
 		'location' => '~/index.html',
 		'domainName' => 'demoapp.site',
-//		'Modules' => $assetModules,
 		'scripts' => [
 			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/requirejs/require.js',],
 			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/admin/js/main.js',],
-//			['place'=>\ModPageModel::JS_HEAD, 'code'=>'require(["/assets/admin/js/nav"], function(nav) { nav.init(); });',],
-//			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/admin/js/nav.js',],
-//			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/jquery/jquery.js',],
-//			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/bootstrap/js/bootstrap.js',],
-//			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/jqwidgets/jqx-all.js',],
-//			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/admin/js/app.js'],
 		],
-//		'script' => 'require(["nav"], function(nav) { nav.init(); });',
 		'css' => [
 			['href'=>'/assets/bootstrap/css/bootstrap.css'],
 			['href'=>'/assets/bootstrap/css/bootstrap-theme.css'],
 			['href'=>'/assets/jqwidgets/styles/jqx.base.css'],
+			['href'=>'/assets/font-awesome/css/font-awesome.css'],
 			['href'=>'/assets/admin/css/admin.css'],
 		],
 		'cssStyle' => 'padding-top:60px; padding-left:225px;'

@@ -21,14 +21,15 @@
 	"require": {
 		"php": ">5.4",
 		"ext-mongo": "*",
-		"tomi20v/maui": "dev-master",
+		"tomi20v/maui": "dev-dev-master",
 		"symfony/http-kernel": "2.6.*@dev",
 		"symfony/http-foundation": "2.6.*@dev",
 		"mustache/mustache": "dev-master",
 		"components/jquery": "~2.0",
 		"components/bootstrap": "~3.0",
 		"fxp/composer-asset-plugin": "~1.0",
-		"bower-asset/requirejs": "dev-master"
+		"bower-asset/requirejs": "dev-master",
+		"components/font-awesome": "dev-master"
 	},
 	"autoload": {
 		"classmap": [

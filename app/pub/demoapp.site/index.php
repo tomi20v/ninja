@@ -26,7 +26,5 @@ $t2 = microtime(true);
 $k = intval(memory_get_peak_usage()/1024);
 
 if (in_array($Ninja->getRequestedExtension(), ['html'])) {
-	echo '/*';
 	echop(substr(($t2 - $t1), 0, 5) . ' sec, ' . substr($k, 0, -3) . ',' . substr($k, -3) . 'K');
-	echo '*/';
 }

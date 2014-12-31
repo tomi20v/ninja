@@ -36,7 +36,12 @@ class ModFileservModel extends \ModAbstractModel {
 			'fileReadable' => '=folder',
 			'hasMin' => 0,
 			'hasMax' => 0,
-		]
+		],
+		'filter' => [
+			'toArray',
+			// @todo implement this
+//			'isCallable',
+		],
 	];
 
 

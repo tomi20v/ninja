@@ -29,7 +29,8 @@
 		"components/bootstrap": "~3.0",
 		"fxp/composer-asset-plugin": "~1.0",
 		"bower-asset/requirejs": "dev-master",
-		"components/font-awesome": "dev-master"
+		"components/font-awesome": "dev-master",
+		"leafo/lessphp": "0.4.0"
 	},
 	"autoload": {
 		"classmap": [

@@ -59,8 +59,17 @@ class ModFileservModule extends \ModAbstractModule {
 				$fLastMod = filemtime($foundFname);
 				$mimetype = \Finder::guessMimeType($foundFname);
 
+				// apply filter if any
+				if (!$this->_Model->Data()->fieldIsEmpty('filter') &&
+					is_callable($this->_Model->filter)) {
+					$fileContents = call_user_func($this->_Model->filter, $foundFname);
+				}
+				else {
+					$fileContents = file_get_contents($foundFname);
+				}
+
 				$Response = new \Response(
-					file_get_contents($foundFname),
+					$fileContents,
 					\Response::HTTP_OK,
 					array(
 						'Last-Modified' => gmdate('D, d M Y H:i:s \G\M\T', $fLastMod),
@@ -79,6 +88,21 @@ class ModFileservModule extends \ModAbstractModule {
 
 		return parent::_respond($Request, $hasShifted);
 
+	}
+
+	/**
+	 * I'll compile less css if filename ends by .less.css
+	 * @param string $fname
+	 * @return string compiled or raw content
+	 */
+	public static function filterLess($fname) {
+		if (substr($fname, -9) === '.css.less') {
+			$Less = new \lessc;
+			return $Less->compileFile($fname);
+		}
+		else {
+			return file_get_contents($fname);
+		}
 	}
 
 }

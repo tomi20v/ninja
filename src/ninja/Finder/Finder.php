@@ -12,10 +12,12 @@ class Finder {
 
 	/**
 	 * I'll use this tiny table if possible for mime lookups
+	 * @todo add common image types!!!???
 	 * @var array
 	 */
 	protected static $_mimeTypes = [
 		'css' => 'text/css',
+		'less' => 'text/css',
 		'js' => 'application/javascript',
 		'jsonp' => 'application/javascript',
 		'json' => 'application/json',

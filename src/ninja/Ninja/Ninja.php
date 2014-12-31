@@ -63,6 +63,12 @@ class Ninja {
 		return $this;
 	}
 
+	public function getRequestedExtension() {
+		return $this->_Request
+			? $this->_Request->getRequestedExtension()
+			: null;
+	}
+
 	/**
 	 * I, as a frontend controller, run the Ninja app
 	 */

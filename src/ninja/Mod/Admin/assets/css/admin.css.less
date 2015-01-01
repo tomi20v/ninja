@@ -1,0 +1,98 @@
+body {
+	padding-top: 50px;
+	padding-left: 180px;
+	background-color: #f8c;
+	padding-top: 50px;
+	font-family: "Droid Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-size: 14px;
+	line-height: 1.42857143;
+	color: #BDBDBD;
+	background-color: #060606;
+	background: #222;
+	>pre {
+		display: block;
+		position: absolute;
+		bottom: 0;
+		right: 10px;
+	}
+}
+
+.side-nav {
+	margin-left: -180px;
+	left: 180px;
+	width: 180px;
+	position: fixed;
+	top: 50px;
+	height: 100%;
+	border-radius: 0;
+	border: none;
+	background-color: #222222;
+	overflow-y: auto;
+	>li.active {
+		border-left: 7px solid #2A9FD6;
+	}
+	>li>a {
+		width: 225px;
+	}
+}
+
+.navbar-fixed-top {
+	border: none;
+}
+
+.tabs-header {
+	background: none;
+	border: none;
+	border-bottom: 1px solid #282828;
+	.tabs {
+		height: auto !important;
+		overflow: auto;
+		>li {
+			margin-bottom: -1px;
+		}
+		>li >a.tabs-inner {
+			margin-right: 2px;
+			line-height: 1.42857143 !important;
+			height: auto !important;
+			border: 1px solid transparent;
+			border-radius: 4px 4px 0 0;
+			position: relative;
+			display: block;
+			padding: 10px 15px;
+			color: #fff;
+			background: none;
+			.tabs-title {
+				font-size: inherit;
+			}
+		}
+		>li >a.tabs-inner:hover,
+		>li >a.tabs-inner:focus {
+			text-decoration: none;
+			background: #333;
+			border-color: transparent transparent #282828;
+		}
+		>li.tabs-selected >a.tabs-inner {
+			color: #ffffff;
+			background: #2a9fd6;
+			border: 1px solid #282828;
+			cursor: default;
+			filter: none;
+			border-bottom: 1px solid #666;
+			font-weight: inherit;
+		}
+	}
+}
+.tabs-panels {
+	border: none;
+	>div.panel {
+		background: none;
+		>div.panel-body {
+			background: none;
+			font-size: inherit;
+		}
+	}
+}
+
+#ni-app > div.tabs-container > div.tabs-panels > div.panel {
+	padding: 20px;
+}

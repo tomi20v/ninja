@@ -2,7 +2,7 @@
 
 namespace ninja;
 
-class ModContainerModule extends \ModAbstractModule {
+class ModContainerExpandableModule extends \ModContainerModule {
 
 
 

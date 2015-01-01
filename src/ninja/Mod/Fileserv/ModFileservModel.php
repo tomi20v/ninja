@@ -22,6 +22,12 @@ class ModFileservModel extends \ModAbstractModel {
 			'class' => 'ModAbstractModel',
 			'reference' => \SchemaManager::REF_REFERENCE,
 		],
+		/**
+		 * ModFileservModel.field.folder.title
+		 * ModAbstractModel.field.folder.title
+		 * Model.field.folder.title
+		 * field.folder.title
+		 */
 		'folder' => [
 			'folderReadable',
 		],

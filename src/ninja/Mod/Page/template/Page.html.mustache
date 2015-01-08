@@ -13,9 +13,9 @@
 
 	<title>{{Model.title}}</title>
 
-	{{#View.getWithRoot_css}}
+	{{#View.getWithRoot_css }}
 	{{#onlyIf}}<!-- IF {{onlyIf}} -->{{/onlyIf}}
-	<link rel="stylesheet" {{#media}}media={{media}}{{/media}} href="{{href}}" />
+	<link {{#rel}}rel="{{rel}}"{{/rel}} {{#media}}media={{media}}{{/media}} href="{{href}}" />
 	{{#onlyIf}}<!-- IF {{onlyIf}} -->{{/onlyIf}}
 	{{/View.getWithRoot_css}}
 
@@ -29,7 +29,7 @@
 	</script>
 
 </head>
-<body {{#cssId}}id="#{{cssId}}"{{/cssId}} class="nm-page{{#View.getWithRoot_cssClasses}} {{.}}{{/View.getWithRoot_cssClasses}}" {{#View.getWithRoot_cssStyle}}style="{{{.}}}"{{/View.getWithRoot_cssStyle}}>
+<body {{#cssId}}id="#{{cssId}}"{{/cssId}} class="nm-page{{#View.getWithRoot_cssClasses}} {{.}}{{/View.getWithRoot_cssClasses}}" {{#View.getWithRoot_cssStyle}}style="{{{.}}}"{{/View.getWithRoot_cssStyle}} {{#Model.extraAttributes}}{{extraAttributes}}{{/Model.extraAttributes}}>
 
 {{{ Contents.header }}}
 {{{ Contents.columns }}}

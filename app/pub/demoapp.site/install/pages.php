@@ -20,18 +20,9 @@ $BootstrapFileServerCss = new \ModFileservModel(
 	['recursive' => true, 'basePath' => 'bootstrap/css', 'folder' => '../vendor/components/bootstrap/css',],
 	false
 );
-$easyUiFileServer = new \ModFileservModel(
-	['recursive' => true, 'basePath' => 'easyui', 'folder' => 'vendor/easyui',],
-	false
+$bowerFileServer = new \ModFileservModel(
+	['recursive'=>true, 'basePath' => 'bower-asset', 'folder' => '../vendor/bower-asset']
 );
-$requireJsFileServer = new \ModFileservModel([
-	'recursive' => true, 'basePath' => 'requirejs', 'folder' => '../vendor/bower-asset/requirejs',
-]);
-$faFileServerCss = new \ModFileservModel([
-	'recursive' => true,
-	'basePath' => 'font-awesome',
-	'folder' => '../vendor/components/font-awesome',
-]);
 $adminAssetsServer = new \ModFileservModel(
 	['recursive' => true, 'basePath' => 'admin', 'folder' => '../src/ninja/Mod/Admin/assets', 'filter'=>['ModFileservModule','filterLess']],
 	false
@@ -40,9 +31,10 @@ $assetModules = [
 	'jqueryFiles' => $JqueryFileServer,
 	'bootstrapFilesJs' => $BootstrapFileServerJs,
 	'bootstrapFilesCss' => $BootstrapFileServerCss,
-	'easyUiFiles' => $easyUiFileServer,
-	'requireJsFiles' => $requireJsFileServer,
-	'faFilesCss' => $faFileServerCss,
+//	'easyUiFiles' => $easyUiFileServer,
+//	'requireJsFiles' => $requireJsFileServer,
+//	'faFilesCss' => $faFileServerCss,
+	'bowerFiles' => $bowerFileServer,
 	'adminFiles' => $adminAssetsServer,
 ];
 
@@ -91,10 +83,11 @@ $DaPageRoot = new \ModPageRootModel([
 			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/bootstrap/js/bootstrap.js',],
 		],
 		'css' => [
-			['href'=>'/assets/bootstrap/css/bootstrap.css'],
-			['href'=>'/assets/bootstrap/css/bootstrap-theme.css'],
+			['rel'=>'stylesheet', 'href'=>'/assets/bootstrap/css/bootstrap.css'],
+			['rel'=>'stylesheet', 'href'=>'/assets/bootstrap/css/bootstrap-theme.css'],
 		],
 		'cssStyle' => 'padding-top:60px;',
+		'extraAttributes' => 'unresolved fullbleed',
 		'extensionToType' => [
 			'html' => 'pages',
 			'json' => 'api',
@@ -167,15 +160,17 @@ $adminDaPageRoot = new \ModPageRootModel([
 		'location' => '~/index.html',
 		'domainName' => 'demoapp.site',
 		'scripts' => [
-			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/requirejs/require.js',],
+			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/bower-asset/webcomponentsjs/webcomponents.js'],
+			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/bower-asset/requirejs/require.js',],
 			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/admin/js/main.js',],
 		],
 		'css' => [
-			['href'=>'/assets/bootstrap/css/bootstrap.css'],
-			['href'=>'/assets/bootstrap/css/bootstrap-theme.css'],
-			["href"=>'/assets/easyui/themes/black/easyui.css'],
-			['href'=>'/assets/font-awesome/css/font-awesome.css'],
-			['href'=>'/assets/admin/css/admin.css.less'],
+//			['href'=>'/assets/bootstrap/css/bootstrap.css'],
+//			['href'=>'/assets/bootstrap/css/bootstrap-theme.css'],
+//			["href"=>'/assets/easyui/themes/black/easyui.css'],
+//			['href'=>'/assets/font-awesome/css/font-awesome.css'],
+			['rel'=>'stylesheet', 'href'=>'/assets/admin/css/admin.css.less'],
+			['rel'=>'import', 'href'=>'/assets/bower-asset/font-roboto/roboto.html'],
 		],
 	]);
 $adminDaPageRootResult = $adminDaPageRoot->save(true);

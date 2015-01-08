@@ -1,0 +1,25 @@
+{
+  "name": "ninja",
+  "version": "0.1",
+  "homepage": "https://github.com/tomi20v/ninja",
+  "authors": [
+    "t <tomi20v@gmail.com>"
+  ],
+  "description": "bower dependencies, run composer it will run bower in turn",
+  "main": "README.md",
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "vendor/bower",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#~0.5.2",
+    "paper-elements": "Polymer/paper-elements#~0.5.2",
+    "requirejs": "~2.1.15"
+  }
+}

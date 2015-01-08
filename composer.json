@@ -26,10 +26,7 @@
 		"symfony/http-foundation": "2.6.*@dev",
 		"mustache/mustache": "dev-master",
 		"components/jquery": "~2.0",
-		"components/bootstrap": "~3.0",
 		"fxp/composer-asset-plugin": "~1.0",
-		"bower-asset/requirejs": "dev-master",
-		"components/font-awesome": "dev-master",
 		"leafo/lessphp": "0.4.0"
 	},
 	"autoload": {
@@ -46,5 +43,13 @@
 		"src/scripts/mod.php"
 	],
 	"scripts": {
+		"post-install-cmd": [
+			"bower install"
+		],
+		"post-update-cmd": [
+			"bower update"
+		]
+	},
+	"extra": {
 	}
 }

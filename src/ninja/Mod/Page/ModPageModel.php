@@ -61,7 +61,8 @@ class ModPageModel extends \ModAbstractModel {
 		],
 		'css' => [
 			'toArray',
-			'keys' => ['href', 'media', 'onlyIf'],
+			'keys' => ['rel', 'href', 'media', 'onlyIf'],
+			'keysValues' => ['rel', ['stylesheet', 'import']],
 			'hasMax' => 0,
 		],
 		'baseHref',

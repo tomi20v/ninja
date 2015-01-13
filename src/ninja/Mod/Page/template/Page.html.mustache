@@ -29,7 +29,7 @@
 	</script>
 
 </head>
-<body {{#cssId}}id="#{{cssId}}"{{/cssId}} class="nm-page{{#View.getWithRoot_cssClasses}} {{.}}{{/View.getWithRoot_cssClasses}}" {{#View.getWithRoot_cssStyle}}style="{{{.}}}"{{/View.getWithRoot_cssStyle}} {{#Model.extraAttributes}}{{extraAttributes}}{{/Model.extraAttributes}}>
+<body {{#cssId}}id="#{{cssId}}"{{/cssId}} class="nm-page{{#View.getWithRoot_cssClasses}} {{.}}{{/View.getWithRoot_cssClasses}}" {{#View.getWithRoot_cssStyle}}style="{{{.}}}"{{/View.getWithRoot_cssStyle}} {{#View.getWithRoot_extraAttributes}}{{{.}}}{{/View.getWithRoot_extraAttributes}}>
 
 {{{ Contents.header }}}
 {{{ Contents.columns }}}

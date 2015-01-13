@@ -8,18 +8,6 @@ $DB = \Maui::instance()->dbDb();
 $DB->PageModelCollection->drop();
 $DB->UserModelCollection->drop();
 
-$JqueryFileServer = new \ModFileservModel(
-	['recursive' => true, 'basePath' => 'jquery', 'folder' => '../vendor/components/jquery',],
-	false
-);
-$BootstrapFileServerJs = new \ModFileservModel(
-	['recursive' => true, 'basePath' => 'bootstrap/js', 'folder' => '../vendor/components/bootstrap/js',],
-	false
-);
-$BootstrapFileServerCss = new \ModFileservModel(
-	['recursive' => true, 'basePath' => 'bootstrap/css', 'folder' => '../vendor/components/bootstrap/css',],
-	false
-);
 $bowerFileServer = new \ModFileservModel(
 	['recursive'=>true, 'basePath' => 'bower-asset', 'folder' => '../vendor/bower-asset']
 );
@@ -28,12 +16,6 @@ $adminAssetsServer = new \ModFileservModel(
 	false
 );
 $assetModules = [
-	'jqueryFiles' => $JqueryFileServer,
-	'bootstrapFilesJs' => $BootstrapFileServerJs,
-	'bootstrapFilesCss' => $BootstrapFileServerCss,
-//	'easyUiFiles' => $easyUiFileServer,
-//	'requireJsFiles' => $requireJsFileServer,
-//	'faFilesCss' => $faFileServerCss,
 	'bowerFiles' => $bowerFileServer,
 	'adminFiles' => $adminAssetsServer,
 ];
@@ -79,12 +61,12 @@ $DaPageRoot = new \ModPageRootModel([
 				], false),
 		],
 		'scripts' => [
-			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/jquery/jquery.js',],
-			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/bootstrap/js/bootstrap.js',],
+			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/bower-asset/jquery/dist/jquery.js',],
+			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/bower-asset/bootstrap/dist/js/bootstrap.js',],
 		],
 		'css' => [
-			['rel'=>'stylesheet', 'href'=>'/assets/bootstrap/css/bootstrap.css'],
-			['rel'=>'stylesheet', 'href'=>'/assets/bootstrap/css/bootstrap-theme.css'],
+			['rel'=>'stylesheet', 'href'=>'/assets/bower-asset/bootstrap/dist/css/bootstrap.css'],
+			['rel'=>'stylesheet', 'href'=>'/assets/bower-asset/bootstrap/dist/css/bootstrap-theme.css'],
 		],
 		'cssStyle' => 'padding-top:60px;',
 		'extraAttributes' => 'unresolved fullbleed',
@@ -132,7 +114,6 @@ $DaPageHome = new \ModPageModel([
 		'title' => 'Demo Application home page',
 		'Modules' => [
 			// @todo I currently cannot save with $DaRowContainer, investigate (seems data is not flattened properly)
-//			'columns' => $DaRowContainer,
 			'columns' => $DaColumnsRow,
 		]
 	], false);
@@ -165,13 +146,10 @@ $adminDaPageRoot = new \ModPageRootModel([
 			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/admin/js/main.js',],
 		],
 		'css' => [
-//			['href'=>'/assets/bootstrap/css/bootstrap.css'],
-//			['href'=>'/assets/bootstrap/css/bootstrap-theme.css'],
-//			["href"=>'/assets/easyui/themes/black/easyui.css'],
-//			['href'=>'/assets/font-awesome/css/font-awesome.css'],
 			['rel'=>'stylesheet', 'href'=>'/assets/admin/css/admin.css.less'],
 			['rel'=>'import', 'href'=>'/assets/bower-asset/font-roboto/roboto.html'],
 		],
+		'extraAttributes' => 'unresolved fullbleed',
 	]);
 $adminDaPageRootResult = $adminDaPageRoot->save(true);
 echop($adminDaPageRootResult);
@@ -189,6 +167,9 @@ $adminDaPageHome = new \ModPageModel([
 				'Modules' => [
 					new \ModAdminMenuModel([
 						'cssClasses' => ['side-nav'],
+					]),
+					new \ModContainerModel([
+						''
 					]),
 				],
 			]),

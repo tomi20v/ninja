@@ -10,13 +10,8 @@ note: the system has passed first POC - generate a page from loaded module hiera
 INSTALL:
 
 1. install composer (if needed)
-@see https://getcomposer.org/download/
 
-2. install composer plugin, run
-COMPOSER=composer.first.json ./composer.phar install
-this installs the composer-asset-plugin which is required to resolve bower
-	dependencies. To keep focused on PHP, this keeps dependency management
-	within composer
+2. install bower (if needed)
 
 3. install all dependencies, run
 ./composer install

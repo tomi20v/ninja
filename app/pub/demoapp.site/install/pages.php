@@ -15,9 +15,11 @@ $adminAssetsServer = new \ModFileservModel(
 	['recursive' => true, 'basePath' => 'admin', 'folder' => '../src/ninja/Mod/Admin/assets', 'filter'=>['ModFileservModule','filterLess']],
 	false
 );
+$notFoundModule = new \ModBaseNotfoundModel();
 $assetModules = [
 	'bowerFiles' => $bowerFileServer,
 	'adminFiles' => $adminAssetsServer,
+	'fallbackTo404' => $notFoundModule,
 ];
 
 $DaPageRoot = new \ModPageRootModel([

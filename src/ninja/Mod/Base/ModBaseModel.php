@@ -2,10 +2,19 @@
 
 namespace ninja;
 
+/**
+ * Class ModBaseModel - unused placeholder class
+ *
+ * @package ninja
+ */
 class ModBaseModel extends \ModAbstractModel {
 
-
-	protected static $_schema = [];
-
+	/**
+	 * I only extend AbstractModel because $_schema cannot be empty
+	 * @var array
+	 */
+	protected static $_schema = [
+		'@@extends' => 'ModAbstractModel',
+	];
 
 }

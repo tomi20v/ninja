@@ -59,7 +59,7 @@ class ModPageModel extends \ModAbstractModel {
 		'script' => [
 			'toString',
 		],
-		'css' => [
+		'links' => [
 			'toArray',
 			'keys' => ['rel', 'href', 'media', 'onlyIf'],
 			'keysValues' => ['rel', ['stylesheet', 'import']],

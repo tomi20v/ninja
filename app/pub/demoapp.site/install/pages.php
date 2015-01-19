@@ -64,7 +64,7 @@ $DaPageRoot = new \ModPageRootModel([
 			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/bower-asset/jquery/dist/jquery.js',],
 			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/bower-asset/bootstrap/dist/js/bootstrap.js',],
 		],
-		'css' => [
+		'links' => [
 			['rel'=>'stylesheet', 'href'=>'/assets/bower-asset/bootstrap/dist/css/bootstrap.css'],
 			['rel'=>'stylesheet', 'href'=>'/assets/bower-asset/bootstrap/dist/css/bootstrap-theme.css'],
 		],
@@ -145,7 +145,7 @@ $adminDaPageRoot = new \ModPageRootModel([
 			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/bower-asset/requirejs/require.js',],
 			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/admin/js/main.js',],
 		],
-		'css' => [
+		'links' => [
 			['rel'=>'stylesheet', 'href'=>'/assets/admin/css/admin.css.less'],
 			['rel'=>'import', 'href'=>'/assets/bower-asset/font-roboto/roboto.html'],
 		],
@@ -161,21 +161,18 @@ $adminDaPageHome = new \ModPageModel([
 		'published' => true,
 		'title' => 'Demo ADMIN Application home page',
 		'Modules' => [
-			'header' => new \ModNavBarModel([
-				'inverse' => true,
-				'fixed' => 'top',
-				'Modules' => [
-					new \ModAdminMenuModel([
-						'cssClasses' => ['side-nav'],
-					]),
-					new \ModContainerModel([
-						''
-					]),
-				],
+			'columns' => new \ModContainerModel([
+					'template' => 'index.html',
+					'templatePath' => 'Admin/template',
+					'Modules' => [
+						'nav' => new \ModAdminMenuModel([
+								'cssClasses' => ['side-nav'],
+						]),
+					],
 			]),
 		],
 		'Contents' => [
-			'columns' => '<div id="ni-app"></div>',
+//			'columns' => '<div id="ni-app"></div>',
 		],
 	]);
 $adminDaPageHomeResult = $adminDaPageHome->save(true);

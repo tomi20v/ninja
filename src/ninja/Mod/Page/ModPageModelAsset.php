@@ -10,10 +10,28 @@ namespace ninja;
  */
 class ModPageModelAsset {
 
+	const REL_STYLESHEET = 'stylesheet';
+
+	const REL_IMPORT = 'import';
+
 	protected $_Model;
 
 	public function __construct($Model) {
 		$this->_Model = $Model;
+	}
+
+	/**
+	 * I am the core of adding a JS asset
+	 * @param $script
+	 * @return $this
+	 */
+	protected function _addJs($script) {
+		$scripts = $this->_Model->scripts;
+		if (!in_array($script, $scripts)) {
+			$scripts[] = $script;
+			$this->_Model->scripts = $scripts;
+		}
+		return $this;
 	}
 
 	/**
@@ -50,15 +68,27 @@ class ModPageModelAsset {
 	}
 
 	/**
-	 * I am the core of adding a JS asset
-	 * @param $script
+	 * I add a <link>
+	 * @param $href
+	 * @param $media
+	 * @param $onlyIf
 	 * @return $this
 	 */
-	protected function _addJs($script) {
-		$scripts = $this->_Model->scripts;
-		if (!in_array($script, $scripts)) {
-			$scripts[] = $script;
-			$this->_Model->scripts = $scripts;
+	public function _addLink($rel, $href, $media, $onlyIf) {
+		$link = [
+			'rel' => $rel,
+			'href' => $href
+		];
+		if (!is_null($media)) {
+			$link['media'] = $media;
+		}
+		if (!is_null($onlyIf)) {
+			$link['onlyIf'] = $onlyIf;
+		}
+		$links = $this->_Model->links;
+		if (!in_array($link, $links)) {
+			$links[] = $link;
+			$this->_Model->links = $links;
 		}
 		return $this;
 	}
@@ -70,20 +100,18 @@ class ModPageModelAsset {
 	 * @param null|string $onlyIf specify only if (for IE version specific inclusions)
 	 * @return $this
 	 */
-	public function addCss($href, $media=null, $onlyIf=null) {
-		$css = ['href'=>$href];
-		if (!is_null($media)) {
-			$css['media'] = $media;
-		}
-		if (!is_null($onlyIf)) {
-			$css['onlyIf'] = $onlyIf;
-		}
-		$csss = $this->_Model->css;
-		if (!in_array($css, $csss)) {
-			$csss[] = $css;
-			$this->_Model->css = $csss;
-		}
-		return $this;
+	public function addCssFile($href, $media=null, $onlyIf=null) {
+		return $this->_addLink(self::REL_STYLESHEET, $href, $media, $onlyIf);
+	}
+
+	/**
+	 * I add a link rel=import
+	 * @param $href
+	 * @param null $onlyIf
+	 * @return $this
+	 */
+	public function addImport($href, $onlyIf=null) {
+		return $this->_addLink(self::REL_IMPORT, $href, null, $onlyIf);
 	}
 
 }

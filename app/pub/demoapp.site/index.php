@@ -25,6 +25,6 @@ $t2 = microtime(true);
 //echop(($t2-$t0) . ' sec');
 $k = intval(memory_get_peak_usage()/1024);
 
-if (in_array($Ninja->getRequestedExtension(), ['html'])) {
+if ((substr($_SERVER['REQUEST_URI'], -5) === '.html') && (strpos($_SERVER['REQUEST_URI'], 'assets/') === false)) {
 	echop(substr(($t2 - $t1), 0, 5) . ' sec, ' . substr($k, 0, -3) . ',' . substr($k, -3) . 'K');
 }

@@ -1,15 +1,13 @@
 require.config({
 	baseUrl: '/assets',
 	paths: {
-		"jquery": 'jquery/jquery',
-		"app": 'admin/js/app',
-		"easyui": "easyui/jquery.easyui.min"
+		"jquery": 'jquery/dist/jquery',
+		"app": 'admin/js/app'
 	},
 	shim: {
-		"easyui": { deps: ["jquery"] }
 	}
 });
 
 require(['jquery', 'app'], function($, app) {
-	app.init();
+//	app.init();
 });

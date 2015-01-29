@@ -1,8 +1,8 @@
 "use strict"
 define([
-	'jquery', 'easyui'
+	'jquery'
 ], function(
-	$, easyui
+	$
 ) {
 
 	$.log = function() {

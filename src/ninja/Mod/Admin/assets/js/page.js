@@ -1,8 +1,8 @@
 "use strict"
 define([
-	'jquery', 'app', 'easyui'
+	'jquery', 'app'
 ], function(
-	$, app, easyui
+	$, app
 ) {
 
 	return $.extend({}, app.subModuleProto, {

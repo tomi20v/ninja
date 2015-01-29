@@ -25,13 +25,14 @@ class FinderPartials implements \Mustache_Loader {
 		$key = md5($name);
 
 		if (!isset($this->_templates[$key])) {
-			preg_match('/^Mod([A-Z][a-zA-Z0-9]+)?(\-(.+))?$/', $name, $matches);
+			preg_match('/^([A-Z][a-zA-Z0-9]+)?(\-(.+))?$/', $name, $matches);
 			$fname = \Finder::joinPath(
 				NINJA_ROOT,
 				'src/ninja/Mod',
 				\Finder::classToPath($matches[1]),
 				'template',
-				$name . '.html.mustache'
+				$name .
+				'.html.mustache'
 			);
 			$this->_templates[$key] = file_get_contents($fname);
 		}

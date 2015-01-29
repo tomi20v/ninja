@@ -68,6 +68,20 @@ class ModPageModelAsset {
 	}
 
 	/**
+	 * adds a JS var declaration
+	 * @param $place
+	 * @param $varName
+	 * @param $value
+	 */
+	public function addJsVar($place, $varName, $value) {
+		$this->addJsCode(
+			$place,
+			(strpos($varName, '.') === false ? 'var ' : '') .
+				$varName . ' = ' . json_encode($value) . ';'
+		);
+	}
+
+	/**
 	 * I add a <link>
 	 * @param $href
 	 * @param $media

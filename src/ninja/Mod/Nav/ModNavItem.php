@@ -8,7 +8,7 @@ namespace ninja;
  *
  * @property string $href
  * @property string $label
- * @property string $faIcon
+ * @property string $icon
  * @property bool $active
  *
  */
@@ -18,7 +18,7 @@ class ModNavItem extends \ModBaseCssModel {
 		'@@extends' => 'ModBaseCssModel',
 		'href',
 		'label',
-		'faIcon',
+		'icon',
 		'active' => [
 			'toBool',
 		],

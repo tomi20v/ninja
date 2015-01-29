@@ -11,9 +11,9 @@ class ModUserPlugin extends \ModAbstractPlugin {
 	{
 		return [
 			new \ModNavItem([
-				'href' => '#user',
+				'href' => 'user',
 				'label' => 'Users',
-				'faIcon' => 'user',
+				'icon' => 'user',
 			]),
 		];
 	}

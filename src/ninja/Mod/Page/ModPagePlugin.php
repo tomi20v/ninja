@@ -8,9 +8,9 @@ class ModPagePlugin extends \ModAbstractPlugin {
 	{
 		return [
 			new \ModNavItem([
-				'href' => '#page',
+				'href' => 'page',
 				'label' => 'Site structure',
-				'faIcon' => 'sitemap',
+				'icon' => 'apps',
 			]),
 		];
 	}

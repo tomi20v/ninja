@@ -94,11 +94,12 @@ class ViewEngineMustache extends \ViewEngine {
 
 			if (strlen($tmp = $Model->templatePath)) {
 				$templateFolders[] = \Finder::joinPath(APP_ROOT, 'default', $tmp);
+				$templateFolders[] = \Finder::joinPath(NINJA_ROOT, 'src/ninja/Mod', $tmp);
 			}
-			// bubble up for template path
-			elseif (strlen($tmp = $Model->Bubbler()->templatePath)) {
-				$templateFolders[] = \Finder::joinPath(APP_ROOT, 'default', $tmp);
-			}
+			// bubble up for template path - this wouldn't do any good indeed
+//			elseif (strlen($tmp = $Model->Bubbler()->templatePath)) {
+//				$templateFolders[] = \Finder::joinPath(APP_ROOT, 'default', $tmp);
+//			}
 
 			// app templates
 			$templateFolders[] = \Finder::joinPath(
@@ -134,7 +135,9 @@ class ViewEngineMustache extends \ViewEngine {
 			$templateExtension = '.mustache';
 
 			$templatePath = \Finder::fileByFolders($templateFolders, $templateNames, $templateExtension);
-
+			if (is_null($templatePath)) {
+				//echop('template not found: ' . echon($templateNames) . ' in ' . echon($templateFolders));
+			}
 		}
 
 		return @file_get_contents($templatePath);

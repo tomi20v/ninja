@@ -47,6 +47,7 @@ class ModPageView extends \ModAbstractView {
 				unset($scripts[$eachKey]);
 			}
 		}
+		$scripts = array_merge($scripts);
 		return $scripts;
 	}
 

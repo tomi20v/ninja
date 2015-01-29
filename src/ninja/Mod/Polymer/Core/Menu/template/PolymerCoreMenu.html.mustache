@@ -1,0 +1,17 @@
+{{=[[ ]]=}}
+<core-menu [[#selected]]selected="[[{.}]]"[[/selected]] [[#valueAttr]]valueAttr="[[valueAttr]]"[[/valueAttr]] [[#selectedModel]]selectedModel="[[.]]"[[/selectedModel]]>
+	[[# Model.Contents.items ]]
+	<paper-item hash="[[{href}]]" noink>
+		<core-icon icon="[[icon]][[^icon]]label-outline[[/icon]]"></core-icon>
+		<a href="[[{href}]]">[[label]]</a>
+	</paper-item>
+	[[/ Model.Contents.items ]]
+	[[# Model.repeat ]]
+	<template repeat="[[repeat]]">
+		<paper-item hash="[[repeatHash]]" noink>
+			[[#repeatIcon]]<core-icon icon="[[repeatIcon]]"></core-icon>[[/repeatIcon]]
+			<a href="#[[repeatHash]]">[[#repeatLabel]][[repeatLabel]][[/repeatLabel]][[^repeatLabel]][[repeatHash]][[/repeatLabel]]</a>
+		</paper-item>
+	</template>
+	[[/ Model.repeat ]]
+</core-menu>

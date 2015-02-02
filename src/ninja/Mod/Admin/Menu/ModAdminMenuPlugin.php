@@ -2,17 +2,22 @@
 
 namespace ninja;
 
-class ModAdminMenuPlugin extends \ModAbstractPlugin {
+/**
+ * Class ModAdminMenuPlugin
+ *
+ * @package ninja
+ */
+abstract class ModAdminMenuPlugin extends \ModAbstractPlugin {
+
 	public static function modAdminMenuGetItems()
 	{
 		return [
 			new \ModNavItem([
-				'href' => '#',
+				'href' => 'dash',
 				'label' => 'Dashboard',
-				'faIcon' => 'dashboard',
+				'icon' => 'dashboard',
 			]),
 		];
 	}
-
 
 }

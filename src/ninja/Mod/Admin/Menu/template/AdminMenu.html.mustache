@@ -1,10 +1,4 @@
-<ul {{#cssId}}id="#{{cssId}}" {{/cssId}}class="nm-admin-menu nav navbar-nav{{#cssClasses}} {{{.}}}{{/cssClasses}}" {{#cssStyle}}style="{{cssStyle}}"{{/cssStyle}}>
-{{#Model.Contents.items}}
-	<li class="{{#active}}selected {{/active}}">
-		<a href="{{{href}}}">
-			{{#faIcon}}<i class="fa fa-{{.}}"></i>{{/faIcon}}
-			{{label}}
-		</a>
-	</li>
-{{/Model.Contents.items}}
-</ul>
+<nav {{#cssId}}id="#{{cssId}}" {{/cssId}}class="nm-admin-menu nav navbar-nav{{#cssClasses}} {{{.}}}{{/cssClasses}}" {{#cssStyle}}style="{{cssStyle}}"{{/cssStyle}} >
+	<core-toolbar><span>{{appName}}</span></core-toolbar>
+	{{> PolymerCoreMenu }}
+</nav>

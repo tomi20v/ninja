@@ -2,15 +2,12 @@
 
 namespace ninja;
 
-class ModAdminMenuModel extends \ModBaseCssModel {
+class ModAdminMenuModel extends \ModPolymerCoreMenuModel {
 
 
 	protected static $_schema = [
-		'@@extends' => 'ModBaseCssModel',
-		'containerEl' => [
-			'toString',
-			'default' => 'ul',
-		],
+		'@@extends' => 'ModPolymerCoreMenuModel',
+		'appName',
 	];
 
 

@@ -16,7 +16,7 @@ class FinderPartials implements \Mustache_Loader {
 
 	/**
 	 * Load a Template by name.
-	 * @throws Mustache_Exception_UnknownTemplateException If a template file is not found.
+	 * @throws \Mustache_Exception_UnknownTemplateException If a template file is not found.
 	 * @param string $name
 	 * @return string Mustache Template source
 	 */
@@ -34,7 +34,8 @@ class FinderPartials implements \Mustache_Loader {
 				$name .
 				'.html.mustache'
 			);
-			$this->_templates[$key] = file_get_contents($fname);
+			// note I trim the partial so multiple partials can still be invoked on one line
+			$this->_templates[$key] = trim(file_get_contents($fname));
 		}
 
 		return $this->_templates[$key];

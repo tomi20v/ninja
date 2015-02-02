@@ -2,8 +2,4 @@
 
 namespace ninja;
 
-class ModPolymerView extends \ModAbstractView {
-
-
-
-}
+abstract class ModPolymerView extends \ModAbstractView {}

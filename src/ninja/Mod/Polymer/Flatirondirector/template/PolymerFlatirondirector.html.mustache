@@ -1,2 +1,1 @@
-{{=<% %>=}}
-<flatiron-director route="{{route}}" <%#autoHash%>autoHash<%/autoHash%>></flatiron-director>
+<flatiron-director {{#route}}route="{{{.}}}"{{/route}} {{#autoHash}}autoHash{{/autoHash}}></flatiron-director>

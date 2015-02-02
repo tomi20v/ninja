@@ -3,7 +3,7 @@
 namespace ninja;
 
 /**
- * Class ModNavItem
+ * Class ModNavItem - I define an item in nav menu. Eg. admin menu plugins return instances of me
  * @package ninja
  *
  * @property string $href

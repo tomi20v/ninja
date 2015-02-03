@@ -73,6 +73,8 @@ class ModAdminMenuController extends \ModAdminController {
 			);
 		}
 		$deps = array_unique($deps);
+
+		// @todo I shall use some kind of $basePath here
 		$Asset = $this->Asset();
 		foreach ($deps as $eachDep) {
 			$Asset->addImport($eachDep);

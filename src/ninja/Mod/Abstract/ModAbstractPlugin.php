@@ -10,8 +10,8 @@ namespace ninja;
 abstract class ModAbstractPlugin {
 
 	/**
-	 * @return \ModNavItem[] I returns items to be displayed in admin menu
+	 * @return string[] I shall return a simple list of plugin method names, which are used by that module
 	 */
-	public static function modAdminMenuGetItems(){}
+	abstract public function getPluginMethods();
 
 }

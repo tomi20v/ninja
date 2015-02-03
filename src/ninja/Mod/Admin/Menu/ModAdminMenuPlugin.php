@@ -9,8 +9,17 @@ namespace ninja;
  */
 abstract class ModAdminMenuPlugin extends \ModAbstractPlugin {
 
-	public static function modAdminMenuGetItems()
-	{
+	/**
+	 * @return \string[] I have no plugin methods currently
+	 * 	modAdminMenuGetItems() - return \ModNavItem objects in array for the admin menu
+	 */
+	public function getPluginMethods() {
+		return [
+			'modAdminMenuGetItems',
+		];
+	}
+
+	public static function modAdminMenuGetItems() {
 		return [
 			new \ModNavItem([
 				'href' => 'dash',

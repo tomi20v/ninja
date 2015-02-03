@@ -9,28 +9,59 @@ namespace ninja;
 class ModManager {
 
 	/**
+	 * @var string[] list of all mods
+	 */
+	protected static $_mods;
+
+	/**
+	 * @var string[] list of mods which have a plugin class defined
+	 */
+	protected static $_modsWithPlugin;
+
+	static function getPluginClassnameByModname($modName) {
+		return 'Mod' . $modName . 'Plugin';
+	}
+
+	/**
 	 * I return all module names which have a $pluginMethod()
 	 * @param string $pluginMethod
 	 * @return \string[]
 	 */
-	public static function findModsWithPlugin($pluginMethod) {
-		$mods = static::findMods();
+	public static function findModsWithPluginMethod($pluginMethod) {
+		$mods = static::findModsWithPlugins();
 		foreach ($mods as $eachKey=>$eachMod) {
-			$pluginClassname = 'Mod' . $eachMod . 'Plugin';
-			if (!method_exists($pluginClassname, $pluginMethod)) {
+			if (!method_exists(static::getPluginClassnameByModname($eachMod), $pluginMethod)) {
 				unset($mods[$eachKey]);
 			}
 		}
+		$mods = array_merge($mods);
 		return $mods;
+	}
+
+	/**
+	 * @return \string[] I return a list of all modules which have a plugin class
+	 */
+	public static function findModsWithPlugins() {
+		if (is_null(static::$_modsWithPlugin)) {
+			$mods = static::findMods();
+			foreach ($mods as $eachKey=>$eachMod) {
+				if (!class_exists(static::getPluginClassnameByModname($eachMod))) {
+					unset($mods[$eachKey]);
+				}
+			}
+			static::$_modsWithPlugin = array_merge($mods);
+		}
+		return static::$_modsWithPlugin;
 	}
 
 	/**
 	 * @return string[] I return all installed module names
 	 */
 	public static function findMods() {
-		$mods = static::_findMods(\Finder::joinPath(NINJA_ROOT, 'src/ninja/Mod'));
-		sort($mods);
-		return $mods;
+		if (is_null(static::$_mods)) {
+			static::$_mods = static::_findMods(\Finder::joinPath(NINJA_ROOT, 'src/ninja/Mod'));
+		}
+		return static::$_mods;
 	}
 
 	/**
@@ -54,6 +85,8 @@ class ModManager {
 				$mods[] = $matches[1];
 			}
 		}
+
+		sort($mods);
 
 		return $mods;
 

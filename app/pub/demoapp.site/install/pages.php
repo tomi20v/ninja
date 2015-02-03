@@ -71,7 +71,6 @@ $DaPageRoot = new \ModPageRootModel([
 			['rel'=>'stylesheet', 'href'=>'/assets/bower-asset/bootstrap/dist/css/bootstrap-theme.css'],
 		],
 		'cssStyle' => 'padding-top:60px;',
-		'extraAttributes' => 'unresolved fullbleed',
 		'extensionToType' => [
 			'html' => 'pages',
 			'json' => 'api',
@@ -167,14 +166,49 @@ $adminDaPageHome = new \ModPageModel([
 					'template' => 'index.html',
 					'templatePath' => 'Admin/template',
 					'Modules' => [
+						'router' => new \ModPolymerFlatirondirectorModel([
+								'route' => '{{route}}',
+								'autoHash' => true,
+						]),
 						'nav' => new \ModAdminMenuModel([
 								'cssClasses' => ['side-nav'],
+								'appName' => 'Shaboom',
+								'valueAttr' => 'hash',
+								'selected' => '{{route}}',
+								'selectedModel' => '{{selectedPage}}',
+								'repeat' => '{{page, i in pages}}',
+								'repeatHash' => '{{page.href}}',
+								'repeatLabel' => '{{page.label}}',
+								'repeatIcon' => '{{page.icon}}',
+						]),
+						'toolbar' => new \ModPolymerCoreToolbarModel([
+								'title' => '{{selectedPage.page.label}}',
+								'buttons' => [
+									['icon' => 'refresh'],
+									['icon' => 'add'],
+								],
+								'extraAttributes' => 'tool flex',
+						]),
+						// maybe this should be kept in a ModAdminApp module?
+						'apps' => new \ModPolymerCoreContainerModel([
+								'layout' => true,
+								'layoutDirection' => \ModPolymerCoreModel::LAYOUT_HORIZONTAL,
+								'layoutCenter' => \ModPolymerCoreModel::LAYOUT_CENTER_CENTER,
+								'layoutExtra' => [\ModPolymerCoreModel::LAYOUT_FIT],
+								'Modules' => [
+									new \ModPolymerCoreAnimatedpagesModel([
+										'cssId' => 'apps',
+										'selected' => '{{route}}',
+										'valueAttr' => 'hash',
+										'transitions' => 'slide-from-right',
+									]),
+								]
 						]),
 					],
 			]),
 		],
 		'Contents' => [
-//			'columns' => '<div id="ni-app"></div>',
+			// I could put static content here
 		],
 	]);
 $adminDaPageHomeResult = $adminDaPageHome->save(true);

@@ -4,8 +4,10 @@ The core is a module system which can be stored into MongoDB through Maui's
 	is itself a module, which contains other modules, which contain others etc.
 	Each module has its own model, view, controller representation, and a
 	container which is the module's class itself.
+In the meantime, Ninja has also evolved to support polymer.
 
-note: the system has passed first POC - generate a page from loaded module hierarchy
+v0.2.0 the systam has passed POC #2 - generate a skeleton page with polymer support
+v0.1.0 the system has passed POC #1 - generate a page from loaded module hierarchy
 
 INSTALL:
 

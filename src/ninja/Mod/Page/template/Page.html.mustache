@@ -13,15 +13,16 @@
 
 	<title>{{Model.title}}</title>
 
-	{{#View.getWithRoot_links }}{{#onlyIf}}<!-- IF {{onlyIf}} -->
-	{{/onlyIf}}<link {{#rel}}rel="{{rel}}"{{/rel}} {{#media}}media={{media}}{{/media}} href="{{href}}" />
-	{{#onlyIf}}<!-- IF {{onlyIf}} -->
-	{{/onlyIf}}
-	{{/View.getWithRoot_links}}
-
 	{{#View.getScriptsHead}}
 	{{#src}}<script src="{{{src}}}" ></script>{{/src}}
 	{{/View.getScriptsHead}}
+
+	{{#View.getWithRoot_links }}{{#onlyIf}}<!-- IF {{onlyIf}} -->
+	{{/onlyIf}}<link {{#rel}}rel="{{rel}}"{{/rel}} {{#media}}media={{media}}{{/media}} href="{{href}}" />
+		{{#onlyIf}}<!-- IF {{onlyIf}} -->
+		{{/onlyIf}}
+	{{/View.getWithRoot_links}}
+
 	<script>
 	{{#View.getScriptsHead}}
 	{{#code}}{{{code}}}{{/code}}

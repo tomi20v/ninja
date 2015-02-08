@@ -39,6 +39,7 @@ class ModPageModel extends \ModAbstractModel {
 			'toString',
 			'required',
 		],
+		// @obsolete marked for deletion, needs code check
 		'doctype' => [
 			'default' => 'html'
 		],
@@ -65,6 +66,7 @@ class ModPageModel extends \ModAbstractModel {
 			'keysValues' => ['rel', ['stylesheet', 'import']],
 			'hasMax' => 0,
 		],
+		// @obsolete marked for deletion, needs code check
 		'baseHref',
 	];
 

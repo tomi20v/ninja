@@ -27,7 +27,8 @@ abstract class ModAbstractModel extends \Model {
 			'class' => 'ModAbstractModel',
 			'reference' => \SchemaManager::REF_REFERENCE,
 		],
-		// only published items get ever run
+		// only published items get ever shown
+		// @todo implement logic for hiding these?
 		'published' => [
 			'toBool',
 		],

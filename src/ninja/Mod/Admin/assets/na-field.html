@@ -1,0 +1,199 @@
+<!--
+	na-field is a versatile element used for defining a field in a table, form, data, etc.
+	normally it is used to define some structure which is used by other inner elements
+-->
+<link rel="import" href="../polymer/polymer.html">
+<polymer-element
+	name="na-field"
+	attributes="
+		index
+		type
+		auto
+		collapsed
+		default
+		validatorUrl
+		values
+		min
+		max
+		multi
+		label
+	"
+>
+	<template></template>
+	<script>
+		Polymer('na-field', {
+			/**
+			 * @member {string} index in data row
+			 */
+			index: null,
+			/**
+			 * @member {string} type for showing and for input
+			 */
+			type: 'label',
+			/**
+			 * @member {bool} if set definition will be auto-guessed from schema NOT USED CURRENTLY
+			 */
+			auto: false,
+			/**
+			 * @member {bool} display the UI in collapsed state, useful eg. for large text editor
+			 */
+			collapsed: false,
+			/**
+			 * @member {mixed} default value
+			 */
+			default: null,
+			/**
+			 * @member string a url that acceots a value for this field and validates it
+			 */
+			validatorUrl: null,
+			/**
+			 * @member {string[]} valid values for select tyoe
+			 */
+			values: null,
+			/**
+			 * @member {int} has minimum this many values
+			 */
+			hasMin: null,
+			/**
+			 * @member {int} has at most this many values
+			 */
+			hasMax: null,
+			/**
+			 * @member {string} will be used for header in table, or label in form
+			 */
+			label: null,
+			/**
+			 * @member {string[]} valid values for type member
+			 */
+			typeValues: [
+				'label',
+				'text',
+				'textArea',
+				'checkbox',
+				'select',
+				'radio',
+				'icon'
+			],
+			options: null,
+			/**
+			 * initialize me
+			 */
+			ready: function() {
+
+				// this is an invalid field. I should do some cleanup here
+				if (this.index === null) {
+					return;
+				}
+
+				// apply field attributes from schema definition
+				if (this.auto) {
+					var schema = this.getParentSchema();
+					if (schema.hasOwnProperty(this.index)) {
+						for (var i in schema) {
+							if (schema.hasOwnProperty(i) && this.publish.hasOwnProperty(i)) {
+								// this might be shit, I'm not sure to put it into publish or directly into this, yet
+								this.publish[i] = schema[i];
+							}
+						}
+					}
+				}
+
+				// check type and default if not set or invalid
+				if (!this.typeValues[this.type]) {
+					this.type = this.typeValues[0];
+				}
+
+				this.options = this.options === null
+					? {}
+					: this.options = this.options.split(',');
+
+			},
+			/**
+			 * @todo implement me
+			 * I shall return the schema that describes this field.
+			 * However if parent is a <nafieldset> I rather have to get from its parent
+			 * @return {Object}
+			 */
+			getParentSchema: function() {
+				return {};
+			},
+			/**
+			 * I return a print representation of the current field element
+			 * @param {mixed} value - get the printout of any value
+			 */
+			getPrintout: function(value) {
+				var wrapper, el;
+				switch (this.type) {
+					case 'hidden':
+						el = '';
+						break;
+					case 'checkbox':
+						el = '<paper-checkbox disabled' + (value ? ' checked' : '') + '></paper-checkbox>';
+						break;
+					case 'text':
+					case 'textArea':
+					case 'label':
+					case 'select':
+					default:
+						el = '<paper-input disabled value="' + (value === null ? "" : value.toString()) + '"></paper-input>';
+						break;
+				}
+				return '<span class="na-wrapper">' + el + '</span>';
+			},
+			/**
+			 * I return an editor for this field
+			 * @param {mixed} value - get editor with this value
+			 */
+			getEditor: function(value) {
+				var el;
+				switch (this.type) {
+					case 'hidden':
+						el = '';
+						break;
+					case 'checkbox':
+						el = '<paper-checkbox disabled' + (value ? ' checked' : '') + '></paper-checkbox>';
+						break;
+					case 'label':
+						el = value.toString();
+						break;
+					case 'select':
+						el = '<paper-dropdown-menu' + this.getProp2Prop('label') + '>' +
+								'<paper-dropdown class="dropdown">' +
+									'<core-menu class="menu">';
+						for (i in this.options) {
+							if (this.options.hasOwnProperty(i)) {
+								el += '<paper-item>' + this.options[i] + '</paper-item>';
+							}
+						}
+						el += 		'</core-menu>'
+								'</paper-dropdown>'
+								'</paper-dropdown-menu>';
+						break;
+					case 'text':
+					case 'textArea':
+					default:
+						el = '<paper-input' + this.getProp2Prop('label') + ' floatingLabel ' + (value !== null ? ' value="' + value.toString() + '"' : '') + '></paper-input>';
+						break;
+				}
+				return '<span class="na-wrapper">' + el + '</span>';
+			},
+			/**
+			 * I validate a value based on constraint attributes and remote validator
+			 */
+			validate: function(value) {
+
+			},
+			// @todo this is an ideal candidate for a mixin
+			getProp2Prop: function(key) {
+				return (this.hasOwnProperty(key) && this[key] !== null)
+					? ' ' + key + '="' + this[key] + '"'
+					: '';
+			}
+		});
+		if (!Array.prototype.isArray) {
+			Array.prototype.isArray = function() {
+				return Object.prototype.toString(this) == Object.prototype.toString([]);
+			}
+		}
+	</script>
+</polymer-element>

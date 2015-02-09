@@ -30,8 +30,8 @@ class ModPagePlugin extends \ModAbstractPlugin {
 	public static function modAdminGetImports() {
 		return [
 			// @todo it is bad to refer files directly in the admin module... however I don't have a better fileserv for now
-			'/assets/admin/admin-app.html',
-			'/assets/admin/admin-app-page.html',
+//			'/assets/admin/na-app.html',
+//			'/assets/admin/na-app-page.html',
 		];
 	}
 

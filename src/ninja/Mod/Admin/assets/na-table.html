@@ -1,0 +1,107 @@
+<!--
+	na-table is a wrapper for sortable-table. It uses a common annotation composed by na-field and na-fieldset elements
+	eg. this definition will display a table of just 2 columns and read data from table-data.json
+	<na-table fields="['title','slug']" dataUrl="table-data.json">
+		<na-field index="_id"></na-field>
+		<na-field index="title"></na-field>
+		<na-field index="slug" label="uri"></na-field>
+	</na-table>
+
+-->
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="na-field.html">
+<link rel="import" href="na-fieldset.html">
+<link rel="import" href="../sortable-table/sortable-table.html">
+<polymer-element
+	name="na-table"
+	attributes="
+		schemaUrl
+		fields
+	"
+>
+	<template >
+		<link rel="stylesheet" href="../sortable-table/css/espn.css" shim-shadowdom>
+		<sortable-table
+			id="sortableTable"
+			class="{{ theme }}"
+		>
+			<!-- @todo put datasource here -->
+			<template repeat="{{ field in getVisibleFields() }}" >
+				<sortable-column name="{{ field.index }}">{{ field.label }}</sortable-column>
+			</template>
+			[
+				{ _id: '01234567890123456789012345678901', title: 'Demo Site' },
+				{ _id: '01234567890123456789012345678902', title: 'welcome' }
+			]
+		</sortable-table>
+	</template>
+	<script>
+		Polymer('na-table', {
+			/**
+			 * @member {string} theme to be used, default espn
+			 */
+			theme: 'espn',
+			/**
+			 * @member {string|null}
+			 */
+			dataUrl: null,
+			/**
+			 * @member {string|null} if set, schema will be read from this url.
+			 * 	Note: additional local tag definitions will be merged to this schema
+			 * 	Note: set this to 'dataUrl' so data request will also request schema as necessary and it will be used
+			 * 			(this saves the additional request to the schema)
+			 */
+			schemaUrl: null,
+			/**
+			 * @member {string|string[]} if set, only these fields will be shown
+			 */
+			fields: [],
+			/**
+			 * @member {Object[]} columns definitions. will parse <na-field> echildren and build according
+			 * 		<sortable-column> elements
+			 */
+			meta: [],
+			/**
+			 * I make sure this.fields is an array
+			 */
+			getFields: function() {
+				if (typeof this.fields === 'string') {
+					this.fields = this.fields.split(',');
+				}
+				return this.fields;
+			},
+			/**
+			 * I pump na-field nodes into meta first so template parsing will happen on first run (and sortable-table
+			 * 		will have it ready on its init)
+			 */
+			created: function() {
+				var fieldNodes = this.querySelectorAll('na-field');
+				this.meta = fieldNodes.array();
+			},
+			/**
+			 * I currently do nothing
+			 */
+			ready: function() {
+			},
+			/**
+			 * I return set of visible fields
+			 * @returns {Array}
+			 */
+			getVisibleFields: function() {
+				var visibleFields = [],
+					othis = this;
+				if (!this.getFields().length) {
+					visibleFields = this.meta;
+				}
+				else {
+					this.meta.forEach(function(eachField) {
+						if (othis.fields.indexOf(eachField.index) !== -1) {
+							visibleFields.push(eachField);
+						}
+					});
+				}
+				return visibleFields;
+			}
+		});
+	</script>
+</polymer-element>

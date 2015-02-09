@@ -143,8 +143,8 @@ $adminDaPageRoot = new \ModPageRootModel([
 		'domainName' => 'demoapp.site',
 		'scripts' => [
 			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/bower-asset/webcomponentsjs/webcomponents.js'],
-			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/bower-asset/requirejs/require.js',],
-			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/admin/js/main.js',],
+//			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/bower-asset/requirejs/require.js',],
+//			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/admin/js/main.js',],
 		],
 		'links' => [
 			['rel'=>'stylesheet', 'href'=>'/assets/admin/css/admin.css.less'],
@@ -154,6 +154,32 @@ $adminDaPageRoot = new \ModPageRootModel([
 	]);
 $adminDaPageRootResult = $adminDaPageRoot->save(true);
 echop($adminDaPageRootResult);
+
+$adminSandboxPage = new \ModPageModel([
+		'Parent' => $adminDaPageRoot,
+		'Root' => $adminDaPageRoot,
+		'slug' => 'sandbox',
+		'published' => true,
+		'title' => 'Demo ADMIN Application sandbox',
+		'Modules' => [
+			'columns' => new \ModContainerModel([
+					'template' => 'sandbox.html',
+					'templatePath' => 'Admin/template',
+					'Modules' => [
+					],
+					'Contents' => [
+					],
+			]),
+		],
+		'links' => [
+			['rel'=>'import', 'href'=>'/assets/admin/na-field.html'],
+			['rel'=>'import', 'href'=>'/assets/admin/na-fieldset.html'],
+			['rel'=>'import', 'href'=>'/assets/admin/na-table.html'],
+//			['rel'=>'import', 'href'=>'/assets/admin/na-app.html'],
+//			['rel'=>'import', 'href'=>'/assets/admin/na-app-page.html'],
+		]
+]);
+echop($adminSandboxPage->save(1));
 
 $adminDaPageHome = new \ModPageModel([
 		'Parent' => $adminDaPageRoot,
@@ -209,6 +235,11 @@ $adminDaPageHome = new \ModPageModel([
 		],
 		'Contents' => [
 			// I could put static content here
+		],
+		'links' => [
+//			['rel'=>'import', 'href'=>'/assets/admin/na-field.html'],
+//			['rel'=>'import', 'href'=>'/assets/admin/na-fieldset.html'],
+//			['rel'=>'import', 'href'=>'/assets/admin/na-table.html'],
 		],
 	]);
 $adminDaPageHomeResult = $adminDaPageHome->save(true);

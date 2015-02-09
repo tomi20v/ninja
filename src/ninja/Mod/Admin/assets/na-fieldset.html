@@ -1,0 +1,29 @@
+<!--
+	na-fieldset is just a container for na-field elements. can be used to define fieldsets in a form, or a row of a table
+	currently it has no functionality and its children na-field elements are used directly
+-->
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="na-field.html">
+<polymer-element
+	name="na-fieldset"
+	attributes="
+		label
+		collapsed
+	"
+>
+	<template>
+		<content select="na-field"></content>
+	</template>
+	<script>
+		Polymer('na-fieldset', {
+			label: null,
+			collapsed: false,
+			getPrintout: function(values) {
+				// @todo
+			},
+			getEditor: function(values) {
+				// @todo
+			}
+		})
+	</script>
+</polymer-element>

@@ -66,4 +66,10 @@ class SchemaValidatorValidLayers extends \SchemaValidator {
 		return $this->validate($val, $Model) ? $val : null;
 	}
 
+	public function toMeta() {
+		return [
+			'remote' => true,
+		];
+	}
+
 }

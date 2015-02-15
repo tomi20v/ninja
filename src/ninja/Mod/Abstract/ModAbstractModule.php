@@ -346,6 +346,11 @@ abstract class ModAbstractModule {
 			$hasShifted = $Request->shiftUriParts($slug) ? true : false;
 		}
 
+		// if parent is Page then mark shifted already
+		if (!$hasShifted && ($this->_Parent instanceof \ModPageModule) && !($this->_Parent instanceof \ModPageRootModule)) {
+			$hasShifted = true;
+		}
+
 		$Response = $this->_processSubmodules($Request);
 		if ($Response instanceof \Response) {
 			goto finish;

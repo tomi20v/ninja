@@ -102,6 +102,14 @@ class Request extends \Symfony\Component\HttpFoundation\Request {
 	}
 
 	/**
+	 * I return the next available uri part
+	 * @return string
+	 */
+	public function getNextRemainingUriPart() {
+		return reset($this->_remainingUriParts);
+	}
+
+	/**
 	 * I return already shifted uri parts
 	 * @return string[]
 	 */
@@ -112,33 +120,40 @@ class Request extends \Symfony\Component\HttpFoundation\Request {
 
 	/**
 	 * I remove some parts from $this->_remainingUriParts
-	 * @param int|string|array $countOrParts count to shift, or parts to shift in string (slug) or array of its parts
+	 *
+*@param int|string|array $parts count to shift, or parts to shift in string (slug) or array of its parts
 	 * @return int number of parts shifted
 	 */
-	public function shiftUriParts(&$countOrParts) {
-		if (is_string($countOrParts)) {
-			$countOrParts = explode('/', $countOrParts);
+	public function shiftUriParts(&$parts) {
+		$ret = null;
+		if (is_string($parts)) {
+			$parts = explode('/', $parts);
 		}
-		if (is_array($countOrParts)) {
+		if (is_array($parts)) {
 			$ret = 0;
 			do {
-				if (reset($countOrParts) !== reset($this->_remainingUriParts)) {
+				if (reset($parts) !== reset($this->_remainingUriParts)) {
 					break;
 				}
-				array_shift($countOrParts);
+				array_shift($parts);
 				array_shift($this->_remainingUriParts);
 				array_shift($this->_remainingTargetUriParts);
 				$ret++;
-			} while (count($countOrParts) && count($this->_remainingUriParts));
+			} while (count($parts) && count($this->_remainingUriParts));
 		}
-		else {
-			$ret = intval($countOrParts);
-			$this->_remainingUriParts = array_slice($this->_remainingUriParts, $ret);
-			$this->_remainingTargetUriParts = array_slice($this->_remainingTargetUriParts, $ret);
-		}
-
 		return $ret;
+	}
 
+	/**
+	 * I shift some parts of the remaining ones
+	 * @param int $cnt
+	 * @return int
+	 */
+	public function shiftCntUriParts($cnt) {
+		$ret = intval($cnt);
+		$this->_remainingUriParts = array_slice($this->_remainingUriParts, $ret);
+		$this->_remainingTargetUriParts = array_slice($this->_remainingTargetUriParts, $ret);
+		return $ret;
 	}
 
 	/**

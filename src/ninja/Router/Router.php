@@ -65,7 +65,9 @@ class Router {
 				if (method_exists($Controller, $eachAction)) {
 					$Request->shiftUriParts($actionParts);
 					$Controller->before();
-					$params = $Request->request->all();
+					$params = in_array($Request->getMethod(), [\Request::METHOD_GET])
+						? $Request->query->all()
+						: $Request->request->all();
 					$Response = call_user_func([$Controller, $eachAction], $params);
 					$Request->setActionMatched(true);
 					break 2;
@@ -96,7 +98,7 @@ class Router {
 	 * @return \Response
 	 */
 	public static function invokeDefaultAction($Controller, $Request) {
-		return \Response::wrap($Controller->actionIndex($Request));
+		return \Response::wrap($Controller->actionIndex($Request->request->all()));
 	}
 
 	/**

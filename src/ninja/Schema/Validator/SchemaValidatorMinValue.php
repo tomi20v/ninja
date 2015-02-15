@@ -9,7 +9,7 @@ class SchemaValidatorMinValue extends \maui\SchemaValidatorMinValue {
 	 */
 	public function toMeta() {
 		return [
-			'minValue' => $this->_value,
+			'minValue' => [$this->_value, $this->getError(['{{value}}'=>'']),],
 		];
 	}
 

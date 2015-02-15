@@ -9,9 +9,7 @@ class SchemaValidatorToType extends \maui\SchemaValidatorToType {
 	 */
 	public function toMeta() {
 		return [
-			'type' => 'picker',
-			// not sure if this needed or will be served by fieldname automaticly - aiming for that
-			//'pickType' => $this->_value,
+			'type' => ['hidden',],
 		];
 	}
 

@@ -6,7 +6,7 @@ class SchemaValidatorToBool extends \maui\SchemaValidatorToBool {
 
 	public function toMeta() {
 		return [
-			'type' => 'checkbox',
+			'type' => ['checkbox',],
 		];
 	}
 

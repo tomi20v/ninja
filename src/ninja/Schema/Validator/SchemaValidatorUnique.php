@@ -9,7 +9,6 @@ class SchemaValidatorUnique extends \maui\SchemaValidatorUnique {
 
 	public function toMeta() {
 		return [
-			'unique' => true,
 			'remote' => true,
 		];
 	}

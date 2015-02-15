@@ -6,7 +6,7 @@ class SchemaValidatorMaxLength extends \maui\SchemaValidatorMaxLength {
 
 	public function toMeta() {
 		return [
-			'maxLength' => $this->_value,
+			'maxLength' => [$this->_value, $this->getError(['{{value}}'=>'']),],
 		];
 	}
 

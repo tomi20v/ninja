@@ -6,7 +6,7 @@ class SchemaValidatorMinLength extends \maui\SchemaValidatorMinLength {
 
 	public function toMeta() {
 		return [
-			'minLength' => $this->_value,
+			'minLength' => [$this->_value, $this->getError(['{{value}}'=>'']),],
 		];
 	}
 

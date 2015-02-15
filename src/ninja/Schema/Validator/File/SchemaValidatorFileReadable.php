@@ -6,7 +6,7 @@ class SchemaValidatorFileReadable extends \maui\SchemaValidatorFileReadable {
 
 	public function toMeta() {
 		return [
-			'type' => 'file',
+			'type' => ['picker', 'file',],
 		];
 	}
 

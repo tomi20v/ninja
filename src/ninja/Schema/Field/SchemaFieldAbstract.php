@@ -10,10 +10,10 @@ namespace ninja;
 abstract class SchemaFieldAbstract extends \maui\SchemaFieldAbstract {
 
 	public function toMeta() {
-		$meta = [
-			'key' => $this->_key,
-			'required' => $this->_required ? true : false,
-		];
+		$meta = [];
+		if ($this->_required) {
+			$meta['required'] = true;
+		}
 		foreach ($this->_validators as $EachValidator) {
 			// validators that relate to another fields value can be run on server side only
 			if ($EachValidator->resolvesToModel()) {
@@ -22,6 +22,9 @@ abstract class SchemaFieldAbstract extends \maui\SchemaFieldAbstract {
 			}
 			$eachMeta = $EachValidator->toMeta();
 			$meta = array_merge($meta, $eachMeta);
+		}
+		if (!isset($meta['type'])) {
+			$meta['type'] = 'text';
 		}
 		return $meta;
 	}

@@ -10,8 +10,9 @@ class SchemaValidatorRegexp extends \maui\SchemaValidatorRegexp {
 	 */
 	public function toMeta() {
 		return [
-			'type' => 'text',
-			'regexp' => $this->_value,
+			'type' => ['text',],
+			'regexp' => [$this->_value, $this->getError(['{{value}}'=>''])],
 		];
 	}
+
 }

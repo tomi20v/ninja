@@ -68,7 +68,8 @@ class SchemaValidatorValidLayers extends \SchemaValidator {
 
 	public function toMeta() {
 		return [
-			'remote' => true,
+			'type' => ['picker','remote',],
+//			'remote' => true,
 		];
 	}
 

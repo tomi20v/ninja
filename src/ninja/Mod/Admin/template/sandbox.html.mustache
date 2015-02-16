@@ -1,11 +1,20 @@
+{{=[[ ]]=}}
 aaax
+<template is="auto-binding" id="t">
 
-<na-table fields="['title','slug']">
-	<na-field index="_id"></na-field>
-	<na-fieldset>
-		<na-field index="title" label="hux"></na-field>
+	<na-table fields="['_id','title','slug']" metaType="Page" dataUrl="api.json">
+		<na-field key="_id"></na-field>
+		<na-fieldset>
+			<na-field key="title" label="hux"></na-field>
+		</na-fieldset>
+	</na-table>
+	<na-fieldset id="nas1">
+		<na-field id="na1" type="{{asd}}"></na-field>
+		<na-field id="na2" type="{{asd}}"></na-field>
 	</na-fieldset>
-</na-table>
-<script>
-	document.querySelector('body').removeAttribute('unresolved');
-</script>
+	<script>
+		var dataManager = document.querySelector('na-data-manager');
+		document.querySelector('body').removeAttribute('unresolved');
+	</script>
+
+</template>

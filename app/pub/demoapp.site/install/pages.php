@@ -245,6 +245,21 @@ $adminDaPageHome = new \ModPageModel([
 $adminDaPageHomeResult = $adminDaPageHome->save(true);
 echop($adminDaPageHomeResult);
 
+$adminDaPageApi = new \ModPageModel([
+		'Parent' => $adminDaPageRoot,
+		'Root' => $adminDaPageRoot,
+		'slug' => 'api',
+		'published' => true,
+		'title' => 'Demo ADMIN Application API endpoint page',
+		'Modules' => [
+			new \ModAdminApiModel([
+
+			]),
+		]
+]);
+$result = $adminDaPageApi->save();
+echop($result);
+
 $User = new \User();
 $User->Data()
 	->setField('email', 'no@ema.il')

@@ -6,7 +6,7 @@
 <polymer-element
 	name="na-field"
 	attributes="
-		index
+		key
 		type
 		auto
 		collapsed
@@ -23,9 +23,9 @@
 	<script>
 		Polymer('na-field', {
 			/**
-			 * @member {string} index in data row
+			 * @member {string} key in data row
 			 */
-			index: null,
+			key: null,
 			/**
 			 * @member {string} type for showing and for input
 			 */
@@ -81,14 +81,14 @@
 			ready: function() {
 
 				// this is an invalid field. I should do some cleanup here
-				if (this.index === null) {
+				if (this.key === null) {
 					return;
 				}
 
 				// apply field attributes from schema definition
 				if (this.auto) {
 					var schema = this.getParentSchema();
-					if (schema.hasOwnProperty(this.index)) {
+					if (schema.hasOwnProperty(this.key)) {
 						for (var i in schema) {
 							if (schema.hasOwnProperty(i) && this.publish.hasOwnProperty(i)) {
 								// this might be shit, I'm not sure to put it into publish or directly into this, yet

@@ -1,0 +1,139 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../core-ajax/core-ajax.html">
+<link rel="import" href="na-field.html">
+<polymer-element
+	name="na-table-datasource"
+	attributes="
+		endPoint
+		metaType
+	"
+>
+	<script>
+		Polymer('na-table-datasource', {
+			endPoint: null,
+			metaType: null,
+			meta: null,
+			DEFAULT_PAGE_SIZE: 20,
+			// sortable-table-datasource attributes
+			start: 0,
+			length: null,
+			search: null,
+			sortColumn: null,
+			sortDescending: false,
+			filters: [],
+			columns: [],
+			filterOps: null,
+			loading: false,
+			data: [],
+			dataSize: null,
+			ajax: null,
+			ready: function() {
+
+				var ajax = document.createElement('core-ajax');
+				ajax.handleAs = 'json';
+				var self = this;
+				ajax.addEventListener("core-response", function(e){ self.handleResponse.call(self, e); });
+				this.ajax = ajax;
+				// @todo testme the second version
+				this.job('go',this.go);
+				//this.fireGoJobFn()();
+
+				// I set up debounced go() on change of any of these properties
+				(new PathObserver(this, 'start')).open(this.fireGoJobFn());
+				(new PathObserver(this, 'length')).open(this.fireGoJobFn());
+				(new PathObserver(this, 'search')).open(this.fireGoJobFn());
+				(new PathObserver(this, 'sortColumn')).open(this.fireGoJobFn());
+				(new PathObserver(this, 'sortDescending')).open(this.fireGoJobFn());
+				(new PathObserver(this, 'filters')).open(this.fireGoJobFn());
+				(new PathObserver(this, 'columns')).open(this.fireGoJobFn());
+				(new PathObserver(this, 'filterOps')).open(this.fireGoJobFn());
+			},
+			fireGoJobFn: function() {
+				var self = this;
+				return function() {
+					self.job('go', self.go, 500);
+				}
+			},
+			handleResponse: function(e) {
+				var response = e.detail.response;
+				this.dataSize = response.allCount;
+				if (response.meta && !this.meta) {
+					// @todo fire an event from here and watch it from the table
+					this.meta = response.meta;
+				}
+				if (this.columns.length > 0) {
+					var data = [];
+					for (var i in response.result) {
+						if (response.result.hasOwnProperty(i)) {
+							var obj = {};
+							this.columns.forEach(function(column) {
+								var j = 1;
+								obj[column.name] = response.result[i][column.name];
+							});
+							data.push(obj);
+						}
+					}
+					this.data = data;
+				}
+				else {
+					this.data = response.result;
+				}
+			},
+			go: function() {
+				console.log('GO!', this.start, this.length, this.search, this.sortColumn, this.sortDescending, this.filters, this.columns);
+				var url = [
+					this.endPoint || '',
+					this.meta === null ? 'withMeta' : '',
+					this.metaType || ''
+				];
+				var params = {
+					start: this.start
+				};
+				if (this.length !== null && this.length!==Number.MAX_VALUE) {
+					params.length = this.length;
+				}
+				else {
+					params.length = this.DEFAULT_PAGE_SIZE;
+				}
+				/*
+				if (this.sortColumn){
+					var dir = this.sortDescending ? 'DESC' : 'ASC';
+					params.sort = JSON.stringify([{ property: this.sortColumn, direction: dir }]);
+					params.sort = (this.sortDescending ? '-' : '') + this.sortColumn;
+				}
+				if (this.filters && this.filters.length > 0){
+					params.filter = JSON.stringify(this.filters.map(function(filter){
+						return { "comparison": filter.op, "value":filter.value, "field": filter.column, "type": "numeric" };
+					}));
+				}
+				*/
+				if (this.columns.length) {
+					var fields = [];
+					this.columns.forEach(function(eachColumn) {
+						fields.push(eachColumn.name);
+					})
+					params._fields = fields;
+				}
+				this.ajax.url = this.joinPath(url);
+				this.ajax.params = params;
+				this.isLoading = true;
+				console.log('ajax calling', this.ajax.url, this.ajax.params);
+
+				this.ajax.go();
+			},
+			joinPath: function(arr) {
+				var i, tmp, ret=[];
+				for (i in arr) {
+					if (!arr.hasOwnProperty(i)) {
+						continue;
+					}
+					tmp = arr[i].replace(/^\//, '').replace(/\/$/, '');
+					if (tmp !== '') {
+						ret.push(tmp);
+					}
+				}
+				return ret.join('/');
+			}
+		});
+	</script>
+</polymer-element>

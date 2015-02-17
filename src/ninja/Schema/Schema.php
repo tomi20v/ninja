@@ -14,7 +14,6 @@ class Schema extends \maui\Schema {
 	public function toMeta() {
 		$meta = [];
 		foreach ($this as $eachKey=>$EachField) {
-			echop($EachField);
 			$meta[$eachKey] = $EachField->toMeta();
 		}
 		return $meta;

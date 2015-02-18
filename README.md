@@ -32,3 +32,7 @@ edit your httpd conf and set up so the webserver accepts demoapp.site domain
 
 7. open http://demoapp.site and you should see the home page
 
+8. open http://demoapp.site/admin and you should see the admin home page (or something like that)
+
+(9.) optional and not guaranteed: http://demoapp.site/admin/sandbox.html - might not work, but should contain something
+	I've been lately worked on

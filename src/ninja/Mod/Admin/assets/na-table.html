@@ -22,7 +22,7 @@
 		metaType
 	"
 >
-	<template >
+	<template>
 		<link rel="stylesheet" href="../sortable-table/css/espn.css" shim-shadowdom>
 		<sortable-table
 			id="sortableTable"
@@ -31,11 +31,10 @@
 			<na-table-datasource
 					role="datasource"
 					endPoint="{{dataUrl}}"
-					id="nxx"
 					metaType="{{metaType}}"
 			>
 			</na-table-datasource>
-			<template repeat="{{ field in getVisibleFields() }}" >
+			<template repeat="{{ field in sortableColumns }}" >
 				<sortable-column name="{{ field.key }}">{{ field.label || field.key }}</sortable-column>
 			</template>
 		</sortable-table>
@@ -64,6 +63,14 @@
 			 */
 			meta: [],
 			/**
+			 * @member {Object} keep a reference to datasource
+			 */
+			dataSource: null,
+			/**
+			 * I will repeat this for sortable-column template
+			 */
+			sortableColumns: [],
+			/**
 			 * I make sure this.fields is an array
 			 */
 			getFields: function() {
@@ -73,17 +80,17 @@
 				return this.fields;
 			},
 			/**
-			 * I pump na-field nodes into meta first so template parsing will happen on first run (and sortable-table
-			 * 		will have it ready on its init)
-			 */
-			created: function() {
-				var fieldNodes = this.querySelectorAll('na-field');
-				this.meta = fieldNodes.array();
-			},
-			/**
-			 * I currently do nothing
+			 * I set up things
 			 */
 			ready: function() {
+
+				this.meta = this.querySelectorAll('na-field').array();
+
+				this.sortableColumns = this.getVisibleFields();
+
+				this.dataSource = this.$.sortableTable.querySelector('na-table-datasource');
+				this.dataSource.addEventListener('metaChanged', this.metaChangedHandler);
+
 			},
 			/**
 			 * I return set of visible fields
@@ -92,6 +99,7 @@
 			getVisibleFields: function() {
 				var visibleFields = [];
 				if (this.getFields().length) {
+					// @todo try using this.meta if possible but map only fields in >fields<
 					visibleFields = this.fields.map(function(fieldName) {
 						return {
 							key: fieldName
@@ -109,6 +117,10 @@
 					});
 				}
 				return visibleFields;
+			},
+			// @todo here I could put current meta fields into fields member then store new meta info
+			metaChangedHandler: function(e) {
+				//console.log('FIRED', e);
 			}
 		});
 	</script>

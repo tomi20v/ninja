@@ -34,8 +34,7 @@
 				var self = this;
 				ajax.addEventListener("core-response", function(e){ self.handleResponse.call(self, e); });
 				this.ajax = ajax;
-				// @todo testme the second version
-				this.job('go',this.go);
+				// I do not call go here as it will be triggered otherwise
 				//this.fireGoJobFn()();
 
 				// I set up debounced go() on change of any of these properties
@@ -45,21 +44,29 @@
 				(new PathObserver(this, 'sortColumn')).open(this.fireGoJobFn());
 				(new PathObserver(this, 'sortDescending')).open(this.fireGoJobFn());
 				(new PathObserver(this, 'filters')).open(this.fireGoJobFn());
-				(new PathObserver(this, 'columns')).open(this.fireGoJobFn());
-				(new PathObserver(this, 'filterOps')).open(this.fireGoJobFn());
+				// I remove this as column change might happen after a load and that would trigger another request
+				//(new PathObserver(this, 'columns')).open(this.columnsChangedHandler);
+				//(new PathObserver(this, 'filterOps')).open(this.fireGoJobFn());
 			},
+			/**
+			 * I return a function that initiates a this.go() but debounced for 200ms
+			 */
 			fireGoJobFn: function() {
 				var self = this;
 				return function() {
-					self.job('go', self.go, 500);
+					self.job('go', self.go, 200);
 				}
 			},
+			/**
+			 * I will set up this.dataSize, this.meta, this.data
+			 */
 			handleResponse: function(e) {
 				var response = e.detail.response;
 				this.dataSize = response.allCount;
 				if (response.meta && !this.meta) {
-					// @todo fire an event from here and watch it from the table
+					// go will fire because sortable-table will find the meta change
 					this.meta = response.meta;
+					this.fire('metaChanged');
 				}
 				if (this.columns.length > 0) {
 					var data = [];

@@ -2,19 +2,74 @@
 aaax
 <template is="auto-binding" id="t">
 
-	<na-table fields="['_id','title','slug']" metaType="Page" dataUrl="api.json">
+	<!--
+	<na-table fields="['_id','title','slug']" modelName="Page" dataUrl="api.json">
 		<na-field key="_id"></na-field>
 		<na-fieldset>
 			<na-field key="title" label="hux"></na-field>
 		</na-fieldset>
 	</na-table>
-	<na-fieldset id="nas1">
-		<na-field id="na1" type="{{asd}}"></na-field>
-		<na-field id="na2" type="{{asd}}"></na-field>
-	</na-fieldset>
+
 	<script>
 		var dataManager = document.querySelector('na-data-manager');
 		document.querySelector('body').removeAttribute('unresolved');
 	</script>
+	-->
+
+	<!--<hr/>-->
+
+	<!--<na-fieldset id="nas1">-->
+		<!--<na-field id="na1" type="{{asd}}"></na-field>-->
+		<!--<na-field id="na2" type="{{asd}}"></na-field>-->
+	<!--</na-fieldset>-->
+
+	<hr/>
+
+	<na-form ffields="['title', 'slug']" modelName="ModPageModel" dataUrl="api.json">
+		<!--<header>-->
+			<!--<na-field key="slug" infoOnly></na-field>-->
+			<!--<na-action class="pull-right" action="...">Save</na-action>-->
+		<!--</header>-->
+		<na-fieldset label="Base" half>
+			<na-field key="_id" type="label" infoOnly></na-field>
+			<na-field key="_type_type_type_type_type_type_type_type" type="label" infoOnly value="asdhf afs jkfhas fas"></na-field>
+			<na-field label="Root" ttype="text" infoOnly key="Root.label" value="ASDMŰÁÉ"></na-field>
+			<na-field label="Parent" type="hux" infoOnly key="Parent.label"></na-field>
+			<na-field key="published" type="checkbox" class="pull-right">
+				<option value="0">no</option>
+				<option value="1">yes</option>
+			</na-field>
+			<na-field key="published2" type="checkbox"></na-field>
+			<na-field key="slug"></na-field>
+			<na-field key="title"></na-field>
+			<na-fieldset label="templates" collapse collapsedIfEmpty>
+				<na-field key="template"></na-field>
+				<na-field key="templatePath"></na-field>
+			</na-fieldset>
+		</na-fieldset>
+		<na-fieldset label="HTML" type="tab" half>
+			<na-field key=""></na-field>
+			<na-fieldset label="head/" collapse opened>
+				<na-field key="baseHref"></na-field>
+				<na-field key="doctype" infoOnly obsoleted></na-field>
+				<na-field key="links"></na-field>
+				<na-field key="meta"></na-field>
+				<na-field key="script"></na-field>
+				<na-field key="scripts"></na-field>
+				<na-field key=""></na-field>
+			</na-fieldset>
+			<na-fieldset label="Styling" collapse collapsedIfEmpty>
+				<na-field key="containerEl"></na-field>
+				<na-field key="cssId"></na-field>
+				<na-field key="cssClasses"></na-field>
+				<na-field key="cssStyle"></na-field>
+				<na-field key="extraAttributes"></na-field>
+			</na-fieldset>
+		</na-fieldset>
+		<na-fieldset label="Content" collapse>
+			<na-field key="Contents"></na-field>
+			<na-field key="Modules"></na-field>
+		</na-fieldset>
+	</na-form>
 
 </template>

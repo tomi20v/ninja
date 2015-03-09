@@ -175,6 +175,7 @@ $adminSandboxPage = new \ModPageModel([
 			['rel'=>'import', 'href'=>'/assets/admin/na-field.html'],
 			['rel'=>'import', 'href'=>'/assets/admin/na-fieldset.html'],
 			['rel'=>'import', 'href'=>'/assets/admin/na-table.html'],
+			['rel'=>'import', 'href'=>'/assets/admin/na-form.html'],
 //			['rel'=>'import', 'href'=>'/assets/admin/na-app.html'],
 //			['rel'=>'import', 'href'=>'/assets/admin/na-app-page.html'],
 		]

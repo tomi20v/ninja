@@ -2,28 +2,81 @@
 	na-fieldset is just a container for na-field elements. can be used to define fieldsets in a form, or a row of a table
 	currently it has no functionality and its children na-field elements are used directly
 -->
-<link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="na-field.html">
+<link rel="import" href="../polymer/polymer.html" />
+<link rel="import" href="../paper-shadow/paper-shadow.html" />
+<link rel="import" href="../core-collapse/core-collapse.html" />
+<link rel="import" href="../core-icons/core-icons.html" />
+
+<link rel="import" href="na-field.html" />
 <polymer-element
 	name="na-fieldset"
 	attributes="
 		label
-		collapsed
+		collapse
+		opened
+		collapsedIfEmpty
 	"
 >
 	<template>
-		<content select="na-field"></content>
+		<style>
+			fieldset {
+				bborder: none;
+				xbackground: #fc8;
+				padding: 0;
+				margin: 0 10px 15px;
+				border-width: 0;
+			}
+			:host {
+				padding: 0.5%;
+			}
+			:host paper-shadow {
+				clear: both;
+			}
+			:host([half]) {
+				float: left;
+				width: 49%;
+			}
+		</style>
+			<paper-shadow z="3">
+				<fieldset>
+					<template if="{{ label.length || collapse }}">
+						<legend >
+							<template if="{{ !collapse || opened }}"><core-icon icon="arrow-drop-down"></core-icon></template>
+							<template if="{{ collapse && !opened }}"><core-icon icon="chevron-right"></core-icon></template>
+							[[ label ]]
+						</legend>
+					</template>
+					<template if="{{ collapse }}">
+						<core-collapse>
+							<content select="na-field|na-fieldset"></content>
+						</core-collapse>
+					</template>
+					<template if="{{ !collapse }}">
+						<content select="na-field,na-fieldset"></content>
+					</template>
+				</fieldset>
+			</paper-shadow>
 	</template>
+
 	<script>
 		Polymer('na-fieldset', {
 			label: null,
-			collapsed: false,
+			collapse: false,
+			opened: false,
+			collapsedIfEmpty: false,
 			getPrintout: function(values) {
 				// @todo
 			},
 			getEditor: function(values) {
 				// @todo
+			},
+			ready: function() {
+				if (this.collapse && this.opened) {
+					console.log('open thi', this);
+				}
+				console.log('na-fieldset ready');
 			}
 		})
 	</script>
+
 </polymer-element>

@@ -5,13 +5,13 @@
 	name="na-table-datasource"
 	attributes="
 		endPoint
-		metaType
+		model
 	"
 >
 	<script>
 		Polymer('na-table-datasource', {
 			endPoint: null,
-			metaType: null,
+			model: null,
 			meta: null,
 			DEFAULT_PAGE_SIZE: 20,
 			// sortable-table-datasource attributes
@@ -21,18 +21,24 @@
 			sortColumn: null,
 			sortDescending: false,
 			filters: [],
+			// you can set this from the outside
 			columns: [],
+			// I will use this internally
+			fieldNames: [],
+//			columnsObserver: null,
 			filterOps: null,
 			loading: false,
 			data: [],
 			dataSize: null,
 			ajax: null,
+			// I'll store last ajax call params here so if eg. columns change, I can check if there is need for a reload
+			lastAjaxData: null,
 			ready: function() {
 
 				var ajax = document.createElement('core-ajax');
 				ajax.handleAs = 'json';
-				var self = this;
-				ajax.addEventListener("core-response", function(e){ self.handleResponse.call(self, e); });
+				var that = this;
+				ajax.addEventListener("core-response", function(e){ that.handleResponse.call(that, e); });
 				this.ajax = ajax;
 				// I do not call go here as it will be triggered otherwise
 				//this.fireGoJobFn()();
@@ -45,16 +51,20 @@
 				(new PathObserver(this, 'sortDescending')).open(this.fireGoJobFn());
 				(new PathObserver(this, 'filters')).open(this.fireGoJobFn());
 				// I remove this as column change might happen after a load and that would trigger another request
-				//(new PathObserver(this, 'columns')).open(this.columnsChangedHandler);
+//				this.columnsObserver = new PathObserver(this, 'columns');
+//				this.columnsObserver.open(this.columnsChangedHandler);
+				(new PathObserver(this, 'columns')).open(this.columnsChangedHandler);
+				this.fieldNamesObserver = new PathObserver(this, 'fieldNames');
+				this.fieldNamesObserver.open(this.fireGoJobFn());
 				//(new PathObserver(this, 'filterOps')).open(this.fireGoJobFn());
 			},
 			/**
 			 * I return a function that initiates a this.go() but debounced for 200ms
 			 */
 			fireGoJobFn: function() {
-				var self = this;
+				var that = this;
 				return function() {
-					self.job('go', self.go, 200);
+					that.job('go', that.go, 1000);
 				}
 			},
 			/**
@@ -68,14 +78,15 @@
 					this.meta = response.meta;
 					this.fire('metaChanged');
 				}
-				if (this.columns.length > 0) {
+				if (this.fieldNames.length > 0) {
 					var data = [];
 					for (var i in response.result) {
 						if (response.result.hasOwnProperty(i)) {
 							var obj = {};
-							this.columns.forEach(function(column) {
+							this.fieldNames.forEach(function(column) {
 								var j = 1;
-								obj[column.name] = response.result[i][column.name];
+//								obj[column.name] = response.result[i][column.name];
+								obj[column] = response.result[i][column];
 							});
 							data.push(obj);
 						}
@@ -86,16 +97,61 @@
 					this.data = response.result;
 				}
 			},
+			/**
+			 *  note this handler contains some optimizations. the original goal was to overcome a bug/strange behavior
+			 *  	in sortable-table which does not set the columns before the first load (but does set after the load
+			 *  	happens). this might be due to the order in which elements are initialized, however, such an
+			 *  	optimization is always good ;)
+			 */
+			columnsChangedHandler: function(newValue, oldValue, observer) {
+				var that = observer.object_,
+					newMappedValue = newValue.map(function(column) { return column.name; });
+
+				// first, apply silently the new mapped value to fieldNames
+				if (that.fieldNamesObserver) {
+					that.fieldNamesObserver.disconnect_();
+					that.fieldNames = newMappedValue;
+					that.fieldNamesObserver.connect_();
+				}
+				else {
+					that.fieldNames = newMappedValue;
+				}
+
+				// check if this change in field names shall trigger a reload?
+				var needReload = false;
+				if (!newValue.length && oldValue.length) {
+					needReload = true;
+				}
+				else if (newValue.length && oldValue.length) {
+					newValue.forEach(function(eachNewFieldName) {
+						if (oldValue.indexOf(eachNewFieldName) == -1) {
+							needReload = true;
+						}
+					});
+				}
+
+				// and trigger only if needed
+				if (needReload) {
+					that.fireGoJobFn()();
+				}
+			},
 			go: function() {
-				console.log('GO!', this.start, this.length, this.search, this.sortColumn, this.sortDescending, this.filters, this.columns);
+				//console.log('GO!', this.start, this.length, this.search, this.sortColumn, this.sortDescending, this.filters, this.fieldNames);
+
+				// @todo this shall be some more sophisticated logging... eg. emit a log event and always init a global watcher
+				if (!this.endPoint || !this.model) {
+					return console.log('no endPoint or/nor model set:', this.endPoint, '/', this.model);
+				}
+
 				var url = [
 					this.endPoint || '',
 					this.meta === null ? 'withMeta' : '',
-					this.metaType || ''
+					this.model || ''
 				];
 				var params = {
 					start: this.start
 				};
+				var that = this;
 				if (this.length !== null && this.length!==Number.MAX_VALUE) {
 					params.length = this.length;
 				}
@@ -114,17 +170,18 @@
 					}));
 				}
 				*/
-				if (this.columns.length) {
-					var fields = [];
-					this.columns.forEach(function(eachColumn) {
-						fields.push(eachColumn.name);
-					})
-					params._fields = fields;
+				if (this.fieldNames.length) {
+					params._fields = this.fieldNames;
 				}
+
+				// now we have params to call, check if reload is needed?
 				this.ajax.url = this.joinPath(url);
 				this.ajax.params = params;
+				this.lastAjaxData = {
+					url: url,
+					params: params
+				};
 				this.isLoading = true;
-				console.log('ajax calling', this.ajax.url, this.ajax.params);
 
 				this.ajax.go();
 			},

@@ -1,0 +1,44 @@
+<!--
+	na-table is a wrapper for sortable-table. It uses a common annotation composed by na-field and na-fieldset elements
+	eg. this definition will display a table of just 2 columns and read data from table-data.json
+	<na-table fields="['title','slug']" dataUrl="table-data.json">
+		<na-field key="_id"></na-field>
+		<na-field key="title"></na-field>
+		<na-field key="slug" label="uri"></na-field>
+	</na-table>
+
+-->
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="na-field.html">
+<link rel="import" href="na-fieldset.html">
+<link rel="import" href="na-datasource.html">
+<polymer-element
+		name="na-form"
+		attributes="
+			fields
+			dataUrl
+			modelName
+		"
+>
+	<template>
+		<style>
+			form {
+				padding: 5px 10px 15px;
+			}
+		</style>
+		<form>
+			<na-datasource
+					role="datasource"
+					endPoint="{{dataUrl}}"
+					modelName="{{modelName}}"
+			></na-datasource>
+			<content select="na-field|na-fieldset"></content>
+		</form>
+	</template>
+
+	<script>
+		Polymer('na-form', {
+
+		})
+	</script>
+</polymer-element>

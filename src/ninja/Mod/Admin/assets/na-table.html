@@ -6,7 +6,6 @@
 		<na-field key="title"></na-field>
 		<na-field key="slug" label="uri"></na-field>
 	</na-table>
-
 -->
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="na-field.html">
@@ -19,7 +18,7 @@
 		theme
 		fields
 		dataUrl
-		metaType
+		modelName
 	"
 >
 	<template>
@@ -29,11 +28,10 @@
 			class="{{ theme }}"
 		>
 			<na-table-datasource
-					role="datasource"
-					endPoint="{{dataUrl}}"
-					metaType="{{metaType}}"
-			>
-			</na-table-datasource>
+				role="datasource"
+				endPoint="{{dataUrl}}"
+				modelName="{{modelName}}"
+			></na-table-datasource>
 			<template repeat="{{ field in sortableColumns }}" >
 				<sortable-column name="{{ field.key }}">{{ field.label || field.key }}</sortable-column>
 			</template>
@@ -56,7 +54,7 @@
 			/**
 			 * @member {string} this shall be the mod name for ninja api calls. will be used to create service url
 			 */
-			metaType: null,
+			modelName: null,
 			/**
 			 * @member {Object[]} columns definitions. will parse <na-field> echildren and build according
 			 * 		<sortable-column> elements
@@ -120,7 +118,7 @@
 			},
 			// @todo here I could put current meta fields into fields member then store new meta info
 			metaChangedHandler: function(e) {
-				//console.log('FIRED', e);
+				console.log('FIRED metaChangedHandler', arguments);
 			}
 		});
 	</script>

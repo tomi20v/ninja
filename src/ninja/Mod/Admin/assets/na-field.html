@@ -3,6 +3,10 @@
 	normally it is used to define some structure which is used by other inner elements
 -->
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../polymer/layout.html">
+<link rel="import" href="../core-label/core-label.html">
+<link rel="import" href="../paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../paper-input/paper-input.html">
 <polymer-element
 	name="na-field"
 	attributes="
@@ -17,9 +21,75 @@
 		max
 		multi
 		label
+		infoOnly
+		value
 	"
 >
-	<template></template>
+	<template>
+
+		<style>
+			paper-input /deep/ paper-input-decorator {
+				padding: 0.2em 0 0.75em;
+			}
+			paper-input /deep/ .floated-label {
+				xline-height: 0.75em;
+				font-size: 1em;
+				font-size: 0.8em;
+			}
+			.fieldRow {
+				display: block;
+				margin: 0 2%;
+				width: 96%;
+				clear: both;
+			}
+			.fieldRow>span {
+				color: #757575;
+				font-size: 0.8em;
+			}
+			.labelRow>span {
+				width: 32%;
+				overflow: hidden;
+				overflow-style: marquee;
+				margin-right: 4%;
+				padding-top: 1em;
+			}
+			.fieldRow.checkboxRow {
+				float: left;
+				width: 46%;
+				clear: none;
+			}
+			.fieldRow.checkboxRow>span {
+				width: 80%;
+				padding-top: 0.4em;
+			}
+		</style>
+
+		<template if="{{ type=='checkbox' }}">
+			<core-label horizontal layout class="fieldRow checkboxRow na-fieldRow-{{ key }}">
+				<span>{{ label || key }}</span>
+				<paper-checkbox checked="{{ value }}" ></paper-checkbox>
+			</core-label>
+		</template>
+
+		<template if="{{ type=='text' }}">
+			<div horizontal layout center class="fieldRow textRow na-fieldRow-{{ key }}">
+				<paper-input type="text" is="core-input" disabled="{{ infoOnly }}" flex
+					   label="{{ label || key }}" floatingLabel
+					   value="{{ value }}"
+				/>
+			</div>
+		</template>
+
+		<template if="{{ type=='label' }}">
+			<core-label horizontal layout class="fieldRow labelRow na-fieldRow-{{ key }}">
+				<span>{{ label || key }}</span>
+				<paper-input type="text" is="core-input" disabled="{{ infoOnly }}" flex
+					   value="{{ value }}"
+				/>
+			</core-label>
+		</template>
+
+	</template>
 	<script>
 		Polymer('na-field', {
 			/**
@@ -29,7 +99,7 @@
 			/**
 			 * @member {string} type for showing and for input
 			 */
-			type: 'label',
+			type: 'text',
 			/**
 			 * @member {bool} if set definition will be auto-guessed from schema NOT USED CURRENTLY
 			 */
@@ -47,7 +117,7 @@
 			 */
 			validatorUrl: null,
 			/**
-			 * @member {string[]} valid values for select tyoe
+			 * @member {string[]} valid values for select type
 			 */
 			values: null,
 			/**
@@ -74,7 +144,22 @@
 				'radio',
 				'icon'
 			],
+			// infoOnly sets input disabled
+			infoOnly: false,
+			// ??
 			options: null,
+			/**
+			 * set up defaults before rendering
+			 */
+			created: function() {
+				// @todo this does not work currently
+				if (this.querySelectorAll('option').length) {
+					console.log('found option');
+				}
+			},
+			typeChanged: function() {
+				console.log('typeChanged', arguments, this);
+			},
 			/**
 			 * initialize me
 			 */
@@ -85,21 +170,8 @@
 					return;
 				}
 
-				// apply field attributes from schema definition
-				if (this.auto) {
-					var schema = this.getParentSchema();
-					if (schema.hasOwnProperty(this.key)) {
-						for (var i in schema) {
-							if (schema.hasOwnProperty(i) && this.publish.hasOwnProperty(i)) {
-								// this might be shit, I'm not sure to put it into publish or directly into this, yet
-								this.publish[i] = schema[i];
-							}
-						}
-					}
-				}
-
 				// check type and default if not set or invalid
-				if (!this.typeValues[this.type]) {
+				if (this.typeValues.indexOf(this.type) == -1) {
 					this.type = this.typeValues[0];
 				}
 
@@ -107,87 +179,6 @@
 					? {}
 					: this.options = this.options.split(',');
 
-			},
-			/**
-			 * @todo implement me
-			 * I shall return the schema that describes this field.
-			 * However if parent is a <nafieldset> I rather have to get from its parent
-			 * @return {Object}
-			 */
-			getParentSchema: function() {
-				return {};
-			},
-			/**
-			 * I return a print representation of the current field element
-			 * @param {mixed} value - get the printout of any value
-			 */
-			getPrintout: function(value) {
-				var wrapper, el;
-				switch (this.type) {
-					case 'hidden':
-						el = '';
-						break;
-					case 'checkbox':
-						el = '<paper-checkbox disabled' + (value ? ' checked' : '') + '></paper-checkbox>';
-						break;
-					case 'text':
-					case 'textArea':
-					case 'label':
-					case 'select':
-					default:
-						el = '<paper-input disabled value="' + (value === null ? "" : value.toString()) + '"></paper-input>';
-						break;
-				}
-				return '<span class="na-wrapper">' + el + '</span>';
-			},
-			/**
-			 * I return an editor for this field
-			 * @param {mixed} value - get editor with this value
-			 */
-			getEditor: function(value) {
-				var el;
-				switch (this.type) {
-					case 'hidden':
-						el = '';
-						break;
-					case 'checkbox':
-						el = '<paper-checkbox disabled' + (value ? ' checked' : '') + '></paper-checkbox>';
-						break;
-					case 'label':
-						el = value.toString();
-						break;
-					case 'select':
-						el = '<paper-dropdown-menu' + this.getProp2Prop('label') + '>' +
-								'<paper-dropdown class="dropdown">' +
-									'<core-menu class="menu">';
-						for (i in this.options) {
-							if (this.options.hasOwnProperty(i)) {
-								el += '<paper-item>' + this.options[i] + '</paper-item>';
-							}
-						}
-						el += 		'</core-menu>'
-								'</paper-dropdown>'
-								'</paper-dropdown-menu>';
-						break;
-					case 'text':
-					case 'textArea':
-					default:
-						el = '<paper-input' + this.getProp2Prop('label') + ' floatingLabel ' + (value !== null ? ' value="' + value.toString() + '"' : '') + '></paper-input>';
-						break;
-				}
-				return '<span class="na-wrapper">' + el + '</span>';
-			},
-			/**
-			 * I validate a value based on constraint attributes and remote validator
-			 */
-			validate: function(value) {
-
-			},
-			// @todo this is an ideal candidate for a mixin
-			getProp2Prop: function(key) {
-				return (this.hasOwnProperty(key) && this[key] !== null)
-					? ' ' + key + '="' + this[key] + '"'
-					: '';
 			}
 		});
 		if (!Array.prototype.isArray) {

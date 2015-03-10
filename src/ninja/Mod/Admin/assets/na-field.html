@@ -14,6 +14,7 @@
 <polymer-element
 	name="na-field"
 	attributes="
+		value
 		key
 		type
 		auto
@@ -26,7 +27,6 @@
 		multi
 		label
 		infoOnly
-		value
 	"
 >
 	<template>
@@ -104,7 +104,7 @@
 				<span class="labelS">{{ _label || key }}</span>
 				<paper-dropdown-menu label="{{ label }}">
 					<paper-dropdown class="dropdown">
-						<core-menu class="menu" valueAttr="value">
+						<core-menu class="menu" valueAttr="value" selected="{{ value }}">
 							<template repeat="{{ option in options }}">
 							<paper-item value="{{ option.value }}">{{ option.innerHTML }}</paper-item>
 							</template>
@@ -117,6 +117,10 @@
 	</template>
 	<script>
 		Polymer('na-field', {
+			/**
+			 * @member {mixed} any value...
+			 */
+			value: null,
 			/**
 			 * @member {string} key in data row
 			 */

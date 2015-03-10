@@ -202,13 +202,7 @@
 					this.type = this.typeValues[0];
 				}
 
-//				this.options = this.options === null
-//					? {}
-//					: this.options = this.options.split(',');
-
-//				console.log(this.querySelectorAll('option'));
 				this.options = this.querySelectorAll('option');
-				!this.options.length || console.log(this.options);
 				if (this.options.length) {
 					var optionsArr = [];
 					for (var i in this.options) {

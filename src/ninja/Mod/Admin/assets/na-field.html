@@ -93,32 +93,37 @@
 		<template if="{{ type=='checkbox' }}">
 			<core-label horizontal layout center-left width="{{ half ? 'half' : (quart ? 'quart' : '') }}" class="fieldRow checkboxRow na-fieldRow-{{ key }}">
 				<span>{{ label || key }}</span>
-				<paper-checkbox checked="{{ value }}" disabled="{{ infoOnly }}"></paper-checkbox>
+				<paper-checkbox role="input"
+						disabled="{{ infoOnly }}"
+						checked="{{ value }}" value="{{ value }}"
+				></paper-checkbox>
 			</core-label>
 		</template>
 
 		<template if="{{ type=='toggle' }}">
 			<core-label horizontal layout center-left width="{{ half ? 'half' : (quart ? 'quart' : '') }}" class="fieldRow toggleRow na-fieldRow-{{ key }}">
 				<span>{{ label || key }}</span>
-				<paper-toggle-button checked="{{ value }}" disabled="{{ infoOnly }}"></paper-toggle-button>
+				<paper-toggle-button role="input"
+						disabled="{{ infoOnly }}"
+						checked="{{ value }}" value="{{ value }}" ></paper-toggle-button>
 			</core-label>
 		</template>
 
 		<template if="{{ type=='text' }}">
 			<div horizontal layout center width="{{ half ? 'half' : (quart ? 'quart' : '') }}" class="fieldRow textRow na-fieldRow-{{ key }}">
-				<paper-input type="text" is="core-input" disabled="{{ infoOnly }}" flex
-					   label="{{ label || key }}" floatingLabel
-					   value="{{ value }}"
-				></paper-input>
+				<paper-input type="text" is="core-input" role="input"
+						disabled="{{ infoOnly }}" flex
+						label="{{ label || key }}" floatingLabel
+						value="{{ value }}" ></paper-input>
 			</div>
 		</template>
 
 		<template if="{{ type=='label' }}">
 			<core-label horizontal layout width="{{ half ? 'half' : (quart ? 'quart' : '') }}" class="fieldRow labelRow na-fieldRow-{{ key }}">
 				<span class="labelS">{{ label || key }}</span>
-				<paper-input type="text" is="core-input" disabled="{{ infoOnly }}" flex
-					   value="{{ value }}"
-				></paper-input>
+				<paper-input type="text" is="core-input" role="input"
+						disabled="{{ infoOnly }}" flex
+						value="{{ value }}" ></paper-input>
 			</core-label>
 		</template>
 
@@ -127,8 +132,10 @@
 				<span class="labelS">{{ label || key }}</span>
 				<paper-dropdown-menu>
 					<paper-dropdown class="dropdown">
-						<core-menu class="menu" valueAttr="value" selected="{{ value }}" disabled="{{ infoOnly }}">
-							<template repeat="{{ option in options }}">
+						<core-menu role="input" class="menu"
+								disabled="{{ infoOnly }}"
+								valueAttr="value" selected="{{ value }}" >
+							<template repeat="{{ option in options }}" >
 							<paper-item value="{{ option.value }}">{{ option.innerHTML }}</paper-item>
 							</template>
 						</core-menu>

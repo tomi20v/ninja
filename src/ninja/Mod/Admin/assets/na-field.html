@@ -27,6 +27,7 @@
 		multi
 		label
 		infoOnly
+		half
 	"
 >
 	<template>
@@ -56,11 +57,24 @@
 				font-size: 0.8em;
 			}
 			.fieldRow>span.labelS {
-				width: 32%;
+				width: 30%;
 				overflow: hidden;
 				overflow-style: marquee;
 				margin-right: 4%;
 				padding-top: 1em;
+			}
+			.fieldRow[width="half"] {
+				background: #f8c;
+				width: 46%;
+				margin: 2% 2% 2% 2%;
+				float: left;
+				clear: none;
+			}
+			.fieldRow[width="half"]>span.labelS {
+				width: 70%;
+			}
+			.fieldRow[width="half"]>paper-dropdown-menu {
+				width: 30%;
 			}
 			.fieldRow.checkboxRow {
 				float: left;
@@ -75,14 +89,14 @@
 		</style>
 
 		<template if="{{ type=='checkbox' }}">
-			<core-label horizontal layout center-left class="fieldRow checkboxRow na-fieldRow-{{ key }}">
+			<core-label horizontal layout center-left width="{{ half ? 'half' : (quart ? 'quart' : '') }}" class="fieldRow checkboxRow na-fieldRow-{{ key }}">
 				<span>{{ label || key }}</span>
 				<paper-checkbox checked="{{ value }}" ></paper-checkbox>
 			</core-label>
 		</template>
 
 		<template if="{{ type=='text' }}">
-			<div horizontal layout center class="fieldRow textRow na-fieldRow-{{ key }}">
+			<div horizontal layout center width="{{ half ? 'half' : (quart ? 'quart' : '') }}" class="fieldRow textRow na-fieldRow-{{ key }}">
 				<paper-input type="text" is="core-input" disabled="{{ infoOnly }}" flex
 					   label="{{ label || key }}" floatingLabel
 					   value="{{ value }}"
@@ -91,7 +105,7 @@
 		</template>
 
 		<template if="{{ type=='label' }}">
-			<core-label horizontal layout class="fieldRow labelRow na-fieldRow-{{ key }}">
+			<core-label horizontal layout width="{{ half ? 'half' : (quart ? 'quart' : '') }}" class="fieldRow labelRow na-fieldRow-{{ key }}">
 				<span class="labelS">{{ label || key }}</span>
 				<paper-input type="text" is="core-input" disabled="{{ infoOnly }}" flex
 					   value="{{ value }}"
@@ -99,10 +113,10 @@
 			</core-label>
 		</template>
 
-		<template if="{{ type=='select' }}" xbind="{{ 'label as _label' }}" >
-			<core-label horizontal layout class="fieldRow selectRow na-fieldRow-{{ key }}" >
-				<span class="labelS">{{ _label || key }}</span>
-				<paper-dropdown-menu label="{{ label }}">
+		<template if="{{ type=='select' }}" >
+			<core-label horizontal layout width="{{ half ? 'half' : (quart ? 'quart' : '') }}" class="fieldRow selectRow na-fieldRow-{{ key }}" >
+				<span class="labelS">{{ label || key }}</span>
+				<paper-dropdown-menu>
 					<paper-dropdown class="dropdown">
 						<core-menu class="menu" valueAttr="value" selected="{{ value }}">
 							<template repeat="{{ option in options }}">
@@ -170,13 +184,14 @@
 				'textArea',
 				'checkbox',
 				'select',
-				'radio',
-				'icon'
+				'number'
+				// I should have some custom and/or composite type?
 			],
 			// infoOnly sets input disabled
 			infoOnly: false,
 			// ??
 			options: [],
+			half: false,
 			/**
 			 * set up defaults before rendering
 			 */

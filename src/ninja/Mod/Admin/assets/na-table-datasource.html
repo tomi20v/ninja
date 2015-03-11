@@ -139,14 +139,14 @@
 				//console.log('GO!', this.start, this.length, this.search, this.sortColumn, this.sortDescending, this.filters, this.fieldNames);
 
 				// @todo this shall be some more sophisticated logging... eg. emit a log event and always init a global watcher
-				if (!this.endPoint || !this.model) {
-					return console.log('no endPoint or/nor model set:', this.endPoint, '/', this.model);
+				if (!this.endPoint || !this.modelName) {
+					return console.log('no endPoint or/nor model set:', this.endPoint, '/', this.modelName);
 				}
 
 				var url = [
 					this.endPoint || '',
 					this.meta === null ? 'withMeta' : '',
-					this.model || ''
+					this.modelName || ''
 				];
 				var params = {
 					start: this.start

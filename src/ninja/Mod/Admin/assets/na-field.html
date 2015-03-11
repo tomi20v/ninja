@@ -11,6 +11,7 @@
 <link rel="import" href="../paper-dropdown-menu/paper-dropdown-menu.html">
 <link rel="import" href="../paper-input/paper-input.html">
 <link rel="import" href="../paper-item/paper-item.html">
+<link rel="import" href="../paper-toggle-button/paper-toggle-button.html">
 <polymer-element
 	name="na-field"
 	attributes="
@@ -64,7 +65,6 @@
 				padding-top: 1em;
 			}
 			.fieldRow[width="half"] {
-				background: #f8c;
 				width: 46%;
 				margin: 2% 2% 2% 2%;
 				float: left;
@@ -76,13 +76,15 @@
 			.fieldRow[width="half"]>paper-dropdown-menu {
 				width: 30%;
 			}
-			.fieldRow.checkboxRow {
+			.fieldRow.checkboxRow,
+			.fieldRow.toggleRow {
 				float: left;
 				width: 46%;
 				clear: none;
 				height: 2.2em;
 			}
-			.fieldRow.checkboxRow>span {
+			.fieldRow.checkboxRow>span,
+			.fieldRow.toggleRow>span {
 				width: 80%;
 				padding-top: 0.4em;
 			}
@@ -91,7 +93,14 @@
 		<template if="{{ type=='checkbox' }}">
 			<core-label horizontal layout center-left width="{{ half ? 'half' : (quart ? 'quart' : '') }}" class="fieldRow checkboxRow na-fieldRow-{{ key }}">
 				<span>{{ label || key }}</span>
-				<paper-checkbox checked="{{ value }}" ></paper-checkbox>
+				<paper-checkbox checked="{{ value }}" disabled="{{ infoOnly }}"></paper-checkbox>
+			</core-label>
+		</template>
+
+		<template if="{{ type=='toggle' }}">
+			<core-label horizontal layout center-left width="{{ half ? 'half' : (quart ? 'quart' : '') }}" class="fieldRow toggleRow na-fieldRow-{{ key }}">
+				<span>{{ label || key }}</span>
+				<paper-toggle-button checked="{{ value }}" disabled="{{ infoOnly }}"></paper-toggle-button>
 			</core-label>
 		</template>
 
@@ -118,7 +127,7 @@
 				<span class="labelS">{{ label || key }}</span>
 				<paper-dropdown-menu>
 					<paper-dropdown class="dropdown">
-						<core-menu class="menu" valueAttr="value" selected="{{ value }}">
+						<core-menu class="menu" valueAttr="value" selected="{{ value }}" disabled="{{ infoOnly }}">
 							<template repeat="{{ option in options }}">
 							<paper-item value="{{ option.value }}">{{ option.innerHTML }}</paper-item>
 							</template>
@@ -184,7 +193,7 @@
 				'textArea',
 				'checkbox',
 				'select',
-				'number'
+				'toggle'
 				// I should have some custom and/or composite type?
 			],
 			// infoOnly sets input disabled

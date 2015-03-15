@@ -14,16 +14,16 @@ aaax
 		var dataManager = document.querySelector('na-data-manager');
 		document.querySelector('body').removeAttribute('unresolved');
 	</script>
+
+	<hr/>
+
 	-->
-
-	<!--<hr/>-->
-
 	<!--<na-fieldset id="nas1">-->
 		<!--<na-field id="na1" type="{{asd}}"></na-field>-->
 		<!--<na-field id="na2" type="{{asd}}"></na-field>-->
 	<!--</na-fieldset>-->
 
-	<hr/>
+	<!--<hr/>-->
 
 	<na-form ffields="['title', 'slug']" modelName="ModPageModel" dataUrl="api.json">
 		<!--<header>-->
@@ -31,34 +31,26 @@ aaax
 			<!--<na-action class="pull-right" action="...">Save</na-action>-->
 		<!--</header>-->
 		<na-fieldset label="Base" half>
-			<na-field key="_id" type="label" infoOnly></na-field>
-			<na-field key="_type_type_type_type_type_type_type_type" type="label" infoOnly value="asdhf afs jkfhas fas"></na-field>
-			<na-field label="Root" ttype="text" infoOnly key="Root.label" value="ASDMŰÁÉ"></na-field>
-			<na-field label="Parent" type="hux" infoOnly key="Parent.label"></na-field>
-			<na-field key="published" label="kye" type="select">
-				<option value="0">no</option>
-				<option value="1">yes</option>
+			<na-field key="_id" type="text" subType="short" infoOnly></na-field>
+			<na-field key="_type" type="text" subType="short" infoOnly value="asdhf afs jkfhas fas"></na-field>
+			<na-field label="Root" type="picker" infoOnly key="Root.label" value="ASDMŰÁÉ"></na-field>
+			<na-field label="Parent" type="picker" infoOnly key="Parent.label">
+
 			</na-field>
-			<na-field key="published" label="kye2" type="select" half >
-				<option value="0">no</option>
-				<option value="1">yes</option>
-			</na-field>
-			<na-field key="published" label="kye3" type="select" half >
-				<option value="0">no</option>
-				<option value="1">yes</option>
-			</na-field>
+			<na-field key="published" type="checkbox" subType="toggle"></na-field>
 			<na-field key="published2" label="genius2" type="checkbox"></na-field>
 			<na-field key="toggle" label="toggle button"  type="toggle"></na-field>
-			<na-field key="slug"></na-field>
-			<na-field key="title"></na-field>
+			<na-field key="slug" type="text" subType="short" >
+				<na-validator type="regexp" value="/^[a-z0-9_\-]*$/">Does not match: {{ value }}</na-validator>
+			</na-field>
+			<na-field key="title" type="text" ></na-field>
 			<na-fieldset label="templates" collapse collapsedIfEmpty>
 				<na-field key="template"></na-field>
 				<na-field key="templatePath"></na-field>
 			</na-fieldset>
 		</na-fieldset>
 		<na-fieldset label="HTML" type="tab" half>
-			<na-field key=""></na-field>
-			<na-fieldset label="head/" collapse opened>
+			<na-fieldset label="head/" collapse collapsedIfEmpty>
 				<na-field key="baseHref"></na-field>
 				<na-field key="doctype" infoOnly obsoleted></na-field>
 				<na-field key="links"></na-field>
@@ -67,12 +59,12 @@ aaax
 				<na-field key="scripts"></na-field>
 				<na-field key=""></na-field>
 			</na-fieldset>
-			<na-fieldset label="Styling" collapse collapsedIfEmpty>
-				<na-field key="containerEl"></na-field>
-				<na-field key="cssId"></na-field>
-				<na-field key="cssClasses"></na-field>
-				<na-field key="cssStyle"></na-field>
-				<na-field key="extraAttributes"></na-field>
+			<na-fieldset label="Styling" collapse opened>
+				<na-field key="containerEl" subType="short" ></na-field>
+				<na-field key="cssId" subType="short" ></na-field>
+				<na-field key="cssClasses" subType="short" ></na-field>
+				<na-field key="cssStyle" subType="short" ></na-field>
+				<na-field key="extraAttributes" subType="short" ></na-field>
 			</na-fieldset>
 		</na-fieldset>
 		<na-fieldset label="Content" collapse>

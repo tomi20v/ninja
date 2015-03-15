@@ -8,7 +8,7 @@ class SchemaValidatorMaxValue extends \maui\SchemaValidatorMaxValue {
 
 	public function toMeta() {
 		return [
-			'maxValue' => [$this->_value, $this->getError(['{{value}}'=>'']),],
+			'validator' => [ 'maxValue', $this->_value, $this->getError(), ],
 		];
 	}
 

@@ -11,7 +11,7 @@ class SchemaValidatorKeysRequired extends \maui\SchemaValidatorKeysRequired {
 
 	public function toMeta() {
 		return [
-			'keysRequired' => [$this->_value, $this->getError(['{{value}}'=>'']),],
+			'validator' => [ 'keysRequired', $this->_value, $this->getError(), ],
 		];
 	}
 

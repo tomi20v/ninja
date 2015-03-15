@@ -9,7 +9,7 @@ class SchemaValidatorToString extends \maui\SchemaValidatorToString {
 	 */
 	public function toMeta() {
 		return [
-			'type' => ['text', 'text',],
+			'type' => 'text',
 		];
 	}
 

@@ -9,7 +9,8 @@ class SchemaValidatorToInt extends \maui\SchemaValidatorToInt {
 	 */
 	public function toMeta() {
 		return [
-			'type' => ['text','int',],
+			'type' => 'number',
+			'subType' => 'int',
 		];
 	}
 

@@ -6,7 +6,7 @@ class SchemaValidatorKeys extends \maui\SchemaValidatorKeys {
 
 	public function toMeta() {
 		return [
-			'keys' => [$this->_value, $this->getError(['{{value}}'=>'']),],
+			'validator' => [ 'keys', $this->_value, $this->getError(), ],
 		];
 	}
 

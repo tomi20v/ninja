@@ -9,7 +9,9 @@ class SchemaValidatorToType extends \maui\SchemaValidatorToType {
 	 */
 	public function toMeta() {
 		return [
-			'type' => ['hidden',],
+			'type' => 'text',
+			'subType' => 'short',
+			'infoOnly' => true,
 		];
 	}
 

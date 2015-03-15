@@ -52,7 +52,7 @@ class SchemaValidatorValidLayers extends \SchemaValidator {
 		return null;
 	}
 
-	public function getError($val, $Model=null) {
+	public function getError($val=null, $Model=null) {
 		return 'not a valid layer, shall be in {' . implode(', ', $this->_getValidValues($Model)) . ')';
 	}
 
@@ -68,8 +68,9 @@ class SchemaValidatorValidLayers extends \SchemaValidator {
 
 	public function toMeta() {
 		return [
-			'type' => ['picker','remote',],
-//			'remote' => true,
+			'type' => 'picker',
+			'subType' => 'picker',
+			'remote' => true,
 		];
 	}
 

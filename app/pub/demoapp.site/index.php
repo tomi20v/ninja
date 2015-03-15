@@ -10,12 +10,6 @@ define('PUB_ROOT', dirname(__FILE__));
 $Autoloader = require(PUB_ROOT . '/../../../vendor/autoload.php');
 \Finder::setAutoLoader($Autoloader);
 
-//\Tester::init(
-//	[
-//		'ModAbstractModule' => ['getHmvcUrlPath'],
-//	]);
-//
-
 $t1 = microtime(true);
 $Maui = \Maui::instance(\Maui::ENV_DEFAULT, 'ninja');
 $Ninja = new \Ninja($Maui);

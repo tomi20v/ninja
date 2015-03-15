@@ -1,11 +1,13 @@
 <!--
 	na-field is a versatile element used for defining a field in a table, form, data, etc.
 	normally it is used to define some structure which is used by other inner elements
+
 -->
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../polymer/layout.html">
 <link rel="import" href="../core-label/core-label.html">
 <link rel="import" href="../core-menu/core-menu.html">
+<link rel="import" href="../paper-input/paper-autogrow-textarea.html">
 <link rel="import" href="../paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../paper-dropdown/paper-dropdown.html">
 <link rel="import" href="../paper-dropdown-menu/paper-dropdown-menu.html">
@@ -18,14 +20,15 @@
 		value
 		key
 		type
+		subType
 		auto
 		collapsed
 		default
 		validatorUrl
-		values
-		min
-		max
+		min max
+		minLength maxLength
 		multi
+		hasMin hasMax
 		label
 		infoOnly
 		half
@@ -91,49 +94,66 @@
 		</style>
 
 		<template if="{{ type=='checkbox' }}">
-			<core-label horizontal layout center-left width="{{ half ? 'half' : (quart ? 'quart' : '') }}" class="fieldRow checkboxRow na-fieldRow-{{ key }}">
+			<core-label horizontal layout center-left getWidth() class="fieldRow checkboxRow na-fieldRow-{{ key }}">
 				<span>{{ label || key }}</span>
 				<paper-checkbox role="input"
-						disabled="{{ infoOnly }}"
+						disabled?="{{ infoOnly }}"
 						checked="{{ value }}" value="{{ value }}"
 				></paper-checkbox>
 			</core-label>
 		</template>
 
 		<template if="{{ type=='toggle' }}">
-			<core-label horizontal layout center-left width="{{ half ? 'half' : (quart ? 'quart' : '') }}" class="fieldRow toggleRow na-fieldRow-{{ key }}">
+			<core-label horizontal layout center-left getWidth() class="fieldRow toggleRow na-fieldRow-{{ key }}">
 				<span>{{ label || key }}</span>
 				<paper-toggle-button role="input"
-						disabled="{{ infoOnly }}"
+						disabled?="{{ infoOnly }}"
 						checked="{{ value }}" value="{{ value }}" ></paper-toggle-button>
 			</core-label>
 		</template>
 
 		<template if="{{ type=='text' }}">
-			<div horizontal layout center width="{{ half ? 'half' : (quart ? 'quart' : '') }}" class="fieldRow textRow na-fieldRow-{{ key }}">
-				<paper-input type="text" is="core-input" role="input"
-						disabled="{{ infoOnly }}" flex
-						label="{{ label || key }}" floatingLabel
-						value="{{ value }}" ></paper-input>
-			</div>
+			<template if="{{ subType=='short' }}">
+				<core-label horizontal layout getWidth() class="fieldRow textShortRow na-fieldRow-{{ key }}">
+					<span class="labelS">{{ label || key }}</span>
+					<paper-input type="text" is="core-input" role="input"
+								 disabled?="{{ infoOnly }}" flex
+								 value="{{ value }}" ></paper-input>
+				</core-label>
+			</template>
+			<template if="{{ subType=='normal' }}">
+				<div horizontal layout center getWidth() class="fieldRow textRow na-fieldRow-{{ key }}">
+					<paper-input type="text" is="core-input" role="input"
+								 disabled?="{{ infoOnly }}" flex
+								 label="{{ label || key }}" floatingLabel
+								 value="{{ value }}" ></paper-input>
+				</div>
+			</template>
+			<template if="{{ subType=='long' }}">
+				<paper-input-decorator label="{{ label || key }}" floatingLabel
+						horizontal layout width="{{ getLabel() }}" class="fieldRow textLongRow na-fieldRow-{{ key }}" >
+					<paper-autogrow-textarea xis="core-input" xrole="input"
+						   xdisabled?="{{ infoOnly }}"
+						   xvalue="{{ value }}" >
+						<textarea disabled?="{{ infoOnly }}" role="input">{{ value }}</textarea>
+					</paper-autogrow-textarea>
+				</paper-input-decorator>
+			</template>
 		</template>
 
-		<template if="{{ type=='label' }}">
-			<core-label horizontal layout width="{{ half ? 'half' : (quart ? 'quart' : '') }}" class="fieldRow labelRow na-fieldRow-{{ key }}">
-				<span class="labelS">{{ label || key }}</span>
-				<paper-input type="text" is="core-input" role="input"
-						disabled="{{ infoOnly }}" flex
-						value="{{ value }}" ></paper-input>
-			</core-label>
+		<template if="{{ type=='number' }}">
+			<template if="{{ subType=='decimal' }}">
+
+			</template>
 		</template>
 
 		<template if="{{ type=='select' }}" >
-			<core-label horizontal layout width="{{ half ? 'half' : (quart ? 'quart' : '') }}" class="fieldRow selectRow na-fieldRow-{{ key }}" >
+			<core-label horizontal layout getWidth() class="fieldRow selectRow na-fieldRow-{{ key }}" >
 				<span class="labelS">{{ label || key }}</span>
 				<paper-dropdown-menu>
 					<paper-dropdown class="dropdown">
 						<core-menu role="input" class="menu"
-								disabled="{{ infoOnly }}"
+								disabled?="{{ infoOnly }}"
 								valueAttr="value" selected="{{ value }}" >
 							<template repeat="{{ option in options }}" >
 							<paper-item value="{{ option.value }}">{{ option.innerHTML }}</paper-item>
@@ -156,9 +176,13 @@
 			 */
 			key: null,
 			/**
-			 * @member {string} type for showing and for input
+			 * @member {string} type of info to be entered, eg. number
 			 */
 			type: 'text',
+			/**
+			 * @member {string} subtype to type, eg. decimal to number
+			 */
+			subType: null,
 			/**
 			 * @member {bool} if set definition will be auto-guessed from schema NOT USED CURRENTLY
 			 */
@@ -176,10 +200,6 @@
 			 */
 			validatorUrl: null,
 			/**
-			 * @member {string[]} valid values for select type
-			 */
-			values: null,
-			/**
 			 * @member {int} has minimum this many values
 			 */
 			hasMin: null,
@@ -187,6 +207,10 @@
 			 * @member {int} has at most this many values
 			 */
 			hasMax: null,
+			min: null,
+			max: null,
+			minLength: null,
+			maxLength: null,
 			/**
 			 * @member {string} will be used for header in table, or label in form
 			 */
@@ -200,7 +224,8 @@
 				'textArea',
 				'checkbox',
 				'select',
-				'toggle'
+				'toggle',
+				'number'
 				// I should have some custom and/or composite type?
 			],
 			// infoOnly sets input disabled
@@ -248,6 +273,27 @@
 					}
 					this.options = optionsArr;
 				}
+
+				if (this.key == 'title') {
+					console.log('asd');
+				}
+
+				if ((this.type == 'text') && (['short', 'long', 'normal'].indexOf(this.subType) == -1)) {
+					if ((this.maxLength && (this.maxlength > 120)) ||
+						(this.minLength && (this.minLength > 60))) {
+						this.subType = 'long';
+					}
+					else if (this.maxLength && (this.maxLength < 60)) {
+						this.subType = 'short';
+					}
+					else {
+						this.subType = 'normal';
+					}
+				}
+
+			},
+			getWidth: function() {
+				return this.half ? 'half' : (this.quart ? 'quart' : '');
 			}
 		});
 		if (!Array.prototype.isArray) {

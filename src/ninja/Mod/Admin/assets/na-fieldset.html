@@ -40,15 +40,15 @@
 			<paper-shadow z="3">
 				<fieldset>
 					<template if="{{ label.length || collapse }}">
-						<legend >
+						<legend on-click="{{ toggleHandler }}">
 							<template if="{{ !collapse || opened }}"><core-icon icon="arrow-drop-down"></core-icon></template>
 							<template if="{{ collapse && !opened }}"><core-icon icon="chevron-right"></core-icon></template>
 							[[ label ]]
 						</legend>
 					</template>
 					<template if="{{ collapse }}">
-						<core-collapse>
-							<content select="na-field|na-fieldset"></content>
+						<core-collapse id="coreCollapse">
+							<content select="na-field,na-fieldset"></content>
 						</core-collapse>
 					</template>
 					<template if="{{ !collapse }}">
@@ -64,17 +64,15 @@
 			collapse: false,
 			opened: false,
 			collapsedIfEmpty: false,
-			getPrintout: function(values) {
-				// @todo
-			},
-			getEditor: function(values) {
-				// @todo
-			},
 			ready: function() {
 				if (this.collapse && this.opened) {
-					console.log('open thi', this);
+					this.$.coreCollapse.toggle();
 				}
-				console.log('na-fieldset ready');
+			},
+			toggleHandler: function() {
+				if (this.collapse) {
+					this.$.coreCollapse.toggle();
+				}
 			}
 		})
 	</script>

@@ -38,6 +38,8 @@ class ModPageModel extends \ModAbstractModel {
 		'slug' => [
 			'toString',
 			'required',
+			'regexp' => \SchemaValidatorRegexp::STRING_ALNUM38,
+			//'uniqueWith' => '=Parent',
 		],
 		// @obsolete marked for deletion, needs code check
 		'doctype' => [

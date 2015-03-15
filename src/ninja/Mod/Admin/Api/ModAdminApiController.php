@@ -88,7 +88,9 @@ class ModAdminApiController extends \ModAdminController {
 
 		// get model to be served
 		$modelName = $this->_Request->getNextRemainingUriPart();
-		$modelClassname = 'Mod' . $modelName . 'Model';
+		$this->_Request->shiftCntUriParts(1);
+//		$modelClassname = 'Mod' . $modelName . 'Model';
+		$modelClassname = $modelName . 'Model';
 		if (($modelName === false) || !$this->_validateClass($modelClassname, 'actionIndex')) {
 			// @todo make some more consolidated notfoundexception
 			throw new \HttpException(\Response::HTTP_NOT_FOUND);
@@ -96,15 +98,11 @@ class ModAdminApiController extends \ModAdminController {
 		$this->_Request->shiftCntUriParts(1);
 
 		$Constraints = $this->_processSpecialParams($params, $modelClassname);
-
 		$Collection = \ModPageModel::Finder()->findAll($Constraints);
+
 		$Response = \ApiResponse::fromCollection(true, $Collection);
-//		$data = $Collection->getData();
-//		foreach ($data as &$eachData) {
-//			...
-//		}
-//		$Response = \ApiResponse::build(true, $data);
 		$Response->setIsFinal(true);
+
 		return $Response;
 	}
 
@@ -114,9 +112,33 @@ class ModAdminApiController extends \ModAdminController {
 	 * @return null|\Response
 	 */
 	public function actionWithmeta($params = null) {
+
+		$modelName = $this->_Request->getNextRemainingUriPart();
+		$modelClassname = $modelName . 'Model';
+
 		$ret = $this->actionIndex($params);
-		$ret->getContent()->meta = \SchemaManager::getSchema('ModPageModel')->toMeta();
+		$ret->getContent()->meta = \SchemaManager::getSchema($modelClassname)->toMeta();
+
 		return $ret;
+
+	}
+
+	public function actionMeta($params = null) {
+
+		$modelName = $this->_Request->getNextRemainingUriPart();
+		$this->_Request->shiftCntUriParts(1);
+		$modelClassname = $modelName . 'Model';
+
+		$Response = \ApiResponse::from(
+			true,
+			null,
+			null,
+			\SchemaManager::getSchema($modelClassname)->toMeta(),
+			true
+		);
+
+		return $Response;
+
 	}
 
 }

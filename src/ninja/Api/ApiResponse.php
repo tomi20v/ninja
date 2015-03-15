@@ -47,7 +47,7 @@ class ApiResponse extends \Response {
 	 * @param mixed[] $meta
 	 * @return \ApiResponse
 	 */
-	public static function from($success, $result=null, $errors=null, $meta=null) {
+	public static function from($success, $result=null, $errors=null, $meta=null, $isFinal=false) {
 
 		$ResponseModel = new \ApiResponseModel([
 			'success' => $success,
@@ -62,6 +62,7 @@ class ApiResponse extends \Response {
 		}
 		// @todo maybe here I could set a proper status code?
 		$Response = new \ApiResponse($ResponseModel);
+		$Response->setIsFinal($isFinal);
 		return $Response;
 	}
 

@@ -321,20 +321,22 @@ EOS;
 
 	public static function help() {
 ?>
+
 usage: php script/mod.php [-g] [-u] [-a] {command} [ModName]
-	mod.php init Name - inits empty module with name Name. Note name
-			can be a submodule
-	mod.php action Name ActionName - adds a new action to the
-			controller of module Name (not yet)
-	mod.php classmap - write a classmap cache to avoid on-the-fly
-			file lookup and class aliasing
+
+    mod.php init Name - inits empty module with name Name.
+            Note: name can be a submodule
+    mod.php action Name ActionName - adds a new action to the
+            controller of module Name (not yet)
+    mod.php classmap - write a classmap cache to avoid on-the-fly
+            file lookup and class aliasing
 
 switches:
-	-d --dry-run    	dry-run, skip everything just show what it would do
-	-u --update     	update, create files without overwriting existing ones
-	-p --with-plugin	create Admin plugin class
-	-a --with-assets	create placeholder folders for assets
-	-g fname 	create git diff file only, no changes to files  (not yet)
+    -d --dry-run        dry-run, skip everything just show what it would do
+    -u --update         update, create files without overwriting existing ones
+    -p --with-plugin    create Admin plugin class
+    -a --with-assets    create placeholder folders for assets
+    -g fname            create git diff file only, no changes done (planned)
 <?php
 	}
 

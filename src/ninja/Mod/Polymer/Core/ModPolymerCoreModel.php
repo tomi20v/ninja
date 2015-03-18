@@ -33,7 +33,7 @@ abstract class ModPolymerCoreModel extends \ModPolymerModel {
 	const LAYOUT_HIDDEN = 'hidden';
 	const LAYOUT_RELATIVE = 'relative';
 	const LAYOUT_FIT = 'fit';
-	const LAYOUT_ = '';
+	const LAYOUT_FLEX = 'flex';
 
 	protected static $_schema = [
 		'@@extends' => 'ModPolymerModel',
@@ -68,6 +68,7 @@ abstract class ModPolymerCoreModel extends \ModPolymerModel {
 				\ModPolymerCoreModel::LAYOUT_HIDDEN,
 				\ModPolymerCoreModel::LAYOUT_RELATIVE,
 				\ModPolymerCoreModel::LAYOUT_FIT,
+				\ModPolymerCoreModel::LAYOUT_FLEX,
 			]
 		],
 		'autoVertical',

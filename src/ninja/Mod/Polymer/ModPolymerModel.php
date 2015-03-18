@@ -24,6 +24,8 @@ abstract class ModPolymerModel extends \ModAbstractModel {
 		],
 		'cssStyle',
 		'extraAttributes',
+		// this attribute is for polymer elements, to specify roles
+		'role',
 	];
 
 

@@ -34,6 +34,7 @@ class ModPageModel extends \ModAbstractModel {
 		'Root' => [
 			'class' => 'ModPageModel',
 			'reference' => \SchemaManager::REF_REFERENCE,
+			'required',
 		],
 		'slug' => [
 			'toString',
@@ -45,7 +46,9 @@ class ModPageModel extends \ModAbstractModel {
 		'doctype' => [
 			'default' => 'html'
 		],
-		'title',
+		'title' => [
+			'required',
+		],
 		'meta' => [
 			'toArray',
 			'keys' => ['name', 'content'],

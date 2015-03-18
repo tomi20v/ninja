@@ -8,17 +8,22 @@ $DB = \Maui::instance()->dbDb();
 $DB->PageModelCollection->drop();
 $DB->UserModelCollection->drop();
 
+// /assets/pool/ will be a unified virtual folder which merges all these fileserver paths:
 $bowerFileServer = new \ModFileservModel(
-	['recursive'=>true, 'basePath' => 'bower-asset', 'folder' => '../vendor/bower-asset']
+	['recursive'=>true, 'basePath' => 'pool', 'folder' => '../vendor/bower-asset']
 );
 $adminAssetsServer = new \ModFileservModel(
-	['recursive' => true, 'basePath' => 'admin', 'folder' => '../src/ninja/Mod/Admin/assets', 'filter'=>['ModFileservModule','filterLess']],
-	false
+	['recursive' => true, 'basePath' => 'pool', 'folder' => '../src/ninja/Mod/Admin/assets', 'filter'=>['ModFileservModule','filterLess']]
+);
+$shAssetServer = new \ModFileservModel(
+	['recursive' => true, 'basePath' => 'pool', 'folder' => '../src/ninja/Mod/Sh/assets', 'filter'=>['ModFileservModule','filterLess']]
 );
 $notFoundModule = new \ModBaseNotfoundModel();
 $assetModules = [
 	'bowerFiles' => $bowerFileServer,
 	'adminFiles' => $adminAssetsServer,
+	'shFiles' => $shAssetServer,
+	// this will trigger 404 if asset file not found
 	'fallbackTo404' => $notFoundModule,
 ];
 
@@ -63,12 +68,12 @@ $DaPageRoot = new \ModPageRootModel([
 				], false),
 		],
 		'scripts' => [
-			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/bower-asset/jquery/dist/jquery.js',],
-			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/bower-asset/bootstrap/dist/js/bootstrap.js',],
+			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/pool/jquery/dist/jquery.js',],
+			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/pool/bootstrap/dist/js/bootstrap.js',],
 		],
 		'links' => [
-			['rel'=>'stylesheet', 'href'=>'/assets/bower-asset/bootstrap/dist/css/bootstrap.css'],
-			['rel'=>'stylesheet', 'href'=>'/assets/bower-asset/bootstrap/dist/css/bootstrap-theme.css'],
+			['rel'=>'stylesheet', 'href'=>'/assets/pool/bootstrap/dist/css/bootstrap.css'],
+			['rel'=>'stylesheet', 'href'=>'/assets/pool/bootstrap/dist/css/bootstrap-theme.css'],
 		],
 		'cssStyle' => 'padding-top:60px;',
 		'extensionToType' => [
@@ -80,7 +85,6 @@ $DaPageRoot = new \ModPageRootModel([
 			'api' => 'Json',
 		],
 	], false);
-//echop($DaPageRoot);
 echop($DaPageRoot->save(false));
 //echop($DaPageRoot->_id);
 //die('OK');
@@ -142,13 +146,11 @@ $adminDaPageRoot = new \ModPageRootModel([
 		'location' => '~/index.html',
 		'domainName' => 'demoapp.site',
 		'scripts' => [
-			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/bower-asset/webcomponentsjs/webcomponents.js'],
-//			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/bower-asset/requirejs/require.js',],
-//			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/admin/js/main.js',],
+			['place'=>\ModPageModel::JS_HEAD, 'src'=>'/assets/pool/webcomponentsjs/webcomponents.js'],
 		],
 		'links' => [
-			['rel'=>'stylesheet', 'href'=>'/assets/admin/css/admin.css.less'],
-			['rel'=>'import', 'href'=>'/assets/bower-asset/font-roboto/roboto.html'],
+			['rel'=>'stylesheet', 'href'=>'/assets/pool/css/admin.css.less'],
+			['rel'=>'import', 'href'=>'/assets/pool/font-roboto/roboto.html'],
 		],
 		'extraAttributes' => 'unresolved fullbleed',
 	]);
@@ -172,12 +174,11 @@ $adminSandboxPage = new \ModPageModel([
 			]),
 		],
 		'links' => [
-			['rel'=>'import', 'href'=>'/assets/admin/na-field.html'],
-			['rel'=>'import', 'href'=>'/assets/admin/na-fieldset.html'],
-			['rel'=>'import', 'href'=>'/assets/admin/na-table.html'],
-			['rel'=>'import', 'href'=>'/assets/admin/na-form.html'],
-//			['rel'=>'import', 'href'=>'/assets/admin/na-app.html'],
-//			['rel'=>'import', 'href'=>'/assets/admin/na-app-page.html'],
+			['rel'=>'import', 'href'=>'/assets/pool/na-field.html'],
+			['rel'=>'import', 'href'=>'/assets/pool/na-fieldset.html'],
+			['rel'=>'import', 'href'=>'/assets/pool/na-table.html'],
+			['rel'=>'import', 'href'=>'/assets/pool/na-form.html'],
+//			['rel'=>'import', 'href'=>'/assets/pool/na-validator.html'],
 		]
 ]);
 echop($adminSandboxPage->save(1));
@@ -189,58 +190,18 @@ $adminDaPageHome = new \ModPageModel([
 		'published' => true,
 		'title' => 'Demo ADMIN Application home page',
 		'Modules' => [
-			'columns' => new \ModContainerModel([
-					'template' => 'index.html',
-					'templatePath' => 'Admin/template',
-					'Modules' => [
-						'router' => new \ModPolymerFlatirondirectorModel([
-								'route' => '{{route}}',
-								'autoHash' => true,
-						]),
-						'nav' => new \ModAdminMenuModel([
-								'cssClasses' => ['side-nav'],
-								'appName' => 'Shaboom',
-								'valueAttr' => 'hash',
-								'selected' => '{{route}}',
-								'selectedModel' => '{{selectedPage}}',
-								'repeat' => '{{page, i in pages}}',
-								'repeatHash' => '{{page.href}}',
-								'repeatLabel' => '{{page.label}}',
-								'repeatIcon' => '{{page.icon}}',
-						]),
-						'toolbar' => new \ModPolymerCoreToolbarModel([
-								'title' => '{{selectedPage.page.label}}',
-								'buttons' => [
-									['icon' => 'refresh'],
-									['icon' => 'add'],
-								],
-								'extraAttributes' => 'tool flex',
-						]),
-						// maybe this should be kept in a ModAdminApp module?
-						'apps' => new \ModPolymerCoreContainerModel([
-								'layout' => true,
-								'layoutDirection' => \ModPolymerCoreModel::LAYOUT_HORIZONTAL,
-								'layoutCenter' => \ModPolymerCoreModel::LAYOUT_CENTER_CENTER,
-								'layoutExtra' => [\ModPolymerCoreModel::LAYOUT_FIT],
-								'Modules' => [
-									new \ModPolymerCoreAnimatedpagesModel([
-										'cssId' => 'apps',
-										'selected' => '{{route}}',
-										'valueAttr' => 'hash',
-										'transitions' => 'slide-from-right',
-									]),
-								]
-						]),
-					],
+			// currently this inject page var into html... should come from ModShMainController
+			new \ModAdminMenuModel([
+				'template' => 'zero.html',
+				'templatePath' => 'Base/template',
 			]),
 		],
 		'Contents' => [
 			// I could put static content here
+			'columns' => '<sh-main appData="{{ pages }}" role="mainTemplate"></sh-main>',
 		],
 		'links' => [
-//			['rel'=>'import', 'href'=>'/assets/admin/na-field.html'],
-//			['rel'=>'import', 'href'=>'/assets/admin/na-fieldset.html'],
-//			['rel'=>'import', 'href'=>'/assets/admin/na-table.html'],
+			['rel'=>'import', 'href'=>'/assets/pool/sh-main.html'],
 		],
 	]);
 $adminDaPageHomeResult = $adminDaPageHome->save(true);
@@ -256,7 +217,7 @@ $adminDaPageApi = new \ModPageModel([
 			new \ModAdminApiModel([
 
 			]),
-		]
+		],
 ]);
 $result = $adminDaPageApi->save();
 echop($result);

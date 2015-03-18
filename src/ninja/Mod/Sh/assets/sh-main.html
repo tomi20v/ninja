@@ -1,0 +1,86 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../core-animated-pages/core-animated-pages.html">
+<link rel="import" href="../core-icon/core-icon.html">
+<link rel="import" href="../core-icon-button/core-icon-button.html">
+<link rel="import" href="../core-menu/core-menu.html">
+<link rel="import" href="../core-scaffold/core-scaffold.html">
+<link rel="import" href="../core-toolbar/core-toolbar.html">
+<link rel="import" href="../font-roboto/roboto.html">
+<link rel="import" href="../flatiron-director/flatiron-director.html">
+<link rel="import" href="../paper-item/paper-item.html">
+<polymer-element
+	name="sh-main"
+	attributes="
+		appName
+		dataUrl
+		appData
+	"
+>
+
+	<template>
+		<core-scaffold id="scaffold">
+
+			<!-- I should be able to inject app definitions by markup? -->
+
+			<flatiron-director role="router" route="{{route}}" autoHash></flatiron-director>
+
+			<nav class="nm-admin-menu nav navbar-nav side-nav"  >
+
+				<core-toolbar><span>{{ appName }}</span></core-toolbar>
+
+				<core-menu selected="{{route}}" valueAttr="hash" selectedModel="{{selectedApp}}">
+					<template repeat="{{app, i in appData}}">
+						<paper-item hash="{{app.href}}" noink>
+							<core-icon icon="{{app.icon || 'work'}}"></core-icon>
+							<a href="#{{app.href}}">{{app.label}}</a>
+						</paper-item>
+					</template>
+				</core-menu>
+
+			</nav>
+
+			<core-toolbar tool flex>
+
+				<div flex>{{selectedApp.app.label}}</div>
+				<core-icon-button icon="refresh"></core-icon-button>
+				<core-icon-button icon="add"></core-icon-button>
+
+			</core-toolbar>
+
+			<div layout horizontal start fit>
+
+				<core-animated-pages id="canvas" role="canvas" class=""
+					selected="{{route}}" valueAttr="hash"
+					horizontal center-start fit >
+
+					<template repeat="{{ app in appData }}">
+						<section id="na-app-{{app.href}}" hash="{{app.href}}" layout vertical fit >
+							<div>{{ app.label }}</div>
+						</section>
+					</template>
+				</core-animated-pages>
+
+			</div>
+
+		</core-scaffold>
+	</template>
+
+	<script>
+		Polymer('sh-main', {
+			// to be printed in the logo
+			appName: 'Shaboom',
+			// this comes from html attribute
+			appData: null,
+			apps: {},
+			route: null,
+			ready: function() {
+
+			},
+			routeChanged: function(oldApp, newApp) {
+				console.log('CHANGED: ', oldApp, newApp);
+				console.log(this);
+			}
+		})
+	</script>
+
+</polymer-element>

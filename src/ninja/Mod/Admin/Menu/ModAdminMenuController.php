@@ -53,11 +53,11 @@ class ModAdminMenuController extends \ModAdminController {
 		// add items to $Contents
 //		$Model->Contents = (array)$Model->Contents + ['items'=>$adminItems];
 
-		//$this->_addJsTemplateSelector();
 		\ModPolymerCoreController::addJsTemplateSelector($this);
 		$this->Asset()
-			->addJsVar(\ModPageModel::JS_FOOT, 'template.pages', $adminItems);
+			->addJsVar(\ModPageModel::JS_FOOT, 'template.appData', $adminItems);
 
+/*		// NOTE: polymer deps are not added as this mod is temporarly used only for the pages var output
 		// never forget calling this if necessary
 		$this->addPolymerDeps($this->Asset(), '/assets/bower-asset');
 
@@ -79,7 +79,7 @@ class ModAdminMenuController extends \ModAdminController {
 		foreach ($deps as $eachDep) {
 			$Asset->addImport($eachDep);
 		}
-
+*/
 		return parent::actionIndex($params);
 	}
 

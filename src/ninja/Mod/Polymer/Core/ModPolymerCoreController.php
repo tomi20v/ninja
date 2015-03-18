@@ -17,7 +17,8 @@ abstract class ModPolymerCoreController extends \ModPolymerController {
 		$obj->Asset()
 			->addJsCode(
 				\ModPageModel::JS_FOOT,
-				'var template = document.querySelector(\'template[is="auto-binding"]\')'
+//				'var template = document.querySelector(\'template[is="auto-binding"]\')'
+				'var template = document.querySelector(\'*[role="mainTemplate"]\')'
 			);
 	}
 

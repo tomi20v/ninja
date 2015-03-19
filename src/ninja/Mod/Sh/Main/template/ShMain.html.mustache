@@ -1,0 +1,5 @@
+<template role="mainTemplate" is="auto-binding">
+	<sh-main {{#appName}}appname="{{{.}}}"{{/appName}} {{#appData}}appData="{{{.}}}"{{/appData}} {{#dataUrl}}dataUrl="{{{.}}}"{{/dataUrl}}{{> Polymer-css }} >
+	{{{View.getContents}}}
+	</sh-main >
+</template>

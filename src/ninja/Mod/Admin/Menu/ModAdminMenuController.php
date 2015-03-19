@@ -59,7 +59,7 @@ class ModAdminMenuController extends \ModAdminController {
 
 /*		// NOTE: polymer deps are not added as this mod is temporarly used only for the pages var output
 		// never forget calling this if necessary
-		$this->addPolymerDeps($this->Asset(), '/assets/bower-asset');
+		static::addPolymerDeps($this->Asset(), '/assets/pools');
 
 		// add admin deps by plugins
 		// @todo this could be abstracted into the plugin class or to the addPolymerDeps() in each mod's controller

@@ -195,13 +195,16 @@ $adminDaPageHome = new \ModPageModel([
 				'template' => 'zero.html',
 				'templatePath' => 'Base/template',
 			]),
+			'columns' => new \ModShMainModel([
+					//'role' => 'mainTemplate',
+					'appData' => '{{ appData }}',
+				])
 		],
 		'Contents' => [
 			// I could put static content here
-			'columns' => '<sh-main appData="{{ pages }}" role="mainTemplate"></sh-main>',
 		],
 		'links' => [
-			['rel'=>'import', 'href'=>'/assets/pool/sh-main.html'],
+//			['rel'=>'import', 'href'=>'/assets/pool/sh-main.html'],
 		],
 	]);
 $adminDaPageHomeResult = $adminDaPageHome->save(true);

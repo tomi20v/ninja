@@ -71,14 +71,14 @@
 			appName: 'Shaboom',
 			// this comes from html attribute
 			appData: null,
-			apps: {},
+			// app node instances, maybe I don't need them like this? :)
+//			apps: {},
 			route: null,
 			ready: function() {
 
 			},
 			routeChanged: function(oldApp, newApp) {
 				console.log('CHANGED: ', oldApp, newApp);
-				console.log(this);
 			}
 		})
 	</script>
